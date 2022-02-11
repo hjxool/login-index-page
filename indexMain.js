@@ -1,13 +1,31 @@
-index.timer = setInterval(index.getTime, 1000);
-function checkPlaceAndRefresh() {
-    if (index.tags.length != 0) {
-        if (index.placeId) {
-            index.resPlaceDeviceList();
-            index.request('post', index.sceneDetailUrl, { placeId: index.placeId }, "74935343174538", index.loginToken, index.sceneDetail);
-        }
-    }
-}
-setInterval(checkPlaceAndRefresh, 2000);
+// index.timer = setInterval(index.getTime, 1000);
+// function checkPlaceAndRefresh() {
+// 	if (index.tags.length != 0) {
+// 		if (index.placeId) {
+// 			if (index.managerFocus == 0) {
+// 				console.log(123);
+// 				index.resPlaceDeviceList();
+// 			}
+// 		}
+// 	}
+// }
+// let clear_message_num_timer = setInterval(message_unread_num, 2000)
+// $(function () {
+//     let t = 100;
+//     let a = scroll_events = "mousewheel DOMMouseScroll MozMousePixelScroll";
+//     $(document).on(a, function (e) {
+//         let y = e.originalEvent.wheelDelta;
+//         if (y > 0) {
+//             let cc = $('.out_scroll').eq(0).scrollTop($('.out_scroll').eq(0).scrollTop() - t);
+//             console.log(cc)
+//         } else {
+//             let cc = $('.out_scroll').eq(0).scrollTop($('.out_scroll').eq(0).scrollTop() + t);
+//             console.log(cc)
+
+//         }
+//     })
+// });
+// setInterval(checkPlaceAndRefresh, 2000);
 // // 动态生成索引
 // function _index(obj) {
 //     let index = 0;
@@ -45,23 +63,23 @@ setInterval(checkPlaceAndRefresh, 2000);
 // frame.ondragover = function(e) {
 //     e.preventDefault();
 //     console.log("正在设备栏拖拽")
-    // let target = e.target;
-    // if (target.className === "cardBag" && target !== draging) {
-    //     // 获取移动前位置坐标
-    //     var targetRect = target.getBoundingClientRect();
-    //     var dragingRect = draging.getBoundingClientRect();
-    //     // 判断是否已添加动画
-    //     if (target.animated) {
-    //         return;
-    //     }
-    //     if (_index(draging) < _index(target)) {
-    //         target.parentNode.insertBefore(draging, target.nextSibling);
-    //     } else {
-    //         target.parentNode.insertBefore(draging, target);
-    //     }
-    //     _animate(dragingRect, draging);
-    //     _animate(targetRect, target);
-    // }
+// let target = e.target;
+// if (target.className === "cardBag" && target !== draging) {
+//     // 获取移动前位置坐标
+//     var targetRect = target.getBoundingClientRect();
+//     var dragingRect = draging.getBoundingClientRect();
+//     // 判断是否已添加动画
+//     if (target.animated) {
+//         return;
+//     }
+//     if (_index(draging) < _index(target)) {
+//         target.parentNode.insertBefore(draging, target.nextSibling);
+//     } else {
+//         target.parentNode.insertBefore(draging, target);
+//     }
+//     _animate(dragingRect, draging);
+//     _animate(targetRect, target);
+// }
 // }
 // frame.ondrop = function(e) {
 //     e.preventDefault();
