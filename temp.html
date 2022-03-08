@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="temp.css">
+  <!-- <script src="./module/jquery-3.6.0.js"></script>
+  <script src="./module/vue.js"></script>
+  <script src="./module/element-ui.js"></script>
+  <script src="./module/axios.min.js"></script> -->
+</head>
+
+<body>
+  <div id="temp">
+    <img src="./img/背景.png" class="bgimg">
+    <!-- 音箱容器 -->
+    <div class="sound_item_box">
+      <!-- 功能选项 -->
+      <div class="sound_item_option_box">
+        <div class="sound_item_option" v-for="i,index in sound_item_options" @click="option_focus=index"
+          :style="option_style(index)">
+          <img :src="option_focus==index? i.light_icon : i.dark_icon" class="sound_item_option_icon">
+          <span class="sound_item_option_text" :style="{opacity:option_focus==index?'1':'0.5'}">{{i.name}}</span>
+        </div>
+      </div>
+      <!-- 功放界面 -->
+      <div v-if="option_focus==0" class="amplify_box">
+        <div class="text_param_box">
+          <span style="color: #88CDFF;font-size: 18px;">电源电压</span>
+          <div class="text_param">220V</div>
+        </div>
+      </div>
+      <!-- DSP界面 -->
+      <div v-if="option_focus==1" class="DSP_box">
+        <div class="dsp_input_box">
+          <div class="dsp_input_title">输入一</div>
+
+          <div class="dsp_input_display">
+            <div class="dsp_input_control">
+              <level-component :level_max="'+12'" :level_min="'-48'" :display_value="-10"></level-component>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./module/jquery-3.6.0.js"></script>
+  <script src="./module/vue.js"></script>
+  <script src="./module/element-ui.js"></script>
+  <script src="./module/axios.min.js"></script>
+  <script src="./vue_template.js"></script>
+  <script src="./temp.js"></script>
+</body>
+
+</html>
