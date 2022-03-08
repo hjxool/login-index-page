@@ -63,7 +63,7 @@ Vue.component('level-component', {
 
 // 滑块组件
 Vue.component('single-slider', {
-	props: ['channel', 'device_id', 'token', 'in_title', 'out_title', 'in_or_out'],
+	props: ['channel', 'device_id', 'token', 'in_title', 'out_title', 'in_or_out', 'slider_max', 'slider_min'],
 	data: function () {
 		return {
 			mute: this.channel.mute, //静音
@@ -146,12 +146,12 @@ Vue.component('single-slider', {
 		},
 		command_send: function () {
 			if (this.sliderNum.length > 0) {
-				if (Number(this.sliderNum) < -12) {
-					this.sliderNum = -12;
-				} else if (Number(this.sliderNum) > 12) {
-					this.sliderNum = 12;
+				if (this.sliderNum < Number(this.slider_min)) {
+					this.sliderNum = Number(this.slider_min);
+				} else if (this.sliderNum > Number(this.slider_max)) {
+					this.sliderNum = Number(this.slider_max);
 				} else {
-					this.sliderNum = Math.floor(Number(this.sliderNum) * 10 + 0.5) / 10;
+					this.sliderNum = Math.floor(this.sliderNum * 10 + 0.5) / 10;
 				}
 				this.sliderNum_temp = this.sliderNum;
 				this.order_set();
@@ -172,9 +172,10 @@ Vue.component('single-slider', {
 				if (nowY > content.offsetHeight) {
 					nowY = content.offsetHeight;
 				}
-				nowY = (nowY / content.offsetHeight) * 24 - 12;
+				nowY = (nowY / content.offsetHeight) * (Number(this.slider_max) - Number(this.slider_min)) + Number(this.slider_min);
 				nowY = Math.floor(nowY * 10 + 0.5) / 10;
 				nowY_temp = nowY;
+				// sliderNum和sliderNum_temp不一样 前者是用于显示在面板上 后者用于回调改变滑块高度 两者没有关联关系 仅在面板输入时做了一次等值
 				_this.sliderNum = nowY;
 				_this.sliderNum_temp = nowY;
 			};
@@ -198,7 +199,8 @@ Vue.component('single-slider', {
 			if (nowY > content.offsetHeight) {
 				nowY = content.offsetHeight;
 			}
-			nowY = (nowY / content.offsetHeight) * 24 - 12;
+			// 差值是以0为基准的
+			nowY = (nowY / content.offsetHeight) * (Number(this.slider_max) - Number(this.slider_min)) + Number(this.slider_min);
 			nowY = Math.floor(nowY * 10 + 0.5) / 10;
 			this.sliderNum = nowY;
 			this.sliderNum_temp = nowY;
@@ -212,12 +214,12 @@ Vue.component('single-slider', {
 		},
 		// 改变滑块进度条高度
 		change_cover_height: function (par) {
-			let temp = (par + 12) / 24;
+			let temp = (par - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min));
 			return `height:${temp * 100}%;`;
 		},
 		// 改变滑块离底部距离
 		change_slider_bottom: function (par) {
-			let temp = (par + 12) / 24;
+			let temp = (par - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min));
 			return `bottom:calc(${temp * 100}% - 18px);`;
 		},
 	},
@@ -230,7 +232,7 @@ Vue.component('single-slider', {
                 <div style="background: #1053A7;width: 100%;height: 1px;"></div>
             </div>
             <div class="sliderNum">
-                <input @keyup.enter="command_send" v-model="sliderNum" maxlength="5" class="sliderNumInput" type="text">
+                <input @keyup.enter="command_send" v-model.number="sliderNum" maxlength="5" class="sliderNumInput">
                 <img src="./img/显示数字背景框.png" style="position: absolute;width: 100%;height: 100%;z-index:-99;">
             </div>
             <div @click="soundOff" class="soundOff">
