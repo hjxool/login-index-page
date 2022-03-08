@@ -6,7 +6,7 @@ Vue.component('level-component', {
       <div class="level_display">
         <div class="level_bar">
           <span class="level_range">{{level_max}}</span>
-          <div class="level_color_lump">
+          <div class="level_color_lump" ref="total_height">
             <div v-for="i,index in total_num" class="single_lump" :style="bg_draw(index)"></div>
           </div>
           <span class="level_range">{{level_min}}</span>
@@ -21,7 +21,8 @@ Vue.component('level-component', {
 		};
 	},
 	mounted() {
-		this.total_height = $('.level_color_lump')[0].offsetHeight;
+		// this.total_height = $('.level_color_lump')[0].offsetHeight;
+		this.total_height = this.$refs.total_height.offsetHeight;
 		// v-for不能及时将节点渲染上去，但同时mounted已经执行，所以找不到节点
 		// this.$nextTick(() => {
 		// 	this.total_lump = $('.single_lump');
@@ -161,7 +162,7 @@ Vue.component('single-slider', {
 		silderMove: function (e) {
 			let _this = this;
 			let nowY_temp;
-			let content = document.getElementsByClassName('slider')[0];
+			let content = this.$refs.slider;
 			let sliderBottom = content.offsetHeight - e.target.offsetTop - e.target.offsetHeight / 2;
 			let mouseY = e.clientY;
 			window.onmousemove = function (e) {
@@ -192,8 +193,7 @@ Vue.component('single-slider', {
 			};
 		},
 		sliderTurnTo: function (e) {
-			// let content = document.getElementsByClassName('slider')[0];
-			let content = $('.slider')[0];
+			let content = this.$refs.slider;
 			let nowY = content.offsetHeight - (e.clientY - Math.ceil(content.getBoundingClientRect().top));
 			if (nowY < 0) {
 				nowY = 0;
@@ -235,8 +235,8 @@ Vue.component('single-slider', {
             </div>
             <div class="slider_box">
               <span class="slider_range">{{slider_max}}</span>
-              <div @mousedown="sliderTurnTo($event)" class="slider">
-                <img src="./img/滑块条.png" style="width: 100%;height: 100%;position: absolute;z-index: -99;">
+              <div @mousedown="sliderTurnTo($event)" class="slider" ref="slider">
+                <img src="./img/滑块大.png" style="width: 100%;height: 100%;position: absolute;">
                 <div class="slider_bar"></div>
                 <div :style="change_cover_height(sliderNum_temp)" class="slider_cover"></div>
                 <div :style="change_slider_bottom(sliderNum_temp)" @mousedown.stop="silderMove($event)" class="slider_img"></div>

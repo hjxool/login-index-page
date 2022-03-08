@@ -32,6 +32,7 @@
       </div>
       <!-- DSP界面 -->
       <div v-if="option_focus==1" class="DSP_box">
+        <!-- 输入 -->
         <div class="dsp_input_box">
           <div class="dsp_input_title">输入一</div>
 
@@ -40,6 +41,35 @@
               <level-component :level_max="'+12'" :level_min="'-48'" :display_value="-10"></level-component>
               <single-slider :channel="channel1" :in_title="'增益'" :out_title="'压限'" :in_or_out="0" :slider_max="'+12'"
                 :slider_min="'-80'"></single-slider>
+            </div>
+          </div>
+        </div>
+        <!-- 输出 -->
+        <div class="dsp_output_box">
+          <!-- 输入 -->
+          <div class="dsp_output" v-for="i,index in 2">
+            <div class="dsp_output_top">
+              <div class="dsp_output_text">输出{{index+1}}</div>
+              <div class="dsp_output_top_control">
+                <div class="dsp_output_top_control1">
+                  <level-component :level_max="'+12'" :level_min="'-48'" :display_value="-10"></level-component>
+                  <single-slider :channel="channel1" :in_title="'增益'" :out_title="'压限'" :in_or_out="0"
+                    :slider_max="'+12'" :slider_min="'-80'"></single-slider>
+                  <single-slider :channel="channel2" :in_title="'增益'" :out_title="'压限'" :in_or_out="1"
+                    :slider_max="'+12'" :slider_min="'-80'"></single-slider>
+                </div>
+                <div class="dsp_output_top_control2">
+                  <img class="dsp_output_button" :src="output[index].dynamic?'./img/动态压限开关亮.png':'./img/动态压限开关暗.png'"
+                    @click="output[index].dynamic=!output[index].dynamic">
+                  <img class="dsp_output_button" :src="output[index].mute?'./img/静音亮.png':'./img/静音暗.png'"
+                    @click="output[index].mute=!output[index].mute">
+                </div>
+              </div>
+            </div>
+
+            <div class="dsp_output_bottom">
+              <single-slider v-for="i in 5" :channel="channel1" :in_title="channel1.hz+'HZ'" :out_title="'压限'"
+                :in_or_out="0" :slider_max="'+20'" :slider_min="'-20'"></single-slider>
             </div>
           </div>
         </div>

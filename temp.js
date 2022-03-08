@@ -10,7 +10,15 @@ new Vue({
 			option_focus: 0,
 			channel1: {
 				digitalgain: -12,
+				hz: 100,
 			},
+			channel2: {
+				gain: -30,
+			},
+			output: [
+				{ dynamic: false, mute: false },
+				{ dynamic: true, mute: true },
+			],
 		};
 	},
 	methods: {
