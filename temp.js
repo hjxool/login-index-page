@@ -8,6 +8,9 @@ new Vue({
 				{ name: '系统功能', light_icon: './img/系统功能亮.png', dark_icon: './img/系统功能暗.png' },
 			],
 			option_focus: 0,
+			channel1: {
+				digitalgain: -12,
+			},
 		};
 	},
 	methods: {
@@ -19,11 +22,5 @@ new Vue({
 			};
 			return style;
 		},
-		// aaa() {
-		// 	let a = $('.amplify_box').eq(0);
-		// 	console.log(a);
-		// 	let b = $('.amplify_box')[0];
-		// 	console.log(b);
-		// },
 	},
 });
