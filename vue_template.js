@@ -146,8 +146,8 @@ Vue.component('single-slider', {
 			// this.request('post', channelControlUrl, { id: this.device_id, channelsData: channelsData }, '123456', this.token, function () {});
 		},
 		command_send: function () {
-			console.log('按下回车');
-			if (this.sliderNum.length > 0) {
+			let reg = /(^\-?\d+$)|(^\+?\d+$)|(^\-?\d+\.\d+$)|(^\+?\d+\.\d+$)/;
+			if (reg.test(this.sliderNum)) {
 				if (this.sliderNum < Number(this.slider_min)) {
 					this.sliderNum = Number(this.slider_min);
 				} else if (this.sliderNum > Number(this.slider_max)) {
