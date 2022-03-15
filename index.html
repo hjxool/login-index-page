@@ -79,11 +79,16 @@
         <div class="item_and_place_box">
           <div v-for="i,index in item"
             style="display: flex;flex-wrap: wrap;width: 100%;justify-content: center;align-content: center;">
-            <div @click="clickItem(index)" class="item">
+            <div class="item">
               <img src="./img/项目底图.png" style="width: 100%;height: 100%;position: absolute;">
               <span class="item_text" :title="i.projectName">{{i.projectName}}</span>
-              <img @click="clickNewTag" src="./img/加号.png"
-                style="position: absolute;width: 12px;height: 12px;right: 6.66%;">
+              <div style="position: absolute;width: 15%;height: 68%;left: 6.66%;cursor: pointer;">
+                <img @click="clickNewTag" src="./img/加号.png" style="width: 100%;height: 100%;">
+              </div>
+              <div @click="clickItem(index)"
+                style="position: absolute;width: 15%;height: 68%;right: 4px;display: flex;align-items: center;justify-content: center;cursor: pointer;">
+                <img :src="itemFocus==index?'./img/点击隐藏场所.png':'./img/点击显示场所.png'" style="width: 12px;height: 12px;">
+              </div>
             </div>
 
             <div style="width: 86%;overflow-y: auto;overflow-x: hidden;">

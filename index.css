@@ -1564,7 +1564,6 @@ img {
 .item {
 	width: 93%;
 	height: 4.81vh;
-	cursor: pointer;
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -1714,7 +1713,7 @@ img {
 	font-size: 1.66vh;
 	color: #47e8ea;
 	z-index: 1;
-	max-width: 72%;
+	max-width: 54%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;

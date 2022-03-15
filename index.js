@@ -88,8 +88,8 @@ var index = new Vue({
 		download_center_list: {}, //下载中心列表
 		download_center_detail: [], //下载中心详情页
 		placeFocus: '', //是否选中
-		itemFocus: 0, //点中的项目
-		item_temp_focus: 0, //临时变量
+		itemFocus: -1, //点中的项目
+		// item_temp_focus: 0, //点击项目时先请求查询项目下是否有场所 再显示
 		managerFocus: 0, //右边栏中点的是哪个
 		alert_button_focus: 0, //告警按钮点中的是哪个
 		nav_bar_click: -1, //左边导航栏点中的是哪一个
@@ -338,12 +338,16 @@ var index = new Vue({
 		},
 		// 点击项目切换样式
 		clickItem: function (index) {
-			this.platformJump = 0;
-			this.showDeviceList = false;
-			this.item_temp_focus = index;
-			this.projectId = this.item[index].projectId;
-			this.customerId = this.item[index].customerId;
-			this.resPlaceList(this.placePageNum);
+			if (this.itemFocus == index) {
+				this.itemFocus = -1;
+			} else {
+				this.platformJump = 0;
+				this.showDeviceList = false;
+				this.itemFocus = index;
+				this.projectId = this.item[index].projectId;
+				this.customerId = this.item[index].customerId;
+				this.resPlaceList(this.placePageNum);
+			}
 		},
 		// 请求场所标签列表
 		resPlaceList: function (placePageNum) {
@@ -354,7 +358,7 @@ var index = new Vue({
 		placeList: function (res) {
 			this.tagName = '';
 			if (res.data.data.list.length > 0) {
-				this.itemFocus = this.item_temp_focus;
+				// this.itemFocus = this.item_temp_focus;
 				this.tags = res.data.data.list;
 				this.clickPlace(0);
 				this.clickmanager(0);
