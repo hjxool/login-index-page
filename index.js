@@ -689,13 +689,13 @@ var index = new Vue({
 			this.imgSrc = i.modelPictureUrl;
 			switch (i.platform) {
 				case 1:
-					window.open('http://182.150.116.22:10008/power/index.html?token=' + this.loginToken + '&zh=' + this.userName + '&sbid=' + i.deviceId);
+					// window.open('http://182.150.116.22:10008/power/index.html?token=' + this.loginToken + '&zh=' + this.userName + '&sbid=' + i.deviceId);
+					window.open('./专业设备/frequency.html');
 					break;
 				case 2:
 					this.request('post', soundDeviceDetailUrl, this.userName, { id: this.deviceId }, '74935343174538', this.loginToken, this.soundDeviceDetail);
 					break;
 				case 3:
-					// window.open("HushanIotStudio://" + this.loginToken + " " + i.platform + " " + i.projectId + " " + i.groupId + " " + i.deviceId);
 					window.sessionStorage.deviceId = i.deviceId;
 					window.open(`../专业设备web版/HiFi.html?token=${this.loginToken}&deviceId=${this.deviceId}`);
 					break;
