@@ -19,9 +19,6 @@ let power_frequency = new Vue({
 			// 输入输出模块名
 			input_modules: [{ name: '输入延时' }, { name: '噪声门' }, { name: '反馈抑制' }, { name: '输入滤波' }, { name: '输入压限' }],
 			output_modules: [{ name: '输出延时' }, { name: '输出滤波' }, { name: '输出压限' }],
-			temp: 0, //临时输入框变量
-			feedback: false, //反馈抑制开关
-			delay_slider_height: 0, //延时滑块高度
 			channel_name: '', //显示在输入输出页面的通道名
 			filter_height_type: false, //高通类型显示
 			filter_height_slope: false, //高通斜率显示
@@ -31,6 +28,7 @@ let power_frequency = new Vue({
 			fliter_peq_type: false, //均衡类型显示
 			// 延迟单位
 			delay_unit_text: ['毫秒', '米', '英尺'],
+			matrix_replace: false, //当行标题脱离文档流 用于替换的div
 		},
 		// 请求数据存放处
 		processor_detail: {
@@ -77,6 +75,7 @@ let power_frequency = new Vue({
 			},
 			filter_peq: {}, //滤波均衡指定段的数据
 			before_mix_gain: [], //混音前增益
+			matrix_params: [], //矩阵数据
 		},
 	},
 	mounted: function () {
@@ -249,7 +248,15 @@ let power_frequency = new Vue({
 						});
 						break;
 					case 3:
-						// this.total_page_loading = true;
+						this.total_page_loading = true;
+						// 查询矩阵信息
+						this.request('post', matrix_url, { device_id: this.resCommonParams.deviceId }, '74935343174538', this.resCommonParams.loginToken, (res) => {
+							this.processor_detail.matrix_params = res.data.data;
+							// this.total_page_loading = false;
+							setTimeout(() => {
+								this.total_page_loading = false;
+							}, 300);
+						});
 						break;
 					case 4:
 						this.request('post', before_mix_gain_url, { device_id: this.resCommonParams.deviceId }, '74935343174538', this.resCommonParams.loginToken, (res) => {
@@ -640,10 +647,7 @@ let power_frequency = new Vue({
 		},
 		// 跳转预设页面
 		haoran_page() {
-			if (this.static_par.option_focus == 3) {
-				let url = `./调音台dsp/index.html?type=matrix2&sbid=${this.resCommonParams.deviceId}&token=${this.resCommonParams.loginToken}&ip=${haoran_page_ip_params}`;
-				return url;
-			} else if (this.static_par.option_focus == 5) {
+			if (this.static_par.option_focus == 5) {
 				let url = `./调音台dsp/index.html?type=preset&sbid=${this.resCommonParams.deviceId}&token=${this.resCommonParams.loginToken}&ip=${haoran_page_ip_params}`;
 				return url;
 			}
@@ -694,6 +698,15 @@ let power_frequency = new Vue({
 				}
 			}
 			return delay_num;
+		},
+		// 矩阵开关
+		matrix_button(row, col_index, row_index) {
+			if (row[col_index] == 0) {
+				row.splice(col_index, 1, 1);
+			} else {
+				row.splice(col_index, 1, 0);
+			}
+			this.request('post', push_matrix_url, { device_id: this.resCommonParams.deviceId, channel_in_no: col_index + 1, channel_out_no: row_index + 1, matrix_status: row[col_index] }, '55555', this.resCommonParams.loginToken, () => {});
 		},
 	},
 });

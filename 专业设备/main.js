@@ -16,3 +16,5 @@ let before_mix_gain_url = zhuanyeUrl + 'api/gds/getBeforeMixingInfo';
 let push_before_mix_gain_url = zhuanyeUrl + 'api/gds/beforeMixingControl';
 let push_filter_recover_url = zhuanyeUrl + 'api/gds/peqReset';
 let haoran_page_ip_params = zhuanyeUrl + 'api/gds/';
+let matrix_url = zhuanyeUrl + 'api/gds/getGdsMatrixInfo';
+let push_matrix_url = zhuanyeUrl + 'api/gds/matrixControl';

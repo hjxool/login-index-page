@@ -13,20 +13,21 @@
 
 <body>
   <div id="power_frequency" v-loading="total_page_loading" element-loading-text="拼命加载中"
-    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-    style="width: 100%;height: 100%;position: absolute;" v-cloak>
+    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)" style="width: 100%;height: 100%;position: absolute;min-width: 1000px;
+    min-height: 800px;" v-cloak>
     <!-- 整体页面背景 -->
-    <img src="./img/背景.png" style="position: absolute;width: 100vw;height: 100vh;z-index: -999;">
+    <img src="./img/背景.png" style="position: absolute;width: 100%;height: 100%;z-index: -999;">
     <!-- 抬头样式 -->
-    <div style="position: relative;width: 100%;height: 5%;">
-      <img src="./img/抬头背景.png" style="width: 100%;height: 100%;object-fit: cover;position: absolute;top: 0;left: 0;">
-      <div style="width: 100%;height: 100%;display: flex;">
-        <img src="./img/返回按钮.png" class="returnButton">
-        <img src="./img/logo.png" class="logo">
-        <span class="logoTitle">音频物联软件 V1.6</span>
-        <div class="verticalBar"></div>
-        <span class="deviceName">DSP</span>
-        <span class="deviceNameSubscript">GDS1616</span>
+    <div class="head_layout">
+      <img src="./img/抬头背景.png" style="width: 100%;height: 100%;position: absolute;z-index: -1;">
+
+      <img src="./img/返回按钮.png" class="return_button">
+      <img src="./img/logo.png" class="logo">
+      <span class="logoTitle">音频物联软件 V1.6</span>
+      <div class="verticalBar"></div>
+      <span class="deviceName">DSP</span>
+      <span class="deviceNameSubscript">GDS1616</span>
+      <div style="justify-self: end;">
         <img class="rightSideButton" src="./img/设置按钮.png">
         <img class="rightSideButton" src="./img/最小化按钮.png">
         <img class="rightSideButton" src="./img/最大化按钮.png">
@@ -813,8 +814,33 @@
         </div>
       </div>
       <!-- 矩阵 -->
-      <div v-if="static_par.option_focus==3" style="grid-column-start: 1;grid-column-end: 3;">
-        <iframe :src="haoran_page()" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
+      <div class="matrix_scroll" v-if="static_par.option_focus==3">
+        <!-- 固定抬头 -->
+        <div class="matrix_row_head">
+          <!-- 占位元素 -->
+          <div></div>
+          <!-- 行标题 -->
+          <div class="row_head" :style="{gridTemplateColumns: 'repeat(16, 1fr)'}">
+            <span v-for="i in 16" class="text">IN{{i}}</span>
+          </div>
+        </div>
+        <!-- 矩阵显示容器 -->
+        <div class="matrix_body">
+          <!-- 列标题 -->
+          <div class="col_head" :style="{gridTemplateRows: 'repeat(16, 1fr)'}">
+            <span v-for="i in 16" class="text">OUT{{i}}</span>
+          </div>
+          <!-- 内容物 -->
+          <div class="body">
+            <div class="row" v-for="row,row_index in processor_detail.matrix_params"
+              :style="{gridTemplateColumns: 'repeat(16, 1fr)'}">
+              <div class="column" v-for="col,col_index in row" @mousedown="matrix_button(row,col_index,row_index)">
+                <img :src="col==0?'./img/滤波选项暗.png':'./img/滤波选项亮.png'"
+                  style="width: 100%;height: 100%;position: absolute;">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- 混音前增益 -->
       <div class="mix_sound scroll_display" v-if="static_par.option_focus==4" @mousewheel="scroll_x($event)"

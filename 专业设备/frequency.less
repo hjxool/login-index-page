@@ -10,7 +10,7 @@ body {
 }
 ::-webkit-scrollbar {
 	height: 5px;
-	width: 10px;
+	width: 4px;
 	background: rgba(9, 37, 92, 0.78);
 	border-radius: 3px;
 }
@@ -20,66 +20,54 @@ body {
 	background: #0e52d4;
 	border-radius: 3px;
 }
-.returnButton {
-	width: 2.34%;
-	height: 64.28%;
-	object-fit: cover;
+.head_layout {
 	position: relative;
-	left: 1.25%;
-	top: 17.14%;
-}
-.logo {
-	width: 10.31%;
-	height: 42.86%;
-	position: relative;
-	left: 2.13%;
-	top: 28.57%;
-}
-.logoTitle {
-	color: #005fcb;
-	position: relative;
-	left: 2.13%;
-	bottom: 6px;
-	align-self: end;
-	font-size: 0.73vw;
-	font-family: Microsoft YaHei;
-}
-.verticalBar {
-	width: 2px;
-	height: 31.43%;
-	background: #035ab0;
-	position: relative;
-	left: 3%;
-	top: 38.57%;
-}
-.deviceName {
-	font-size: 1.56vw;
-	font-family: Microsoft YaHei;
-	font-weight: bold;
-	color: #f5f5f5;
-	text-shadow: 0px 3px 3px rgba(22, 29, 54, 0.58);
-	position: relative;
-	left: 4%;
-	align-self: center;
-}
-.deviceNameSubscript {
-	font-size: 0.73vw;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #f5f5f5;
-	position: relative;
-	left: 5%;
-	bottom: 6px;
-	align-self: end;
-}
-.rightSideButton {
-	width: 2.34%;
-	height: 64.28%;
-	object-fit: contain;
-	position: relative;
-	left: 62%;
-	top: 17.14%;
-	cursor: pointer;
+	width: 100%;
+	height: 5%;
+	display: grid;
+	grid-template-columns: 78px 180px 120px 20px 80px 80px auto;
+	grid-auto-flow: column;
+	align-items: center;
+	justify-items: center;
+	.return_button {
+		width: 40px;
+		height: 40px;
+		cursor: pointer;
+	}
+	.logo {
+		width: 160px;
+		height: 20px;
+	}
+	.logoTitle {
+		color: #005fcb;
+		position: relative;
+		bottom: 6px;
+		align-self: end;
+		font-size: 14px;
+	}
+	.verticalBar {
+		width: 2px;
+		height: 16px;
+		background: #035ab0;
+	}
+	.deviceName {
+		font-size: 30px;
+		font-weight: bold;
+		color: #f5f5f5;
+		text-shadow: 0px 3px 3px rgba(22, 29, 54, 0.58);
+	}
+	.deviceNameSubscript {
+		font-size: 14px;
+		color: #f5f5f5;
+		bottom: 6px;
+		align-self: end;
+		position: relative;
+	}
+	.rightSideButton {
+		width: 40px;
+		height: 40px;
+		cursor: pointer;
+	}
 }
 .topSwitchBar {
 	width: 100%;
@@ -337,6 +325,78 @@ body {
 					cursor: pointer;
 				}
 			}
+		}
+	}
+	.matrix_scroll {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		justify-items: center;
+		grid-column-start: 1;
+		grid-column-end: 3;
+		grid-template-rows: 76px auto;
+		overflow: hidden;
+		.matrix_row_head {
+			width: calc(96% - 4px);
+			height: 100%;
+			background: rgba(9, 28, 63, 0.42);
+			display: grid;
+			grid-template-columns: 76px auto;
+			border: 1px solid rgba(2, 11, 39, 0.42);
+			border-bottom: none;
+			box-shadow: 0px 39px 98px 0px rgba(16, 56, 129, 0.55);
+			border-radius: 6px;
+			.row_head {
+				width: 100%;
+				height: 100%;
+				display: grid;
+				align-items: center;
+				justify-items: center;
+			}
+		}
+		.matrix_body {
+			width: 96%;
+			display: grid;
+			grid-template-columns: 76px auto;
+			border: 1px solid rgba(2, 11, 39, 0.42);
+			border-top: none;
+			background: rgba(9, 28, 63, 0.42);
+			box-shadow: 0px 39px 98px 0px rgba(16, 56, 129, 0.55);
+			border-radius: 6px;
+			overflow: auto;
+			.col_head {
+				width: 100%;
+				height: 100%;
+				display: grid;
+				/* 父容器已经被撑开 列是100% 就可以使用template */
+				align-items: center;
+				justify-items: center;
+			}
+			.body {
+				width: 100%;
+				height: 100%;
+				display: grid;
+				/* 这块很关键 行的切分很重要 */
+				grid-auto-rows: 50px;
+				.row {
+					width: 100%;
+					height: 100%;
+					display: grid;
+					grid-auto-flow: column;
+					justify-items: center;
+					align-items: center;
+					.column {
+						width: 90%;
+						height: 90%;
+						position: relative;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+		.text {
+			font-size: 12px;
+			color: #707bba;
 		}
 	}
 }

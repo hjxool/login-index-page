@@ -166,13 +166,13 @@
       </div>
       <div v-if="type=='matrix'" class="bj pl">
         <div class="jk pl" v-for="i in juz" style="margin:12px" :style="`width:${64*(i.data.length+2)}px;`">
-          <div style="width:100%;height:60px" class="pl"><span style="">{{i.name}}</span></div>
+          <div style="width:100%;height:60px" class="pl"><span>{{i.name}}</span></div>
           <div style="width:76px;height:calc(100% - 60px)" class="pl">
             <div style="width:100%;height:34px;margin:6px"></div><span v-for="j,jj in i.data"
               style="color:#707bba;width:100%;height:34px;margin:6px" class="pl">OUT{{(jj+1)}}</span>
           </div>
-          <div style="width:calc(100% - 80px);height:calc(100% - 60px)" class="pl">
-            <div class="pl" style="width:100%"><span v-for="j,jj in i.data[0].length"
+          <div style="width:calc(100% - 80px);height:calc(100% - 60px);" class="pl">
+            <div class="pl" style="width:100%"><span v-for="j,jj in (i.data[0].length-5)"
                 style="color:#707bba;width:54px;height:34px;margin:6px" class="pl">IN{{(jj+1)}}</span></div>
             <div v-for="j,jj in i.data" class="pl" style="width:100%"><img v-for="k,kk in j"
                 :src="`src/jz${k?'k':'g'}.png`" class="kg" @click="txxx(!k+' '+(kk+1)+' '+(jj+1))"></div>
@@ -242,7 +242,56 @@
   <script src="js/Zhr_Basics.js"></script>
   <script src="uidom.js"></script>
   <script src="js/Zhr_Origin_6.09.js"></script>
-  <script>function hqplb () { hsqq("presetList", { device_id: ui.sbid }, e => { ui.plb = e }) } function pcz (e, t) { switch (e) { case 1: hsqq("savePreset", { device_id: ui.sbid, preset_no: t.preset_no, preset_name: prompt("预设名称", t.preset_name || "新建配置") || "新建配置" }, e => { txxx("保存成功", 2), hqplb() }); break; case 2: hsqq("loadPreset", { device_id: ui.sbid, preset_no: t.preset_no }, e => { txxx("载入成功", 2), hqplb() }) } } function hsqq (e, t, i) { txqq(ui.ip + e, { client: "PC", user: "", version: "1.0.1", data: t, key: "123456" }, e => { 1e3 == e.code ? i(e.data) : txxx(e.message, 1) }, 1, { token: ui.token }) } main = () => { cc(9), FPS() }, ui.type = getdzl().type || "matrix", ui.token = getdzl().token || "token-zhanghaoran-1647327817300-c42cb8c1ad174a1993bd4f82e8bcd781", ui.sbid = getdzl().sbid || "0x333333333333333333000000", ui.ip = getdzl().ip || "http://192.168.30.25:18113/api/gds/", "preset" === ui.type && hqplb(); for (let e = 0; e < 6; e++) { let i = { name: sjhz(4), id: md5(sjhz(10)), data: [] }, s = sj(4, 8); for (let e = 0; e < s; e++) { let t = []; for (let e = 0; e < s; e++)t.push(.5 < Math.random()); i.data.push(t) } ui.juz.push(i) } for (let t = 0; t < 16; t++)for (let e = 0; e < 16; e++)ui.juz2.push({ i: e + 1, o: t + 1, v: sj(-20, 20), xz: !1 })</script>
+  <script>
+    function hqplb () {
+      hsqq('presetList', { device_id: ui.sbid }, (e) => {
+        ui.plb = e;
+      });
+    }
+    function pcz (e, t) {
+      switch (e) {
+        case 1:
+          hsqq('savePreset', { device_id: ui.sbid, preset_no: t.preset_no, preset_name: prompt('预设名称', t.preset_name || '新建配置') || '新建配置' }, (e) => {
+            txxx('保存成功', 2), hqplb();
+          });
+          break;
+        case 2:
+          hsqq('loadPreset', { device_id: ui.sbid, preset_no: t.preset_no }, (e) => {
+            txxx('载入成功', 2), hqplb();
+          });
+      }
+    }
+    function hsqq (e, t, i) {
+      txqq(
+        ui.ip + e,
+        { client: 'PC', user: '', version: '1.0.1', data: t, key: '123456' },
+        (e) => {
+          1e3 == e.code ? i(e.data) : txxx(e.message, 1);
+        },
+        1,
+        { token: ui.token }
+      );
+    }
+    (main = () => {
+      cc(9), FPS();
+    }),
+      (ui.type = getdzl().type || 'matrix'),
+      (ui.token = getdzl().token || 'token-zhanghaoran-1647327817300-c42cb8c1ad174a1993bd4f82e8bcd781'),
+      (ui.sbid = getdzl().sbid || '0x333333333333333333000000'),
+      (ui.ip = getdzl().ip || 'http://192.168.30.25:18113/api/gds/'),
+      'preset' === ui.type && hqplb();
+    for (let e = 0; e < 6; e++) {
+      let i = { name: sjhz(4), id: md5(sjhz(10)), data: [] },
+        s = sj(4, 16);
+      for (let e = 0; e < s; e++) {
+        let t = [];
+        for (let e = 0; e < s; e++) t.push(0.5 < Math.random());
+        i.data.push(t);
+      }
+      ui.juz.push(i);
+    }
+    for (let t = 0; t < 16; t++) for (let e = 0; e < 16; e++) ui.juz2.push({ i: e + 1, o: t + 1, v: sj(-20, 20), xz: !1 });
+  </script>
 </body>
 
 </html>
