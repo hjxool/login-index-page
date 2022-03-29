@@ -21,7 +21,7 @@
     <div class="head_layout">
       <img src="./img/抬头背景.png" style="width: 100%;height: 100%;position: absolute;z-index: -1;">
 
-      <img src="./img/返回按钮.png" class="return_button">
+      <img src="./img/返回按钮.png" class="return_button" @mousedown="return_index_page">
       <img src="./img/logo.png" class="logo">
       <span class="logoTitle">音频物联软件 V1.6</span>
       <div class="verticalBar"></div>
@@ -41,15 +41,15 @@
         style="z-index: -99;width: 100%;height: 100%;position: absolute;top: 0;left: 0;background: linear-gradient(0deg, #040D19, #041F52);">
       </div>
       <!-- 选项切换卡 -->
-      <div style="grid-area: b;display: flex;">
+      <div style="grid-area: b;display: flex;width: 100%;height: 100%;">
         <div class="option" v-for="option,index in static_par.options" @click="switch_option(index)">{{option}}
           <img :src="static_par.option_focus==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="img_bg">
         </div>
       </div>
       <!-- 离线在线 -->
       <div style="grid-area: c;justify-self: end;margin-right: 10%;">
-        <img style="width: 15px;height: 12px;" src="./img/警告标识.png">
-        <span style="font-size: 12px;color: #32548a;">设备不在线</span>
+        <img v-show="processor_detail.is_online==0" style="width: 15px;height: 12px;" src="./img/警告标识.png">
+        <span style="font-size: 12px;color: #32548a;">{{processor_detail.is_online==0?'设备不在线':'设备在线'}}</span>
       </div>
     </div>
     <!-- 详情 -->

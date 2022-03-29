@@ -32,6 +32,7 @@ let power_frequency = new Vue({
 		},
 		// 请求数据存放处
 		processor_detail: {
+			is_online: -1, //设备是否在线
 			Channel_output_list: [], //输出通道信息
 			Channel_input_list: [], //输入通道信息
 			noise_and_feedback: {}, //噪声门和反馈抑制信息
@@ -120,6 +121,7 @@ let power_frequency = new Vue({
 		// 处理器详情
 		processor_param: function (res) {
 			console.log(res);
+			this.processor_detail.is_online = res.data.data.isOnline;
 			// 先建立vue变量 再将获取的值存储进去 vue才能监听到变量的变化
 			this.processor_detail.Channel_input_list = res.data.data.input;
 			this.processor_detail.Channel_output_list = res.data.data.output;
@@ -707,6 +709,10 @@ let power_frequency = new Vue({
 				row.splice(col_index, 1, 0);
 			}
 			this.request('post', push_matrix_url, { device_id: this.resCommonParams.deviceId, channel_in_no: col_index + 1, channel_out_no: row_index + 1, matrix_status: row[col_index] }, '55555', this.resCommonParams.loginToken, () => {});
+		},
+		// 返回首页
+		return_index_page() {
+			window.location.href = '../index.html';
 		},
 	},
 });

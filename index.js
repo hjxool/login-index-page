@@ -1335,33 +1335,31 @@ var index = new Vue({
 		},
 		// 下载中心下载
 		download_center_list_download: function (down_url) {
+			// 第一种方法请求获取文件流
 			// axios({
 			// 	method: 'get',
 			// 	url: down_url,
 			// 	data: {},
 			// 	responseType: 'blob',
 			// 	header: {
-			//     'Content-Type': 'application/x-download',
+			// 		'Content-Type': 'application/x-download',
 			// 	},
 			// }).then((res) => {
 			// 	console.log(res);
 			// });
-			// console.log(down_url);
-			// let a = new Blob([down_url]);
-			// console.log(a);
-			// let b = URL.createObjectURL(a);
-			// console.log(b);
-			// let c = document.createElement('a');
-			// c.href = b;
-			// c.download = '456';
-			// c.click();
-			let b = new Blob([down_url]);
+
+			// 第二种方法后端传过来的文件流放入a标签下载
+			// let b = new Blob([down_url]);
 			let a = document.createElement('a');
-			a.href = URL.createObjectURL(b);
+			// a.href = URL.createObjectURL(b);
 			// a.download = down_url.split('/').pop();
+			a.href = down_url;
 			a.target = '_blank';
 			document.body.appendChild(a);
 			a.click();
+			document.body.removeChild(a);
+
+			// 第三种方法xml请求获取
 			// var x = new XMLHttpRequest();
 			// x.open('GET', down_url + '?t=' + new Date().getTime(), true);
 			// x.responseType = 'blob';

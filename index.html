@@ -401,7 +401,7 @@
             </div>
           </div>
         </div>
-        <div v-if="download_center_jump==1" class="download_center_list_layout">
+        <div v-if="nav_bar_click==3&&download_center_jump==1" class="download_center_list_layout">
           <div style="display: flex;width: 100%;height: 100%;align-items: center;">
             <img @click="download_center_jump=0" src="./img/下载返回按钮.png"
               style="width: 36px;height: 33px;cursor: pointer;">
@@ -446,7 +446,7 @@
           </div>
         </div>
 
-        <div v-if="download_center_jump==2" class="download_list_detail_layout">
+        <div v-if="nav_bar_click==3&&download_center_jump==2" class="download_list_detail_layout">
           <img @click="download_center_jump=1" src="./img/下载返回按钮.png"
             style="width: 3.04%;height: 65.52%;cursor: pointer;align-self: center;">
 
