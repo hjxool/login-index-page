@@ -331,10 +331,17 @@ var index = new Vue({
 		},
 		// 请求项目列表后执行
 		itemList: function (res) {
+			console.log('项目', res);
 			this.item = [];
 			this.item = res.data.data.list;
 			this.itemTotalPage = res.data.data.totalPage;
-			this.clickItem(0);
+			// 有可能第一个项目下没有场所 所以要遍历找第一个有场所的项目
+			for (let i = 0; i < this.item.length; i++) {
+				if (this.item[i].isEmpty == 0) {
+					this.clickItem(i);
+					break;
+				}
+			}
 		},
 		// 点击项目切换样式
 		clickItem: function (index) {
@@ -356,6 +363,7 @@ var index = new Vue({
 		},
 		// 获取场所列表后执行事件
 		placeList: function (res) {
+			console.log('场所', res);
 			this.tagName = '';
 			if (res.data.data.list.length > 0) {
 				// this.itemFocus = this.item_temp_focus;

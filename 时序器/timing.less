@@ -1,0 +1,202 @@
+[v-cloak] {
+	display: none !important;
+}
+* {
+	box-sizing: border-box;
+	user-select: none;
+}
+body {
+	margin: 0;
+}
+::-webkit-scrollbar {
+	height: 5px;
+	width: 4px;
+	background: rgba(9, 37, 92, 0.78);
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+	width: 150px;
+	height: 150px;
+	background: #0e52d4;
+	border-radius: 3px;
+}
+.bg_img {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: -1;
+}
+.align_center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.input_box {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	background: none;
+	border: none;
+	// 输入框不受布局样式影响，只受内部自身属性影响
+	text-align: center;
+}
+#index {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	display: grid;
+	grid-template-rows: 70px 42px auto;
+	.header {
+		display: flex;
+		align-items: center;
+		position: relative;
+		.button {
+			width: 45px;
+			height: 45px;
+			cursor: pointer;
+		}
+	}
+	.header_bottom {
+		position: relative;
+		background: linear-gradient(0deg, #040d19, #041f52);
+	}
+	.body {
+		// display: flex;
+		// flex-direction: column;
+		// overflow: auto;
+		// justify-content: space-around;
+		display: grid;
+		grid-template-columns: auto 192px;
+		.title {
+			width: 408px;
+			height: 100%;
+			position: relative;
+		}
+		.change_color_button {
+			width: 176px;
+			height: 64px;
+			background: rgba(18, 87, 201, 0.182);
+			border: 2px solid rgba(42, 117, 241, 0.7);
+			border-radius: 32px;
+			cursor: pointer;
+		}
+		.change_color_button:active {
+			width: 176px;
+			height: 64px;
+			background: rgba(18, 87, 201, 0.182);
+			border: 2px solid rgba(42, 117, 241, 0.7);
+			box-shadow: 0px 16px 49px 0px rgba(0, 108, 255, 0.7) inset;
+			border-radius: 32px;
+		}
+		.power_status {
+			flex-shrink: 0;
+			width: 84%;
+			height: 330px;
+			background: linear-gradient(180deg, rgba(6, 25, 59, 0.6), rgba(6, 19, 42, 0.6));
+			border: 2px solid rgba(5, 68, 146, 0.6);
+			border-radius: 10px;
+			display: grid;
+			grid-template-rows: 44px auto 76px;
+			justify-items: center;
+			align-items: center;
+			// margin: 0 auto 0 3%;
+			.status_box {
+				display: grid;
+				grid-template-rows: 36px auto;
+				overflow-x: auto;
+				max-width: 100%;
+				.channel_box {
+					display: grid;
+					align-items: center;
+					justify-items: center;
+					.channel {
+						position: relative;
+						width: 84px;
+						height: 36px;
+					}
+				}
+				.scroll {
+					// overflow: auto;
+					display: grid;
+					grid-auto-rows: 70px;
+					.delay {
+						display: grid;
+						border-bottom: 1px solid #16408b;
+						align-items: center;
+						justify-items: center;
+					}
+				}
+			}
+			.foot {
+				width: 110px;
+				height: 60px;
+				position: relative;
+			}
+		}
+		.timing_control {
+			flex-shrink: 0;
+			width: 84%;
+			height: 340px;
+			background: linear-gradient(180deg, rgba(6, 25, 59, 0.6), rgba(6, 19, 42, 0.6));
+			border: 2px solid rgba(5, 68, 146, 0.6);
+			border-radius: 10px;
+			// margin: 0 auto 0 3%;
+			display: grid;
+			grid-template-rows: 44px auto 76px;
+			align-items: center;
+			justify-items: center;
+			.scroll {
+				display: flex;
+				overflow: auto;
+				max-width: 100%;
+				.timing_switch {
+					flex-shrink: 0;
+					display: grid;
+					grid-auto-flow: column;
+					grid-auto-columns: 128px;
+					grid-auto-rows: 175px;
+					justify-items: center;
+					margin-bottom: 6px;
+					.single_switch {
+						display: flex;
+						flex-direction: column;
+						justify-content: space-between;
+						align-items: center;
+						.switch_layout {
+							width: 110px;
+							height: 148px;
+							position: relative;
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							justify-content: space-around;
+							.switch_status {
+								width: 30px;
+								height: 30px;
+								position: absolute;
+								left: calc(50% - 15px);
+							}
+						}
+					}
+				}
+			}
+			.scene_button {
+				position: relative;
+				height: 64px;
+				z-index: 10;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+			}
+		}
+		.main_option {
+			width: 162px;
+			height: 64px;
+			position: relative;
+			z-index: 10;
+			margin: 13px 0;
+			cursor: pointer;
+		}
+	}
+}

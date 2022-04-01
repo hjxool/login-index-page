@@ -313,20 +313,21 @@ let power_frequency = new Vue({
 		},
 		// 横向滚动
 		scroll_x(e) {
+			// 大于0为向下滚动 wheelDelta默认为40 系统设置滚动几行就是 40x行
+			if (e.wheelDelta < 0) {
+				e.currentTarget.scrollLeft += 100;
+			} else {
+				e.currentTarget.scrollLeft -= 100;
+			}
 			if (this.static_par.option_focus == 1) {
-				let obj = this.$refs.scroll_display;
-				// 大于0为向下滚动 wheelDelta默认为40 系统设置滚动几行就是 40x行
-				if (e.wheelDelta < 0) {
-					obj.scrollLeft += 100;
-				} else {
-					obj.scrollLeft -= 100;
-				}
+				// let obj = this.$refs.scroll_display;
+
 				// 检测滚动位置点亮导航栏
 				let noise = document.getElementById('noise').offsetLeft;
 				let feedback = document.getElementById('feedback').offsetLeft;
 				let filter = document.getElementById('filter').offsetLeft;
 				let press_limit = document.getElementById('press_limit').offsetLeft;
-				let scrollLeft = obj.scrollLeft;
+				let scrollLeft = e.currentTarget.scrollLeft;
 				if (scrollLeft < noise) {
 					this.static_par.module_focus = 0;
 				} else if (scrollLeft >= noise && scrollLeft < feedback) {
@@ -339,16 +340,9 @@ let power_frequency = new Vue({
 					this.static_par.module_focus = 4;
 				}
 			} else if (this.static_par.option_focus == 2) {
-				let obj = this.$refs.scroll_display;
-				// 大于0为向下滚动 wheelDelta默认为40 系统设置滚动几行就是 40x行
-				if (e.wheelDelta < 0) {
-					obj.scrollLeft += 100;
-				} else {
-					obj.scrollLeft -= 100;
-				}
 				let filter = document.getElementById('filter').offsetLeft;
 				let press_limit = document.getElementById('press_limit').offsetLeft;
-				let scrollLeft = obj.scrollLeft;
+				let scrollLeft = e.currentTarget.scrollLeft;
 				if (scrollLeft < filter) {
 					this.static_par.module_focus = 0;
 				} else if (scrollLeft >= filter && scrollLeft < press_limit) {

@@ -48,8 +48,8 @@
       </div>
       <!-- 离线在线 -->
       <div style="grid-area: c;justify-self: end;margin-right: 10%;">
-        <img v-show="processor_detail.is_online==0" style="width: 15px;height: 12px;" src="./img/警告标识.png">
-        <span style="font-size: 12px;color: #32548a;">{{processor_detail.is_online==0?'设备不在线':'设备在线'}}</span>
+        <img style="width: 15px;height: 12px;" :src="processor_detail.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{processor_detail.is_online==0?'设备不在线':'设备在线'}}</span>
       </div>
     </div>
     <!-- 详情 -->
@@ -923,7 +923,6 @@
 
 </body>
 <script src="./module/jquery-3.6.0.js"></script>
-<script src="./module/underscore-min.js"></script>
 <script src="./module/vue.js"></script>
 <script src="./module/element-ui.js"></script>
 <script src="./module/axios.min.js"></script>

@@ -676,8 +676,7 @@ img {
 	margin: auto;
 	/* min-width: 1050px; */
 	z-index: 991;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: auto;
 }
 .addScene .addSceneCloseButton {
 	width: 38px;
