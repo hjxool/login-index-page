@@ -36,10 +36,6 @@
     </div>
     <!-- 中部样式 -->
     <div class="topSwitchBar">
-      <!-- 背景 -->
-      <div
-        style="z-index: -99;width: 100%;height: 100%;position: absolute;top: 0;left: 0;background: linear-gradient(0deg, #040D19, #041F52);">
-      </div>
       <!-- 选项切换卡 -->
       <div style="grid-area: b;display: flex;width: 100%;height: 100%;">
         <div class="option" v-for="option,index in static_par.options" @click="switch_option(index)">{{option}}
@@ -354,7 +350,7 @@
                       <img src="./img/显示数字背景框.png" class="input_bg">
                       <span style="font-size: 12px;color: #abcbff;">{{processor_detail.filter_low.frequency}}</span>
                     </div>
-                    <row-slider :channel="processor_detail.filter_height.frequency" :slider_max="'20000'"
+                    <row-slider :channel="processor_detail.filter_low.frequency" :slider_max="'20000'"
                       :slider_min="'20'" :token="resCommonParams.loginToken"
                       @slider_num="processor_detail.filter_low.frequency=$event"
                       :url_params="resCommonParams.push_low_height_url" :params="processor_detail.filter_low"
@@ -689,7 +685,7 @@
                       <img src="./img/显示数字背景框.png" class="input_bg">
                       <span style="font-size: 12px;color: #abcbff;">{{processor_detail.filter_low.frequency}}</span>
                     </div>
-                    <row-slider :channel="processor_detail.filter_height.frequency" :slider_max="'20000'"
+                    <row-slider :channel="processor_detail.filter_low.frequency" :slider_max="'20000'"
                       :slider_min="'20'" :token="resCommonParams.loginToken"
                       @slider_num="processor_detail.filter_low.frequency=$event"
                       :url_params="resCommonParams.push_low_height_url" :params="processor_detail.filter_low"

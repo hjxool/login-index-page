@@ -8,6 +8,13 @@
 body {
 	margin: 0;
 }
+.shadow {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 990;
+	background: transparent;
+}
 ::-webkit-scrollbar {
 	height: 5px;
 	width: 4px;
@@ -46,6 +53,9 @@ body {
 	position: absolute;
 	display: grid;
 	grid-template-rows: 70px 42px auto;
+	min-width: 1000px;
+	min-height: 800px;
+	overflow: auto;
 	.header {
 		display: flex;
 		align-items: center;
@@ -91,7 +101,7 @@ body {
 		.power_status {
 			flex-shrink: 0;
 			width: 84%;
-			height: 330px;
+			height: 600px;
 			background: linear-gradient(180deg, rgba(6, 25, 59, 0.6), rgba(6, 19, 42, 0.6));
 			border: 2px solid rgba(5, 68, 146, 0.6);
 			border-radius: 10px;
@@ -136,13 +146,13 @@ body {
 		.timing_control {
 			flex-shrink: 0;
 			width: 84%;
-			height: 340px;
+			height: 600px;
 			background: linear-gradient(180deg, rgba(6, 25, 59, 0.6), rgba(6, 19, 42, 0.6));
 			border: 2px solid rgba(5, 68, 146, 0.6);
 			border-radius: 10px;
 			// margin: 0 auto 0 3%;
 			display: grid;
-			grid-template-rows: 44px auto 76px;
+			grid-template-rows: 44px 100px auto 76px;
 			align-items: center;
 			justify-items: center;
 			.scroll {
@@ -170,6 +180,7 @@ body {
 							flex-direction: column;
 							align-items: center;
 							justify-content: space-around;
+							cursor: pointer;
 							.switch_status {
 								width: 30px;
 								height: 30px;
@@ -188,6 +199,7 @@ body {
 				align-items: center;
 				justify-content: center;
 				cursor: pointer;
+				flex-shrink: 0;
 			}
 		}
 		.main_option {
@@ -197,6 +209,112 @@ body {
 			z-index: 10;
 			margin: 13px 0;
 			cursor: pointer;
+		}
+	}
+}
+@keyframes cover_unfold {
+	0% {
+		height: 0;
+	}
+	100% {
+		height: 100%;
+	}
+}
+@keyframes cover_fold {
+	0% {
+		height: 100%;
+	}
+	100% {
+		height: 0;
+	}
+}
+.status_cover {
+	width: 12px;
+	position: absolute;
+	left: calc(50% - 6px);
+	bottom: 0;
+	z-index: -1;
+	background: rgba(38, 121, 250);
+	border-radius: 6px;
+	animation-duration: 0.3s;
+	// 动画停止后动画里设置的样式默认会消失
+	animation-fill-mode: forwards;
+}
+@keyframes button_down {
+	0% {
+		bottom: 60%;
+		background: url(./img/按钮亮.png);
+	}
+	100% {
+		bottom: 0;
+		background: url(./img/按钮暗.png);
+	}
+}
+@keyframes button_up {
+	0% {
+		bottom: 0;
+		background: url(./img/按钮暗.png);
+	}
+	100% {
+		bottom: 60%;
+		background: url(./img/按钮亮.png);
+	}
+}
+.status_button {
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	left: calc(50% - 15px);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	animation-duration: 0.3s;
+	animation-fill-mode: forwards;
+}
+.setting_list_box {
+	position: fixed;
+	left: 7.5%;
+	top: calc(50% - 433px);
+	z-index: 999;
+	width: 682px;
+	height: 866px;
+	background: rgba(4, 22, 36, 0.8);
+	border: 1px solid #1257c9;
+	box-shadow: 0px -2px 16px 0px rgba(5, 15, 34, 0.66), 0px 2px 8px 0px #3270e1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.scroll {
+		width: 90%;
+		height: 90%;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, 300px);
+		grid-template-rows: repeat(auto-fill, 50px);
+		grid-gap: 16px 20px; //第一个参数是行间隔 第二个参数是列间隔
+		grid-auto-flow: column;
+		.single_setting_box {
+			display: flex;
+			align-items: center;
+			position: relative;
+			z-index: 10;
+			flex-shrink: 0;
+			background: url(./img/场景列表暗.png);
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+			&:active {
+				background: url(./img/场景列表亮.png);
+				background-size: 100% 100%;
+				background-repeat: no-repeat;
+			}
+			.setting_icon {
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				cursor: pointer;
+			}
+			.input_bg {
+				background: rgba(8, 29, 64);
+				box-shadow: 0 0 2px 2px #3270e0 inset;
+			}
 		}
 	}
 }

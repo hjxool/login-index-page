@@ -23,14 +23,14 @@
     <img src="./img/背景.png" id="bgimg">
     <!-- 抬头样式 -->
     <div class="header">
-      <img src="./img/LOGO@2x.png" style="width: 7.9%;height: 46%;object-fit: contain;margin-left: 2.6%;">
-      <img src="./img/矢量智能对象@2x.png" style="width: 2%;height: 35%;margin-left: 1%;object-fit: contain;">
-      <span style="font-size: 20px;color: #4f81ff;margin-left: 2%;white-space: nowrap;">湖山物联网云平台</span>
+      <img src="./img/LOGO@2x.png" style="width: 110px;height: 28px;margin: 0 20px;" class="flex_shrink">
+      <img src="./img/矢量智能对象@2x.png" style="width: 22px;height: 22px;" class="flex_shrink">
+      <span style="font-size: 20px;color: #4f81ff;margin-left: 28px;" class="flex_shrink">湖山物联网云平台</span>
       <!-- 时钟样式 -->
-      <div style="display: flex;align-items: center;position: absolute;right: 6%;">
-        <span class="calender">{{calender}}</span>
-        <span class="weekDay">{{weekDay}}</span>
-        <span class="time">{{time}}</span>
+      <div style="display: flex;align-items: center;margin: 0 36px 0 auto;">
+        <span class="calender flex_shrink">{{calender}}</span>
+        <span class="weekDay flex_shrink">{{weekDay}}</span>
+        <span class="time flex_shrink">{{time}}</span>
       </div>
       <!-- 按钮功能和装饰线 -->
       <img src="./img/退出@2x (1).png" class="userButton" @click="returnlogin">
@@ -40,7 +40,7 @@
     <!-- 内容展示容器 -->
     <div id="container">
       <!-- 左边栏 -->
-      <div class="left">
+      <div class="left flex_shrink">
         <div class="nav" @click="left_bar_turn_to(0)">
           <img src="./img/个人@2x.png" class="navIcon">
           <span class="navTitle">个人中心</span>
@@ -75,23 +75,19 @@
         </div>
       </div>
       <!-- 项目及场所列表 -->
-      <div v-show="platformJump==0" class="item_and_place_layout">
+      <div v-show="platformJump==0" class="item_and_place_layout flex_shrink">
         <div class="item_and_place_box">
-          <div v-for="i,index in item"
-            style="display: flex;flex-wrap: wrap;width: 100%;justify-content: center;align-content: center;">
+          <div v-for="i,index in item" style="display: flex;width: 100%;flex-direction: column;
+            align-items: center;">
             <div class="item">
-              <img src="./img/项目底图.png" style="width: 100%;height: 100%;position: absolute;">
+              <img src="./img/项目底图.png" style="width: 100%;height: 100%;position: absolute;z-index: -1;">
+              <img @click="clickNewTag" src="./img/加号.png" class="add_item_button">
               <span class="item_text" :title="i.projectName">{{i.projectName}}</span>
-              <div style="position: absolute;width: 15%;height: 68%;left: 6.66%;cursor: pointer;">
-                <img @click="clickNewTag" src="./img/加号.png" style="width: 100%;height: 100%;">
-              </div>
-              <div v-if="i.isEmpty==0" @click="clickItem(index)"
-                style="position: absolute;width: 15%;height: 68%;right: 4px;display: flex;align-items: center;justify-content: center;cursor: pointer;">
-                <img :src="itemFocus==index?'./img/点击隐藏场所.png':'./img/点击显示场所.png'" style="width: 12px;height: 12px;">
-              </div>
+              <img v-if="i.isEmpty==0" @click="clickItem(index)" class="display_place_list_button"
+                :src="itemFocus==index?'./img/点击隐藏场所.png':'./img/点击显示场所.png'">
             </div>
 
-            <div style="width: 86%;overflow-y: auto;overflow-x: hidden;">
+            <div style="width: 180px;overflow-y: auto;overflow-x: hidden;">
               <el-collapse-transition>
                 <div v-show="itemFocus==index">
                   <div v-for="tag,index in tags" @click="clickPlace(index)" class="tag">
@@ -115,12 +111,12 @@
           </div>
         </div>
         <div class="new_item_box">
-          <img @click="clickNewItem" src="./img/新增项目.png"
-            style="width: 73.64%;height: 68.96%;cursor: pointer;object-fit: contain;">
+          <img @click="clickNewItem" src="./img/新增项目.png" style="width: 160px;
+            height: 50px;cursor: pointer;">
         </div>
       </div>
       <!-- 右边内容容器-场所和场景 -->
-      <div v-show="platformJump==0" class="right-place-scene">
+      <div v-show="platformJump==0" class="right-place-scene flex_shrink">
         <!-- 上边栏 -->
         <div class="rightBar">
           <div :class="['manage',managerFocus!=index?'manage_border':'manage_no_border']" v-for="i,index in manager"
@@ -144,42 +140,40 @@
             </div>
 
             <!-- 显示设备卡片容器 -->
-            <div style="width: 100%;height: 100%;overflow-y: auto;">
-              <div class="cardBag" @dragover.prevent="dragOver" @drop="dropCardBag">
-                <!-- 单个卡片样式 -->
-                <div class="deviceCard layout" v-for="i,index in placeDeviceListArray"
-                  @dragstart="dragstartToDel($event,i)" draggable="true">
-                  <!-- 卡片背景 -->
-                  <img v-if="i.status==0" src="./img/deviceBg.png" class="deviceBg">
-                  <img v-if="i.status==1" src="./img/设备卡片报警.png" class="deviceBg">
-                  <!-- 小图标背景 -->
-                  <div class="bg1">
-                    <img src="./img/bgicon.png" class="bgIcon">
-                    <span v-if="i.platform==1" class="cardTitle" title="电源设备">电源设备</span>
-                    <span v-if="i.platform==2" class="cardTitle" title="广播设备">广播设备</span>
-                    <span v-if="i.platform==3" class="cardTitle" title="专业设备">专业设备</span>
-                    <span v-if="i.platform==4" class="cardTitle" title="电声设备">电声设备</span>
-                    <span v-if="i.platform==5" class="cardTitle" title="教育设备">教育设备</span>
+            <div class="cardBag" @dragover.prevent="dragOver" @drop="dropCardBag">
+              <!-- 单个卡片样式 -->
+              <div class="deviceCard layout" v-for="i,index in placeDeviceListArray"
+                @dragstart="dragstartToDel($event,i)" draggable="true">
+                <!-- 卡片背景 -->
+                <img v-if="i.status==0" src="./img/deviceBg.png" class="deviceBg">
+                <img v-if="i.status==1" src="./img/设备卡片报警.png" class="deviceBg">
+                <!-- 小图标背景 -->
+                <div class="bg1">
+                  <img src="./img/bgicon.png" class="bgIcon">
+                  <span v-if="i.platform==1" class="cardTitle" title="电源设备">电源设备</span>
+                  <span v-if="i.platform==2" class="cardTitle" title="广播设备">广播设备</span>
+                  <span v-if="i.platform==3" class="cardTitle" title="专业设备">专业设备</span>
+                  <span v-if="i.platform==4" class="cardTitle" title="电声设备">电声设备</span>
+                  <span v-if="i.platform==5" class="cardTitle" title="教育设备">教育设备</span>
+                </div>
+                <!-- 卡片布局 -->
+                <div class="deviceInfo layout">
+                  <div style="width: 90px;height: 90px;position: relative;">
+                    <img :src="i.modelPictureUrl"
+                      style="width: 100%;height: 100%;position: absolute;object-fit: contain;">
+                    <img src="./img//默认显示图片.png" style="width: 100%;height: 100%;">
                   </div>
-                  <!-- 卡片布局 -->
-                  <div class="deviceInfo layout">
-                    <div style="width: 90px;height: 90px;position: relative;">
-                      <img :src="i.modelPictureUrl"
-                        style="width: 100%;height: 100%;position: absolute;object-fit: contain;">
-                      <img src="./img//默认显示图片.png" style="width: 100%;height: 100%;">
-                    </div>
-                    <div class="deviceName">{{i.name}}</div>
-                  </div>
-                  <!-- 状态显示和控制 -->
-                  <div class="deviceCtrl">
-                    <img v-if="i.isOnline==1" src="./img/online.png" class="state">
-                    <img v-if="i.isOnline==0" src="./img/offline.png" class="state">
+                  <div class="deviceName">{{i.name}}</div>
+                </div>
+                <!-- 状态显示和控制 -->
+                <div class="deviceCtrl">
+                  <img v-if="i.isOnline==1" src="./img/online.png" class="state">
+                  <img v-if="i.isOnline==0" src="./img/offline.png" class="state">
 
-                    <img src="./img/button.png" class="setButton" @click="goToCommand(i)">
+                  <img src="./img/button.png" class="setButton" @click="goToCommand(i)">
 
-                    <img v-if="i.status==0" src="./img/on.png" class="state">
-                    <img v-if="i.status==1" src="./img/off.png" class="state">
-                  </div>
+                  <img v-if="i.status==0" src="./img/on.png" class="state">
+                  <img v-if="i.status==1" src="./img/off.png" class="state">
                 </div>
               </div>
             </div>
@@ -395,9 +389,9 @@
             </div>
           </div> -->
           <div v-show="(nav_bar_click==3&&download_center_jump==0)" class="download_center">
-            <div v-for="i in download_center_sort" @click="download_sort(i.type)" style="width: 50%;height: 50%;">
+            <div v-for="i in download_center_sort" @click="download_sort(i.type)" style="width: 160px;height: 180px;">
               <img :src="i.src_normal" @mouseenter="switchImg($event,i.src_hover)"
-                @mouseleave="switchImg($event,i.src_normal)" style="width: 100%;height: 100%;object-fit: contain;">
+                @mouseleave="switchImg($event,i.src_normal)" style="width: 100%;height: 100%;">
             </div>
           </div>
         </div>
