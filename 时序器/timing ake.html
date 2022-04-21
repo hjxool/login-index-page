@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>时序器</title>
   <link rel="stylesheet" href="./module/index.css">
-  <link rel="stylesheet" href="./timing.css">
+  <link rel="stylesheet" href="./timing ake.css">
 </head>
 
 <body>
@@ -41,12 +41,12 @@
           <!-- 标题 -->
           <div class="title align_center">
             <img src="./img/装饰图.png" class="bg_img">
-            <span style="font-size: 18px;color: #FFFFFF;white-space: nowrap;">网络电源时序器 EPM12</span>
+            <span style="font-size: 18px;color: #FFFFFF;white-space: nowrap;">网络电源时序器 ake</span>
           </div>
           <!-- 电源状态 -->
           <div class="align_center" style="width: 110px;height: 60px;position: relative;">
             <img src="./img/电源开关.png" class="bg_img">
-            <span style="font-size: 22px;color: #AEC9FF;">~220V</span>
+            <span style="font-size: 22px;color: #AEC9FF;">~{{detail.voltage}}</span>
           </div>
           <!-- 开关 -->
           <div class="scroll" @mousewheel="scroll_x($event)">
@@ -65,7 +65,7 @@
                   </div>
                   <span style="font-size: 12px;color: #FFFFFF;">off</span>
                 </div>
-                <!-- 延迟 -->
+                <!-- 通道名 -->
                 <span style="font-size: 16px;color: #02EEFF;">通道{{channel.channel_no}}</span>
               </div>
             </div>
@@ -84,14 +84,14 @@
             </div>
           </div>
         </div>
-        <!-- 电源状态 -->
+        <!-- 通道配置 -->
         <div class="power_status" v-show="static_par.main_option_select==1">
           <!-- 标题 -->
           <div class="title align_center">
             <img src="./img/装饰图.png" class="bg_img">
-            <span style="font-size: 18px;color: #FFFFFF;white-space: nowrap;">网络电源时序器 EPM12</span>
+            <span style="font-size: 18px;color: #FFFFFF;white-space: nowrap;">网络电源时序器 ake</span>
           </div>
-          <!-- 显示状态 -->
+          <!-- 延迟 -->
           <div class="status_box" @mousewheel="scroll_x($event)">
             <!-- 抬头 -->
             <div class="channel_box" :style="{gridTemplateColumns:`140px repeat(8,98px)`}">
@@ -103,29 +103,19 @@
             </div>
             <!-- 具体细节 -->
             <div class="scroll">
-              <!-- 开始延迟 -->
+              <!-- 延迟 -->
               <div class="delay" :style="{gridTemplateColumns:`140px repeat(8,98px)`}">
-                <span style="font-size: 16px;color: #AEC9FF;">开始延迟(S)</span>
+                <span style="font-size: 16px;color: #AEC9FF;">延迟(S)</span>
                 <div v-for="channel in detail.channel_list"
                   style="width: 72px;height: 32px;position: relative;z-index: 10;">
                   <img src="./img/显示数字背景框.png" class="bg_img">
-                  <input v-model.number="channel.delay_on" class="input_box" style="font-size: 16px;color: #FEFEFE;"
-                    @keydown.enter="set_delay(channel,'on')">
-                </div>
-              </div>
-              <!-- 结束延迟 -->
-              <div class="delay" :style="{gridTemplateColumns:`140px repeat(8,98px)`}">
-                <span style="font-size: 16px;color: #AEC9FF;">结束延迟(S)</span>
-                <div v-for="channel in detail.channel_list"
-                  style="width: 72px;height: 32px;position: relative;z-index: 10;">
-                  <img src="./img/显示数字背景框.png" class="bg_img">
-                  <input v-model.number="channel.delay_off" class="input_box" style="font-size: 16px;color: #FEFEFE;"
-                    @keydown.enter="set_delay(channel,'off')">
+                  <input v-model.number="channel.delay" class="input_box" style="font-size: 16px;color: #FEFEFE;"
+                    @keydown.enter="set_delay(channel)">
                 </div>
               </div>
             </div>
           </div>
-          <!-- 电压显示 -->
+          <!-- 预留 -->
           <div class="foot align_center">
 
           </div>
@@ -169,8 +159,8 @@
   <script src="./module/vue.js"></script>
   <script src="./module/element-ui.js"></script>
   <script src="./module/axios.min.js"></script>
-  <script src="./timing main.js"></script>
-  <script src="./timing.js"></script>
+  <script src="./timing main ake.js"></script>
+  <script src="./timing ake.js"></script>
 </body>
 
 </html>

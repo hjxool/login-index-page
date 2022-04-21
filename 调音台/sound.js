@@ -20,7 +20,7 @@ let sound = new Vue({
 	},
 	mounted() {
 		this.temp();
-		this.loginToken = window.sessionStorage.loginToken;
+		// this.loginToken = window.sessionStorage.loginToken;
 		this.deviceId = '0x022222222200000000000000';
 		this.request('post', sound_url, { device_id: this.deviceId }, '74935343174538', this.loginToken, this.sound_console_detail);
 	},

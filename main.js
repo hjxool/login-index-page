@@ -2,7 +2,7 @@
 // let url = 'http://47.108.203.243:18002/' //接口地址同一前缀
 let url = 'http://182.150.116.22:18009/';
 // let url = 'http://192.168.30.25:18002/';
-let ProjectUrl = url + 'api/deviceOrg/getProjectList';
+let ProjectUrl = url + 'api/deviceOrg/getProjectList2';
 let placeUrl = url + 'api/place/getPlaceList';
 let addPlaceUrl = url + 'api/place/addPlace';
 let addItemUrl = url + 'api/deviceOrg/addDeviceOrg';

@@ -1,92 +1,82 @@
 /* 全局设置 */
-*{
-    box-sizing: border-box;
+* {
+	box-sizing: border-box;
 }
 /* 去白边 */
-body{
-    margin: 0;
+body {
+	margin: 0;
+}
+.flex_shrink {
+	flex-shrink: 0;
 }
 /* 主体 */
-#login{
-    width: 100vw;
-    height: 100vh;
+#login {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	min-width: 1400px;
+	min-height: 1000px;
 }
 /* 背景图 */
-.backgroundImage{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
+.backgroundImage {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: -10;
 }
 /* 图标 */
-.logo{
-    position: fixed;
-    top: 5.2vh;
-    left: 4.4vw;
-    width: 7.8vw;
-    height: 2.7vh;
-    z-index: 1;
+.logo {
+	position: fixed;
+	top: 50px;
+	left: 80px;
+	width: 120px;
+	height: 26px;
 }
 /* 背景墙 */
-.backdrop{
-    background: #fff;
-    width: 28.6vw;
-    height: 57.6vh;
-    position: absolute;
-    top: 19.4vh;
-    right: 10.5vw;
-    opacity: 0.3;
-    border: 2px solid #1D6FC3;
-    /* border: 10px solid rgba(29, 111, 195, 0.3); */
+.backdrop {
+	background: rgba(255, 255, 255, 0.3);
+	width: 430px;
+	height: 520px;
+	position: absolute;
+	top: 19.4vh;
+	right: 10.5vw;
+	border: 2px solid rgba(29, 111, 195, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 /* 用户输入部分 */
-.main{
-    position: absolute;
-    /* top: 0.8vh; */
-    top: 20.4vh;
-    /* left: 0.3vw; */
-    right: 11vw;
-    width: 27.6vw;
-    height: 55.5vh;
-    background-color: #fff;
+.main {
+	width: 420px;
+	height: 510px;
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	padding-left: 64px;
 }
 /* 用户登录标题 */
-.main .title{
-    position: absolute;
-    color: #1C61EC;
-    font-size: 2.2vh;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    top: 6vh;
-    left: 3.5vw;
+.main .title {
+	color: #1c61ec;
+	font-size: 22px;
 }
 /* 用户输入框 */
-.main .userInput{
-    width: 20.7vw;
+.main .userInput {
+	width: 290px;
 }
 /* 占位符样式 */
-.main .userInput::-webkit-input-placeholder{    
-    font-weight: 400;
-    font-size: 1.7vh;
-    font-family: Microsoft YaHei;
-    position: relative;
-    left: 1.4vw;
-    line-height: 5.7vh;
-}
-/* 复选框样式 */
-.main .checkBox{
-    position: absolute;
-    left: 4.8vw;
-    top: 31.9vh;
+.main .userInput::-webkit-input-placeholder {
+	font-weight: 400;
+	font-size: 1.7vh;
+	font-family: Microsoft YaHei;
+	position: relative;
+	left: 1.4vw;
+	line-height: 5.7vh;
 }
 /* 登录按钮 */
-.main .loginBotton{
-    position: absolute;
-    left: 3.4vw;
-    bottom: 8.1vh;
-    font-size: 2.2vh;
-    width: 20.7vw;
-    height: 5.7vh;
+.main .loginBotton {
+	font-size: 22px;
+	width: 290px;
+	height: 52px;
 }

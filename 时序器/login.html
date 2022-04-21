@@ -6,7 +6,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登录</title>
-  <link rel="stylesheet" href="./module/index.css">
 </head>
 
 <body>
@@ -16,7 +15,6 @@
     <button @click="fun1">登录</button>
   </div>
 
-  <script src="./module/element-ui.js"></script>
   <script src="./module/vue.js"></script>
   <script src="./module/axios.min.js"></script>
   <script>
@@ -50,8 +48,8 @@
             if (tip == 'success') {
               let loginToken = res.data.data.token
               // window.location.href = `./sound.html?logintoken=${loginToken}`
-              window.open(`./sound.html?logintoken=${loginToken}`)
-              // window.sessionStorage.loginToken = loginToken
+              window.location.href = `./timing.html?logintoken=${loginToken}`
+              window.sessionStorage.loginToken = loginToken
             } else {
               this.$message.error(tip)
             }

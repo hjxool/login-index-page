@@ -2,29 +2,39 @@ new Vue({
 	el: '#index',
 	data() {
 		return {
-			temp: {
-				switch_status: true,
-				timing_main_switch: false,
-				num: '',
-			},
 			static_par: {
 				main_option: ['调试', '通道配置'], //选项
 				main_option_select: 0, //选中的选项
 				setting_list_display: false, //场景列表弹窗
 			},
 			loginToken: window.sessionStorage.loginToken,
-			deviceId: '0x044440000000000000000000',
+			deviceId: '20210628_141157_2446121203218804',
+			ws: {}, //websocket对象
 			detail: {
 				is_online: '', //是否在线
 				sequence_switch: '', //时序开关状态
 				channel_list: [], //通道参数列表
 				setting_list: [], //场景配置列表
+				voltage: '', //电压
 			},
 		};
 	},
 	mounted() {
-		this.get_token();
+		if (window.sessionStorage.loginToken) {
+			this.loginToken = window.sessionStorage.loginToken;
+		} else {
+			this.get_token();
+		}
 		this.request('post', timing_detail_url, { device_id: this.deviceId }, '55555', this.loginToken, this.timing_detail);
+		this.ws = new WebSocket(timing_detail_ws + this.deviceId);
+		this.ws.onmessage = (res) => {
+			console.log(res);
+			let data = JSON.parse(res.data);
+			this.detail.voltage = data.voltage;
+		};
+		this.ws.onclose = () => {
+			alert('服务器断开');
+		};
 	},
 	methods: {
 		// 获取地址栏token
@@ -47,20 +57,19 @@ new Vue({
 			}
 		},
 		// 验证输入并发送设置延迟命令
-		set_delay(obj, string) {
+		set_delay(obj) {
 			let reg = /^\d+$/;
-			if (string == 'on') {
-				if (reg.test(obj.delay_on)) {
-					this.request('post', push_set_delay_url, { device_id: this.deviceId, channel_no: obj.channel_no, delay_on: obj.delay_on }, '123456', this.loginToken, () => {});
-				} else {
-					this.$message.error('只能输入整数数字');
-				}
+			if (reg.test(obj.delay)) {
+				let channels = [];
+				this.detail.channel_list.forEach((element) => {
+					let t_obj = {};
+					t_obj.channel_no = element.channel_no;
+					t_obj.delay = element.delay;
+					channels.push(t_obj);
+				});
+				this.request('post', push_set_delay_url, { device_id: this.deviceId, channels: channels }, '123456', this.loginToken, () => {});
 			} else {
-				if (reg.test(obj.delay_off)) {
-					this.request('post', push_set_delay_url, { device_id: this.deviceId, channel_no: obj.channel_no, delay_off: obj.delay_off }, '123456', this.loginToken, () => {});
-				} else {
-					this.$message.error('只能输入整数数字');
-				}
+				this.$message.error('只能输入整数数字');
 			}
 		},
 		request(method, url, data, key, token, func) {
@@ -87,7 +96,7 @@ new Vue({
 						confirmButtonText: '确定',
 						callback: () => {
 							if (res.data.code == 3005 || res.data.code == 3006) {
-								window.location.href = '../login/login.html';
+								window.location.href = './login.html';
 							}
 						},
 					});
@@ -100,6 +109,7 @@ new Vue({
 			this.detail.is_online = res.data.data.isOnline;
 			this.detail.sequence_switch = res.data.data.sequence_switch;
 			this.detail.channel_list = res.data.data.channel;
+			// this.detail.voltage = res.data.data.voltage;
 		},
 		// 切换通道状态开关
 		channel_switch_status(channel) {
@@ -123,21 +133,7 @@ new Vue({
 					this.detail.sequence_switch = 0;
 					break;
 			}
-			this.request('post', push_sequence_switch_url, { device_id: this.deviceId, sequence_switch: this.detail.sequence_switch }, '55555', this.loginToken, () => {
-				if (this.detail.sequence_switch == 0) {
-					this.detail.channel_list.forEach((element) => {
-						setTimeout(() => {
-							element.status = 0;
-						}, element.delay_off * 1000);
-					});
-				} else {
-					this.detail.channel_list.forEach((element) => {
-						setTimeout(() => {
-							element.status = 1;
-						}, element.delay_on * 1000);
-					});
-				}
-			});
+			this.request('post', push_sequence_switch_url, { device_id: this.deviceId, sequence_switch: this.detail.sequence_switch }, '55555', this.loginToken, () => {});
 		},
 		// 场景列表加载
 		res_setting_list(e) {
