@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>视频会议</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div>
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频会议</span>
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="header_bottom"></div>
+    <!-- 身体 -->
+    <div class="center">
+      <!-- 呼叫 -->
+      <div class="box_style flex_shrink two_row_layout" style="width: 1160px;height:292px;">
+        <span class="title">呼叫</span>
+        <div class="center border_top">
+          <!-- 第一列 -->
+          <div class="three_row_layout">
+            <div class="center" style="justify-content: space-between;">
+              <img src="./img/开关按钮.png" class="button" style="width: 58px;height: 58px;" @click="tv_meeting(0)">
+              <div class="center button" style="width: 100px;height: 58px;" @click="tv_meeting(35)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">双流</span>
+              </div>
+            </div>
+            <div class="center">
+              <!-- 1~6 -->
+              <div class="center button button_gap" style="width: 58px;height: 58px;" v-for="num in 6"
+                @click="tv_meeting(num)">
+                <img src="./img/circlebutton.png" class="bg_img">
+                <span class="simple_text_style">{{num}}</span>
+              </div>
+            </div>
+            <div class="center">
+              <!-- 7~# -->
+              <div class="center button button_gap" style="width: 58px;height: 58px;"
+                v-for="num in static_param.num_list" @click="tv_meeting(num.type)">
+                <img src="./img/circlebutton.png" class="bg_img">
+                <span class="simple_text_style">{{num.name}}</span>
+              </div>
+            </div>
+          </div>
+          <!-- 第二列 -->
+          <div class="three_row_layout">
+            <div class="center">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(18)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">呼叫</span>
+              </div>
+              <img src="./img/upbutton.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(20)">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(19)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">挂断</span>
+              </div>
+            </div>
+            <div class="center">
+              <img src="./img/leftbutton.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(22)">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(24)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">确定</span>
+              </div>
+              <img src="./img/rightbutton.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(23)">
+            </div>
+            <div class="center">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(17)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">通讯录</span>
+              </div>
+              <img src="./img/downbutton.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(21)">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(13)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">退格</span>
+              </div>
+            </div>
+          </div>
+          <!-- 第三列 -->
+          <div class="three_row_layout">
+            <div class="center">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(27)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">菜单</span>
+              </div>
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(26)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">HOME</span>
+              </div>
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(25)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">返回</span>
+              </div>
+            </div>
+            <div class="center">
+              <img src="./img/圆加.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(28)">
+              <div class="button center button_gap" style="width: 100px;height: 58px;" @click="tv_meeting(30)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">静音</span>
+              </div>
+              <img src="./img/圆减.png" class="button button_gap" style="width: 46px;height: 46px;"
+                @click="tv_meeting(29)">
+            </div>
+            <div class="center">
+              <div class="button center" style="width: 100px;height: 58px;" @click="tv_meeting(34)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">显示模式</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

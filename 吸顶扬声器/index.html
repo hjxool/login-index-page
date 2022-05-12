@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吸顶音箱</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div>
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">吸顶音箱</span>
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="header_bottom"></div>
+    <!-- 身体 -->
+    <div class="center">
+      <!-- 吸顶音箱 -->
+      <div class="box_style flex_shrink center" style="width: 500px;height: 140px;">
+        <div class="button center" style="justify-content: center;width: 178px;height: 52px;"
+          @click="sound_box_ctrl(1)">
+          <img src="./img/button1.png" class="bg_img">
+          <img src="./img/箭头下.png" style="width: 16px;height: 18px;margin-right: 6px;">
+          <span style="font-size: 16px;color: #84D5FE;">吸顶音箱下降</span>
+        </div>
+        <div class="button center" style="justify-content: center;width: 178px;height: 52px;"
+          @click="sound_box_ctrl(0)">
+          <img src="./img/button1.png" class="bg_img">
+          <img src="./img/箭头上.png" style="width: 16px;height: 18px;margin-right: 6px;">
+          <span style="font-size: 16px;color: #84D5FE;">吸顶音箱收起</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

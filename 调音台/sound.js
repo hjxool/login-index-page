@@ -1,4 +1,5 @@
-let url = 'http://192.168.30.66:18113/';
+// let url = 'http://192.168.30.66:18113/';
+let url = 'http://182.150.116.22:18113/';
 let sound_url = url + 'api/dm/channelDetail';
 let sound_control_url = url + 'api/dm/sendInstruction';
 
@@ -6,6 +7,7 @@ let sound = new Vue({
 	el: '#sound',
 	data: {
 		loginToken: '', //保存跳转token
+		userName: '', //用户名
 		deviceId: '', //保存跳转查询设备ID
 		detail: {
 			channel_in: [], //输入通道
@@ -19,18 +21,30 @@ let sound = new Vue({
 		},
 	},
 	mounted() {
-		this.temp();
-		// this.loginToken = window.sessionStorage.loginToken;
+		if (!location.search) {
+			this.loginToken = window.sessionStorage.loginToken;
+			this.userName = window.sessionStorage.userName;
+		} else {
+			this.get_token();
+		}
 		this.deviceId = '0x022222222200000000000000';
 		this.request('post', sound_url, { device_id: this.deviceId }, '74935343174538', this.loginToken, this.sound_console_detail);
 	},
 	methods: {
 		// 获取地址栏token
-		temp() {
-			let tempurl = window.location.search;
-			this.loginToken = tempurl.substring(1).split('&')[0].split('=')[1];
-			let str = location.href.split('?')[0];
-			window.history.replaceState('', '', str);
+		get_token() {
+			let temp = location.search.substring(1).split('&');
+			temp.forEach((e) => {
+				if (e.indexOf('loginToken') != -1) {
+					this.loginToken = e.split('=')[1];
+					window.sessionStorage.loginToken = this.loginToken;
+				} else if (e.indexOf('userName') != -1) {
+					this.userName = e.split('=')[1];
+					window.sessionStorage.userName = this.userName;
+				}
+			});
+			let url = location.href.split('?')[0];
+			history.replaceState('', '', url);
 		},
 		request(method, url, data, key, token, func) {
 			axios({

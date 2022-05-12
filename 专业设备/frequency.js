@@ -5,6 +5,7 @@ let power_frequency = new Vue({
 		// 发送请求所需公用参数
 		resCommonParams: {
 			loginToken: '', //保存跳转token
+			userName: '', //用户名
 			deviceId: '', //保存跳转查询设备ID
 			push_noise_feedback_url: push_noise_feedback_url, //噪声 反馈控制
 			push_press_limit_url: push_press_limit_url, //压限控制
@@ -80,12 +81,32 @@ let power_frequency = new Vue({
 		},
 	},
 	mounted: function () {
-		this.resCommonParams.loginToken = window.sessionStorage.loginToken;
+		if (!location.search) {
+			this.resCommonParams.loginToken = window.sessionStorage.loginToken;
+			this.resCommonParams.userName = window.sessionStorage.userName;
+		} else {
+			this.get_token();
+		}
 		this.resCommonParams.deviceId = '0x333333333333333333000000';
 		this.request('post', processor_detail_url, { device_id: this.resCommonParams.deviceId }, '74935343174538', this.resCommonParams.loginToken, this.processor_param);
 		this.total_page_loading = false;
 	},
 	methods: {
+		// 获取地址栏token
+		get_token() {
+			let temp = location.search.substring(1).split('&');
+			temp.forEach((e) => {
+				if (e.indexOf('loginToken') != -1) {
+					this.resCommonParams.loginToken = e.split('=')[1];
+					window.sessionStorage.loginToken = e.split('=')[1];
+				} else if (e.indexOf('userName') != -1) {
+					this.resCommonParams.userName = e.split('=')[1];
+					window.sessionStorage.userName = e.split('=')[1];
+				}
+			});
+			let url = location.href.split('?')[0];
+			history.replaceState('', '', url);
+		},
 		// 封装的请求方法
 		request(method, url, data, key, token, func) {
 			axios({

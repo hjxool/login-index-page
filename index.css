@@ -428,6 +428,7 @@ img {
 .deviceList {
 	width: 340px;
 	height: 54.63vh;
+	min-height: 450px;
 	background: rgba(8, 30, 76);
 	border: 1px solid #3397fe;
 	box-shadow: 0px 0px 65px 0px rgba(4, 15, 51, 0.8);
@@ -647,15 +648,16 @@ img {
 }
 /* 新建场景管理按钮 */
 .sceneContainer .sceneButton {
-	width: 84.61%;
-	height: 5.54%;
+	width: 140px;
+	height: 40px;
 	cursor: pointer;
 	margin-top: 27px;
+	object-fit: contain;
 }
 /* 场景控制面板 */
 .addScene {
-	width: 54.69vw;
-	height: 80vh;
+	width: 1050px;
+	height: 740px;
 	background: rgba(6, 19, 57, 0.9);
 	border: 2px solid #3173f3;
 	position: absolute;
@@ -1284,14 +1286,12 @@ img {
 	justify-content: center;
 }
 .new_alert_rule {
-	width: 14%;
-	/* min-width: 126px; */
-	height: 45%;
-	/* min-height: 46px; */
+	width: 140px;
+	height: 40px;
 	cursor: pointer;
-	position: relative;
-	left: 65.43%;
-	object-fit: cover;
+	position: absolute;
+	right: 20px;
+	object-fit: contain;
 }
 .alertButtonDark {
 	width: 100%;

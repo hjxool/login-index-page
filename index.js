@@ -225,7 +225,6 @@ var index = new Vue({
 		this.clear_message_num_timer = setInterval(this.message_unread_timer, 2000);
 		this.timer = setInterval(this.getTime, 1000);
 		this.clear_message_all_timer = setInterval(this.refresh_message_unread_and_list_both, 3000);
-		this.replaceUrl();
 	},
 	mounted: function () {
 		this.clearTimer = setInterval(this.checkPlaceAndRefresh, 5000);
@@ -276,19 +275,19 @@ var index = new Vue({
 		},
 		// 依靠地址栏获取token
 		getToken: function () {
-			let url = window.location.search;
-			let str = url.substring(1);
-			let str2 = str.split('&');
-			let token = str2[0].split('=');
-			this.loginToken = token[1];
-			let user = str2[1].split('=');
-			this.userName = user[1];
-		},
-		// 改写url
-		replaceUrl: function () {
-			let url = window.location.href;
-			let str = url.split('?')[0];
-			window.history.replaceState('', '', str);
+			let temp = location.search.substring(1).split('&');
+			temp.forEach((e) => {
+				if (e.indexOf('loginToken') != -1) {
+					this.loginToken = e.split('=')[1];
+					window.sessionStorage.loginToken = this.loginToken;
+				}
+				if (e.indexOf('userName') != -1) {
+					this.userName = e.split('=')[1];
+					window.sessionStorage.userName = this.userName;
+				}
+			});
+			let url = location.href.split('?')[0];
+			history.replaceState('', '', url);
 		},
 		// 获取当前时间
 		getTime: function () {
@@ -382,7 +381,9 @@ var index = new Vue({
 			}
 		},
 		// 新增场所按钮
-		clickNewTag: function () {
+		clickNewTag: function (obj) {
+			this.projectId = obj.projectId;
+			this.customerId = obj.customerId;
 			this.newTag = true;
 			this.$nextTick(() => {
 				this.$refs.inputTag.focus();
@@ -400,10 +401,11 @@ var index = new Vue({
 				type: 'success',
 			});
 			this.tagName = '';
-			this.resPlaceList(this.placePageNum);
+			this.resItemList();
 		},
 		// 编辑场所按钮
-		clickEditTag: function () {
+		clickEditTag: function (obj) {
+			this.placeId = obj.placeId;
 			this.editTagName = true;
 			this.$nextTick(() => {
 				this.$refs.inputTag.focus();
@@ -692,45 +694,71 @@ var index = new Vue({
 			this.resAddDevice(deviceIdList);
 		},
 		// 设备卡片中间的按钮跳转
-		goToCommand: function (i) {
+		goToCommand: function (i, index) {
 			this.deviceId = i.deviceId;
 			this.imgSrc = i.modelPictureUrl;
-			switch (i.platform) {
+			//#region
+			// switch (i.platform) {
+			// 	case 1:
+			// 		// window.open('http://182.150.116.22:10008/power/index.html?token=' + this.loginToken + '&zh=' + this.userName + '&sbid=' + i.deviceId);
+			// 		window.open('./专业设备/frequency.html');
+			// 		break;
+			// 	case 2:
+			// 		this.request('post', soundDeviceDetailUrl, this.userName, { id: this.deviceId }, '74935343174538', this.loginToken, this.soundDeviceDetail);
+			// 		break;
+			// 	case 3:
+			// 		window.sessionStorage.deviceId = i.deviceId;
+			// 		window.open(`../专业设备web版/HiFi.html?token=${this.loginToken}&deviceId=${this.deviceId}`);
+			// 		break;
+			// 	case 4:
+			// 		console.log('4');
+			// 		break;
+			// 	case 5:
+			// 		switch (i.type) {
+			// 			case '视频管理':
+			// 				window.open('HsDimmerVideoPlayer://@' + window.sessionStorage.videoDeviceUrl + '@123123');
+			// 				break;
+			// 			case '音频管理':
+			// 				this.checkPlatform = 5;
+			// 				this.eduDeivceList = [];
+			// 				break;
+			// 			case '环境控制':
+			// 				window.open('http://hs.m2m.city/#/login?username=hushan&password=6570ca231c5e505dd9e347ad69004452');
+			// 				break;
+			// 			case '智能温度':
+			// 				this.smartTempCtrl = true;
+			// 				break;
+			// 			default:
+			// 				this.eduDevicecheckAllFlag = 1;
+			// 				this.checkEduDeviceHasConfig();
+			// 				this.resGetEduDeviceList();
+			// 				break;
+			// 		}
+			// }
+			//#endregion
+			// 临时 根据索引跳转到指定页面
+			switch (index) {
+				case 0:
+					window.open(`./高清矩阵/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+					break;
 				case 1:
-					// window.open('http://182.150.116.22:10008/power/index.html?token=' + this.loginToken + '&zh=' + this.userName + '&sbid=' + i.deviceId);
-					window.open('./专业设备/frequency.html');
+					window.open(`./调音台/sound.html?loginToken=${this.loginToken}&userName=${this.userName}`);
 					break;
 				case 2:
-					this.request('post', soundDeviceDetailUrl, this.userName, { id: this.deviceId }, '74935343174538', this.loginToken, this.soundDeviceDetail);
+					window.open(`./场景/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
 					break;
 				case 3:
-					window.sessionStorage.deviceId = i.deviceId;
-					window.open(`../专业设备web版/HiFi.html?token=${this.loginToken}&deviceId=${this.deviceId}`);
+					window.open(`./摄像机/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
 					break;
 				case 4:
-					console.log('4');
+					window.open(`./吸顶扬声器/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
 					break;
 				case 5:
-					switch (i.type) {
-						case '视频管理':
-							window.open('HsDimmerVideoPlayer://@' + window.sessionStorage.videoDeviceUrl + '@123123');
-							break;
-						case '音频管理':
-							this.checkPlatform = 5;
-							this.eduDeivceList = [];
-							break;
-						case '环境控制':
-							window.open('http://hs.m2m.city/#/login?username=hushan&password=6570ca231c5e505dd9e347ad69004452');
-							break;
-						case '智能温度':
-							this.smartTempCtrl = true;
-							break;
-						default:
-							this.eduDevicecheckAllFlag = 1;
-							this.checkEduDeviceHasConfig();
-							this.resGetEduDeviceList();
-							break;
-					}
+					window.open(`./视频会议/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+					break;
+				case 6:
+					window.open(`./专业设备/frequency.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+					break;
 			}
 		},
 		// 跳转广播设备卡片

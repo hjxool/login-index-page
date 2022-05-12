@@ -50,7 +50,7 @@
             if (tip == 'success') {
               let loginToken = res.data.data.token
               // window.location.href = `./sound.html?logintoken=${loginToken}`
-              window.open(`./sound.html?logintoken=${loginToken}`)
+              window.open(`./sound.html?loginToken=${loginToken}`)
               // window.sessionStorage.loginToken = loginToken
             } else {
               this.$message.error(tip)

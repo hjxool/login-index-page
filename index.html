@@ -23,7 +23,7 @@
     <img src="./img/背景.png" id="bgimg">
     <!-- 抬头样式 -->
     <div class="header">
-      <img src="./img/LOGO@2x.png" style="width: 110px;height: 28px;margin: 0 20px;" class="flex_shrink">
+      <img src="./img/logo.png" style="width: 110px;height: 28px;margin: 0 20px;" class="flex_shrink">
       <img src="./img/矢量智能对象@2x.png" style="width: 22px;height: 22px;" class="flex_shrink">
       <span style="font-size: 20px;color: #4f81ff;margin-left: 28px;" class="flex_shrink">湖山物联网云平台</span>
       <!-- 时钟样式 -->
@@ -81,7 +81,7 @@
             align-items: center;">
             <div class="item">
               <img src="./img/项目底图.png" style="width: 100%;height: 100%;position: absolute;z-index: -1;">
-              <img @click="clickNewTag" src="./img/加号.png" class="add_item_button">
+              <img @click="clickNewTag(i)" src="./img/加号.png" class="add_item_button">
               <span class="item_text" :title="i.projectName">{{i.projectName}}</span>
               <img v-if="i.isEmpty==0" @click="clickItem(index)" class="display_place_list_button"
                 :src="itemFocus==index?'./img/点击隐藏场所.png':'./img/点击显示场所.png'">
@@ -96,7 +96,7 @@
                     <img v-show="placeFocus==index" src="./img/场所亮.png"
                       style="width: 100%;height: 100%;position: absolute;">
 
-                    <img @click="clickEditTag" src="./img/edit.png" class="editTagName">
+                    <img @click="clickEditTag(tag)" src="./img/edit.png" class="editTagName">
 
                     <span v-show="placeFocus!=index" :title="tag.name" class="place_text">{{tag.name}}</span>
                     <span v-show="placeFocus==index" title="tag.name" class="place_text"
@@ -145,7 +145,7 @@
               <div class="deviceCard layout" v-for="i,index in placeDeviceListArray"
                 @dragstart="dragstartToDel($event,i)" draggable="true">
                 <!-- 卡片背景 -->
-                <img v-if="i.status==0" src="./img/deviceBg.png" class="deviceBg">
+                <img v-if="i.status!=1" src="./img/deviceBg.png" class="deviceBg">
                 <img v-if="i.status==1" src="./img/设备卡片报警.png" class="deviceBg">
                 <!-- 小图标背景 -->
                 <div class="bg1">
@@ -170,7 +170,7 @@
                   <img v-if="i.isOnline==1" src="./img/online.png" class="state">
                   <img v-if="i.isOnline==0" src="./img/offline.png" class="state">
 
-                  <img src="./img/button.png" class="setButton" @click="goToCommand(i)">
+                  <img src="./img/button.png" class="setButton" @click="goToCommand(i,index)">
 
                   <img v-if="i.status==0" src="./img/on.png" class="state">
                   <img v-if="i.status==1" src="./img/off.png" class="state">
