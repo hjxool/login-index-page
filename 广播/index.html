@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>广播</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="header_bottom"></div>
+    <!-- 身体 -->
+    <div class="center">
+      <!-- 采集器 -->
+      <div class="box_style flex_shrink two_row_layout" style="width: 700px;height: 430px;">
+        <span class="title">采集器</span>
+        <div class="border_top column_center">
+          <!-- 终端名称 -->
+          <div class="row_style" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
+            <span class="row_style_text">终端名称</span>
+            <el-input size="small" clearable></el-input>
+          </div>
+          <!-- 状态和地址 -->
+          <div class="center" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
+            <div class="row_style" style="width: 50%;">
+              <span class="row_style_text">连接状态</span>
+              <span :style="{fontSize: '16px',color:'red'}">未连接</span>
+            </div>
+            <div class="row_style" style="width: 50%;">
+              <span class="row_style_text">地址</span>
+              <span style="font-size: 16px;color: aliceblue;">10.50.7.15</span>
+            </div>
+          </div>
+          <!-- 采播状态 -->
+          <div class="row_style" style="width: 540px;height: 90px;margin: 20px 0;">
+            <span class="row_style_text">终端名称</span>
+            <div class="status_grid">
+              <div class="checker center" :style="{background:'green'}" v-for="status in 16">{{status_num(status)}}
+              </div>
+            </div>
+          </div>
+          <!-- 按钮 -->
+          <div class="center">
+            <div class="center button" style="margin-right: 68px;width: 90px;height: 46px;">
+              <img src="./img/button2.png" class="bg_img">
+              <span style="font-size:20px;color: aliceblue;">保存</span>
+            </div>
+            <div class="center button" style="width: 90px;height: 46px;">
+              <img src="./img/button2.png" class="bg_img">
+              <span style="font-size:20px;color: aliceblue;">取消</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 报警器 -->
+      <div class="box_style flex_shrink two_row_layout" style="width: 700px;height: 430px;">
+        <span class="title">报警器</span>
+        <div class="border_top column_center">
+          <!-- 终端名称 -->
+          <div class="row_style" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
+            <span class="row_style_text">终端名称</span>
+            <el-input size="small" clearable></el-input>
+          </div>
+          <!-- 状态和地址 -->
+          <div class="center" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
+            <div class="row_style" style="width: 50%;">
+              <span class="row_style_text">连接状态</span>
+              <span :style="{fontSize: '16px',color:'red'}">未连接</span>
+            </div>
+            <div class="row_style" style="width: 50%;">
+              <span class="row_style_text">地址</span>
+              <span style="font-size: 16px;color: aliceblue;">10.50.7.15</span>
+            </div>
+          </div>
+          <!-- 采播状态 -->
+          <div class="row_style" style="width: 540px;height: 90px;margin: 20px 0;">
+            <span class="row_style_text">终端名称</span>
+            <div class="status_grid">
+              <div class="checker center" :style="{background:'red'}" v-for="status in 16">{{status_num(status)}}
+              </div>
+            </div>
+          </div>
+          <!-- 按钮 -->
+          <div class="center">
+            <div class="center button" style="margin-right: 68px;width: 90px;height: 46px;">
+              <img src="./img/button2.png" class="bg_img">
+              <span style="font-size:20px;color: aliceblue;">保存</span>
+            </div>
+            <div class="center button" style="width: 90px;height: 46px;">
+              <img src="./img/button2.png" class="bg_img">
+              <span style="font-size:20px;color: aliceblue;">取消</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

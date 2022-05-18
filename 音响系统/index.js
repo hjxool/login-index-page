@@ -43,6 +43,8 @@ new Vue({
 				output2: {},
 				data_null: false,
 				history_day: '',
+				display_title: '', //不同选项提示框不同
+				display_unit: '',
 			},
 		};
 	},
@@ -178,22 +180,33 @@ new Vue({
 				case 0:
 					this.history.output1.y_data = this.history.output1.voltageList;
 					this.history.output2.y_data = this.history.output2.voltageList;
+					this.history.display_title = '电压';
+					this.history.display_unit = 'V';
 					break;
 				case 1:
 					this.history.output1.y_data = this.history.output1.currentList;
 					this.history.output2.y_data = this.history.output2.currentList;
+					this.history.display_title = '电流';
+					this.history.display_unit = 'A';
 					break;
 				case 2:
 					this.history.output1.y_data = this.history.output1.powerList;
 					this.history.output2.y_data = this.history.output2.powerList;
+					this.history.display_title = '功率';
+					this.history.display_unit = 'W';
 					break;
 				case 3:
 					this.history.output1.y_data = this.history.output1.temperatureList;
 					this.history.output2.y_data = this.history.output2.temperatureList;
+					this.history.display_title = '温度';
+					this.history.display_unit = '℃';
 					break;
 			}
 			for (let i = 0; i < this.channel_num; i++) {
 				this[`echarts${i}`].setOption({
+					tooltip: {
+						formatter: `${this.history.history_day}<br/>时间：{b}<br>${this.history.display_title}：{c} ${this.history.display_unit}`,
+					},
 					series: [
 						{
 							data: this.history[`output${i + 1}`].y_data,
@@ -355,7 +368,7 @@ new Vue({
 				},
 				tooltip: {
 					trigger: 'axis',
-					formatter: `${this.history.history_day}<br/>时间：{b}<br>数值：{c}`,
+					formatter: `${this.history.history_day}<br/>时间：{b}<br>电压：{c} V`,
 				},
 				series: [
 					{
