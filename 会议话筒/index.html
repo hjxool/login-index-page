@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会议话筒</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../common_style.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center usual_text" style="width:110px;"
+          v-for="option,index in static_param.options" @click="module_select(index)">
+          {{option}}
+          <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+        </div>
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="device_ctrl.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{device_ctrl.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
+    <!-- 身体 -->
+    <div style="overflow: hidden;position: relative;">
+      <!-- 发言模式 -->
+      <div class="center" style="height:100%;overflow: auto;" v-show="static_param.option_selected==0">
+        <div class="flex_shrink box_style">
+          <!-- 标题 -->
+          <span class="title center">发言模式</span>
+          <!-- 模式选择 -->
+          <div class="option_box">
+            <div :class="option_class(index)" v-for="option,index in static_param.speak_module"
+              @click="select_module(index)">
+              <span class="speak_module_layout">{{option}}</span>
+              <transition :appear="true">
+                <el-input-number class="aaa" size="small" v-model="device_ctrl.speak_num" :min="1" :max="6"
+                  @change.stop="speak_limit"
+                  v-show="static_param.speak_module_selected==index && static_param.speak_module_selected!=2">
+                </el-input-number>
+              </transition>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 指定发言 -->
+      <div class="center" style="height:100%;overflow: auto;" v-show="static_param.option_selected==1">
+        <div class="flex_shrink box_style">
+          <!-- 标题 -->
+          <span class="title center">指定发言</span>
+          <div class="option_box">
+            <!-- 指定ID -->
+            <div class="ID_box">
+              <span class="usual_text">指定ID</span>
+              <el-input style="width: 200px;" v-model.number="device_ctrl.ID_set"
+                @blur="verify_input(device_ctrl.ID_set)" placeholder="指定设备ID（1-10）" clearable>
+              </el-input>
+              <el-button type="primary" round size="medium" @click="assign_button(1)">指定发言</el-button>
+              <el-button type="primary" round size="medium" @click="assign_button(0)">关闭发言</el-button>
+            </div>
+            <!-- 全部禁言 -->
+            <div class="ID_box" style="justify-content: center;">
+              <div class="button center" style="width: 120px;height: 50px;" @click="ban_all_button">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="usual_text">全部禁言</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 开关机 -->
+      <div class="center_grid" style="height:100%;overflow: auto;" v-show="static_param.option_selected==2">
+        <!-- 主席单元 -->
+        <div class="flex_shrink box_style">
+          <!-- 标题 -->
+          <span class="title center" style="padding:20px 6px;">主席单元开关机</span>
+          <div class="option_box">
+            <!-- 按钮集 -->
+            <div class="ID_box">
+              <div class="button center" style="width: 120px;height: 50px;" v-for="tag,index in 4"
+                @click="primary_button(index)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="usual_text">
+                  {{tag==1?'主席位开机':
+                  tag==2?'主席位关机':
+                  tag==3?'主席位优先':'主席位专用'}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 普通单元 -->
+        <div class="flex_shrink box_style">
+          <!-- 标题 -->
+          <span class="title center" style="padding: 20px 16px;">单元开关机</span>
+          <div class="option_box">
+            <!-- 指定ID -->
+            <div class="ID_box">
+              <span class="usual_text">指定ID</span>
+              <el-input style="width: 200px;" v-model.number="device_ctrl.ID_set2"
+                @blur="verify_input(device_ctrl.ID_set2)" placeholder="指定设备ID（2-10）" clearable>
+              </el-input>
+              <el-button type="primary" round size="medium" @click="close_open_button(1)">开启</el-button>
+              <el-button type="primary" round size="medium" @click="close_open_button(0)">关闭</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 状态显示 -->
+      <div class="center" style="height:100%;overflow: auto;" v-show="static_param.option_selected==3">
+        <div class="flex_shrink box_style">
+          <!-- 标题 -->
+          <span class="title center">状态</span>
+          <!-- 信息 -->
+          <div style="display: flex;flex-direction: column;">
+            <!-- 地址 -->
+            <div class="info_box">
+              <span class="usual_text" style="margin-right: 30px;">地址</span>
+              <span class="usual_text">{{device_ctrl.info.ip}}</span>
+            </div>
+            <!-- 连接状态 -->
+            <div class="info_box">
+              <span class="usual_text" style="margin-right: 30px;">连接状态</span>
+              <span class="usual_text" :style="{color:device_ctrl.info.status==0?'#CE2C52':'#0C9F5B'}">
+                {{device_ctrl.info.status==0?'未连接':'已连接'}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="../common_function.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

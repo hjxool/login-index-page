@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AH215F</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../common_style.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
+          v-for="option,index in static_param.options" @click="module_select(index)">
+          {{option}}
+          <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+        </div>
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="device_ctrl.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{device_ctrl.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
+    <!-- 身体 -->
+    <div style="overflow: hidden;position: relative;">
+      <!-- 设备操作 -->
+      <div class="box_style" v-show="static_param.option_selected==0">
+        <!-- 特殊按钮 -->
+        <div class="center" style="justify-content:center;">
+          <div class="button center" style="width: 80px;height: 50px;" @click="ctrl_button(0)">
+            <img src="./img/button2.png" class="bg_img">
+            <span class="text">广播</span>
+          </div>
+          <div class="button center" style="width: 80px;height: 50px;" @click="ctrl_button(3)">
+            <img src="./img/button2.png" class="bg_img">
+            <span class="text">mp3</span>
+          </div>
+        </div>
+        <!-- 不同设备同功能 -->
+        <div style="display: grid;justify-content: center;align-content: start;">
+          <!-- 线路及话筒 -->
+          <div class="device_box">
+            <!-- 话筒 -->
+            <div class="single_device" v-for="device in static_param.device_list">
+              <span class="text center" style="border-bottom: 2px solid rgba(5, 68, 146, 0.6);">{{device.name}}</span>
+              <!-- 按钮 -->
+              <div class="center" style="flex-direction:column;">
+                <img src="./img/圆加.png" class="button" style="width:48px;height: 48px;"
+                  @click="ctrl_button(device.add_tag)">
+                <img src="./img/圆减.png" class="button" style="width:48px;height: 48px;"
+                  @click="ctrl_button(device.de_tag)">
+              </div>
+            </div>
+            <!-- 线路 -->
+            <div class="line_box">
+              <!-- 顶部切换按钮 -->
+              <div class="center" style="border-bottom: 2px solid rgba(5, 68, 146, 0.6);">
+                <el-button type="primary" round size="mini" @click="ctrl_button(1)">线路1</el-button>
+                <el-button type="primary" round size="mini" @click="ctrl_button(2)">线路2</el-button>
+              </div>
+              <!-- 音量加减 -->
+              <div class="center" style="flex-direction:column;">
+                <img src="./img/圆加.png" class="button" style="width:48px;height: 48px;" @click="ctrl_button(4)">
+                <img src="./img/圆减.png" class="button" style="width:48px;height: 48px;" @click="ctrl_button(5)">
+              </div>
+            </div>
+          </div>
+          <!-- 总按钮 -->
+          <div class="overall_button">
+            <div class="button center" style="width:120px;height: 50px;" @click="ctrl_button(6)">
+              <img src="./img/button2.png" class="bg_img">
+              <span class="text">全部静音</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="../common_function.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

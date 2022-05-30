@@ -116,13 +116,13 @@ img {
 }
 /* 装饰线 */
 .decLine {
-	background: linear-gradient(#09143c, #273cbd);
 	position: absolute;
 	bottom: 0;
 	width: 100%;
 	height: 18px;
 	z-index: -1;
-	opacity: 0.5;
+	background: linear-gradient(270deg, #09143c 0%, #5566d0 100%);
+	opacity: 0.24;
 }
 /* 主要内容 */
 #container {
@@ -136,13 +136,13 @@ img {
 .left {
 	position: relative;
 	width: 90px;
-	border: 1px solid #3173f3;
-	background: rgba(9, 25, 86, 0.48);
-	box-shadow: 0 0 65px 0 rgba(4, 15, 51, 0.8);
 	user-select: none;
 	display: grid;
 	grid-auto-rows: 130px;
 	margin: 0 5px;
+	background: #121d28;
+	border: 1px solid #404755;
+	box-shadow: 0px 0px 38px 0px rgba(37, 47, 79, 0.8);
 }
 /* 导航栏 */
 .nav {
@@ -217,8 +217,8 @@ img {
 .container {
 	width: 100%;
 	height: 100%;
-	background: rgba(9, 25, 86, 0.4);
-	border: 1px solid #3173f3;
+	background: rgba(18, 29, 40, 0.8);
+	border: 1px solid #404755;
 	position: relative;
 	overflow: auto;
 }
@@ -248,7 +248,6 @@ img {
 .deviceBg {
 	width: 100%;
 	height: 100%;
-	opacity: 0.55;
 	position: absolute;
 }
 .deviceCard .bg1 {
@@ -269,8 +268,8 @@ img {
 	z-index: -10;
 }
 .bg1 .cardTitle {
-	font-size: 1.11vh;
-	color: #84d5fe;
+	font-size: 14px;
+	color: #fff;
 	z-index: 1;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -289,7 +288,7 @@ img {
 }
 .deviceInfo .deviceName {
 	font-size: 16px;
-	color: #d5eaf9;
+	color: #fff;
 	width: 100%;
 	text-align: center;
 	word-break: break-all;
@@ -429,8 +428,6 @@ img {
 	width: 340px;
 	height: 54.63vh;
 	min-height: 450px;
-	background: rgba(8, 30, 76);
-	border: 1px solid #3397fe;
 	box-shadow: 0px 0px 65px 0px rgba(4, 15, 51, 0.8);
 	border-radius: 2px;
 	position: absolute;
@@ -443,6 +440,8 @@ img {
 	grid-template-rows: calc(34px + 3.73%) calc(60px + 3.9%) auto calc(38px + 3.39%);
 	align-items: end;
 	z-index: 1;
+	background: rgba(18, 29, 40, 0.8);
+	border: 1px solid #404755;
 }
 /* 搜索框 */
 .deviceList .searchSet {
@@ -459,8 +458,8 @@ img {
 .deviceSearch .el-input__inner {
 	width: 214px;
 	height: 34px;
-	background: #071330;
-	border: 1px solid #325ecb;
+	background: rgba(18, 29, 40, 0.8);
+	border: 1px solid #404755;
 	color: white;
 	outline: 0;
 }
@@ -482,9 +481,7 @@ img {
 	width: 338px;
 	height: 60px;
 	font-size: 16px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #9494f9;
+	color: #fff;
 	background: rgba(9, 44, 112, 0.38);
 	position: relative;
 	padding: 18px 76px;
@@ -525,9 +522,7 @@ img {
 	width: 338px;
 	height: 60.5px;
 	font-size: 16px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #9494f9;
+	color: #fff;
 	padding-top: 21.6px;
 	padding-left: 76px;
 	cursor: pointer;
@@ -658,8 +653,8 @@ img {
 .addScene {
 	width: 1050px;
 	height: 740px;
-	background: rgba(6, 19, 57, 0.9);
-	border: 2px solid #3173f3;
+	background: rgba(18, 29, 40);
+	border: 1px solid #404755;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -689,9 +684,7 @@ img {
 }
 .sceneName .name {
 	font-size: 18px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #88cdff;
+	color: #fff;
 	line-height: 40px;
 }
 .sceneName .input {
@@ -701,9 +694,9 @@ img {
 .input .el-input__inner {
 	width: 540px;
 	height: 40px;
-	background: #061546;
-	border: 1px solid #1645b0;
-	color: #88cdff;
+	background: rgba(18, 29, 40);
+	border: 1px solid #404755;
+	color: #fff;
 	outline: 0;
 }
 .input .el-input__icon {
@@ -723,8 +716,8 @@ img {
 .manualAndAuto .manualOperate {
 	width: 200px;
 	height: 142px;
-	background: #061546;
-	border: 1px solid #1645b0;
+	background: rgba(18, 29, 40);
+	border: 1px solid #404755;
 	border-radius: 4px;
 }
 .manualAndAuto .dot {
@@ -736,9 +729,7 @@ img {
 }
 .manualAndAuto .changjingmingcheng {
 	font-size: 18px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #88cdff;
+	color: #fff;
 	position: relative;
 	top: 32px;
 	left: 77px;
@@ -747,15 +738,15 @@ img {
 .manualAndAuto .autoOperate {
 	width: 645px;
 	height: 142px;
-	background: #061546;
-	border: 1px solid #1645b0;
+	background: rgba(18, 29, 40);
+	border: 1px solid #404755;
 	border-radius: 4px;
 	display: flex;
 }
 .manualAndAuto .selectBox {
 	width: 194px;
 	height: 142px;
-	border-right: 1px solid #1645b0;
+	border-right: 1px solid #404755;
 }
 .manualAndAuto .autoOperateSet {
 	width: 450px;
@@ -775,9 +766,7 @@ img {
 	width: 75px;
 	height: 18px;
 	font-size: 18px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #88cdff;
+	color: #fff;
 	line-height: 18px;
 }
 .manualAndAuto .inputTime {
@@ -789,12 +778,10 @@ img {
 	width: 166px;
 	height: 40px;
 	line-height: 40px;
-	background: #061546;
-	border: 1px solid #1645b0;
+	background: rgba(18, 29, 40);
+	border: 1px solid #404755;
 	font-size: 18px;
-	font-family: Microsoft YaHei;
-	font-weight: 400;
-	color: #4070fa;
+	color: #fff;
 	padding: 0px 21px;
 	outline: 0;
 }
@@ -1178,23 +1165,14 @@ img {
 	grid-auto-flow: column;
 }
 .manage {
-	width: 100%;
+	width: 98%;
 	height: 100%;
 	cursor: pointer;
 	position: relative;
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
-}
-.manage_border {
-	background: rgba(32, 44, 92, 0.48);
-	border: 1px solid #1b59ca;
-	box-shadow: 0px 0px 65px 0px rgba(4, 15, 51, 0.8);
-	border-radius: 2px;
-}
-.manage_no_border {
-	background: #1431a0;
-	border-radius: 2px;
+	z-index: 10;
 }
 .manage_icon {
 	width: 16px;
@@ -1279,7 +1257,7 @@ img {
 	background: linear-gradient(0deg, rgba(25, 17, 185, 0.62), rgba(33, 30, 188, 0.62));
 	border: 1px solid #4e72f4;
 	border-radius: 4px;
-	font-size: 0.94vw;
+	font-size: 16px;
 	color: #d5eaf9;
 	display: flex;
 	align-items: center;
@@ -1299,7 +1277,7 @@ img {
 	background: linear-gradient(0deg, rgba(6, 28, 71, 0.15), rgba(9, 45, 115, 0.15));
 	border: 1px solid #2c49b7;
 	border-radius: 4px;
-	font-size: 0.94vw;
+	font-size: 16px;
 	color: #d5eaf9;
 	opacity: 0.5;
 	display: flex;
@@ -1329,7 +1307,7 @@ img {
 	border-left: 1px solid #2f3acb;
 }
 .table_head_title {
-	font-size: 0.94vw;
+	font-size: 16px;
 	color: #d5eaf9;
 }
 .table_border {
@@ -1340,7 +1318,7 @@ img {
 	border-bottom: 1px solid #2f3acb;
 }
 .table_content {
-	font-size: 0.94vw;
+	font-size: 16px;
 	color: #88cdff;
 }
 .alert_rule {
@@ -1525,9 +1503,8 @@ img {
 	height: 97%;
 	display: grid;
 	grid-template-rows: auto 70px;
-	background: rgba(9, 25, 86, 0.5);
-	border: 1px solid #3173f3;
-	box-shadow: 0px 0px 65px 0px rgba(4, 15, 51, 0.8);
+	background: #121d28;
+	border: 1px solid #404755;
 	margin-right: 5px;
 }
 .item_and_place_box {
@@ -1536,7 +1513,7 @@ img {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
-	border-bottom: 1px solid #3173f3;
+	border-bottom: 1px solid #26292d;
 }
 .new_item_box {
 	width: 100%;
@@ -1612,7 +1589,7 @@ img {
 	border: none;
 }
 .download_list_td_text {
-	font-size: 0.94vw;
+	font-size: 16px;
 	color: #d5eaf9;
 	width: 100%;
 	height: 100%;
@@ -1707,7 +1684,7 @@ img {
 }
 .item_text {
 	font-size: 16px;
-	color: #47e8ea;
+	color: #fff;
 	z-index: 1;
 	max-width: 54%;
 	overflow: hidden;
@@ -1717,8 +1694,7 @@ img {
 }
 .place_text {
 	font-size: 16px;
-	color: #d5eaf9;
-	opacity: 0.5;
+	color: #fff;
 	z-index: 3;
 	cursor: pointer;
 	overflow: hidden;

@@ -17,6 +17,11 @@ new Vue({
 				input: [],
 				output: [],
 				geq_list: [], //geq通道列表
+				geq_title_list: ['60Hz', '230Hz', '910Hz', '4000Hz', '14000Hz'], //geq通道名称
+				output1LimitTh: '+20', //输出通道1压限上限
+				output2LimitTh: '+20', //输出通道2压限上限
+				limit1_flag: false, //压限打开时轮询标识
+				limit2_flag: false,
 			},
 			// 系统功能参数
 			sys_option: {
@@ -26,7 +31,7 @@ new Vue({
 				select_week: -1, //选择一周中的某天
 				select_month: -1, //选择一月中的某天
 				weeks: ['周一', '周二', '周三', '周四', '周五', '周六', '周七'],
-				day_time: '', //当天时间
+				day_time: {}, //当天时间
 				check_ststus: 0, //自检开关状态
 			},
 			history: {
@@ -49,9 +54,12 @@ new Vue({
 		};
 	},
 	mounted() {
-		this.request('post', login_html_url, { userName: 'houjie', password: '123456Aa' }, '74935343174538', 'asdasdasd', (res) => {
-			this.loginToken = res.data.data.token;
-		});
+		if (!location.search) {
+			this.loginToken = window.sessionStorage.loginToken;
+			this.userName = window.sessionStorage.userName;
+		} else {
+			this.get_token();
+		}
 		// 第一次加载echart页面时才初始化echart对象
 		this.first_load = true;
 		// echart设置
@@ -61,20 +69,61 @@ new Vue({
 		}
 		this.res_history();
 		this.history_timer = setInterval(this.res_history, 600000);
+		this.limit_timer = setInterval(() => {
+			if (this.dsp_option.limit1_flag) {
+				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
+					this.dsp_option.output1LimitTh = res.data.data.output1LimitTh;
+				});
+			}
+			if (this.dsp_option.limit2_flag) {
+				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
+					this.dsp_option.output2LimitTh = res.data.data.output2LimitTh;
+				});
+			}
+		}, 180000);
 		// websocket获取DSP页面数据
-		this.ws_link = new WebSocket(`${ws_url}/${this.device_id}/level`);
+		this.ws_link = new WebSocket(`${ws_url}/${this.device_id}/level?token=${this.loginToken}`);
 		this.ws_link.onmessage = (res) => {
-			// console.log(res);
 			let data = JSON.parse(res.data);
-			this.dsp_option.input[0].level = data.input1;
-			this.dsp_option.output[0].level = data.output1;
-			this.dsp_option.output[1].level = data.output2;
+			if (Object.keys(data).indexOf('data') != -1) {
+				let keys = Object.keys(data.data);
+				if (this.option_focus == 1) {
+					// 能找到input1说明有数据
+					if (keys.indexOf('input1') != -1) {
+						this.dsp_option.input[0].level = data.data.input1;
+						this.dsp_option.output[0].level = data.data.output1;
+						this.dsp_option.output[1].level = data.data.output2;
+					} else {
+						this.$message.info(data.message);
+					}
+				}
+			} else {
+				this.$message.info(data.message);
+			}
 		};
 		this.ws_link.onerror = (res) => {
 			this.$message.error(res.message);
 		};
+		this.ws_link.onopen = (res) => {
+			console.log('连接成功');
+		};
 	},
 	methods: {
+		// 获取地址栏token
+		get_token() {
+			let temp = location.search.substring(1).split('&');
+			temp.forEach((e) => {
+				if (e.indexOf('loginToken') != -1) {
+					this.loginToken = e.split('=')[1];
+					window.sessionStorage.loginToken = this.loginToken;
+				} else if (e.indexOf('userName') != -1) {
+					this.userName = e.split('=')[1];
+					window.sessionStorage.userName = this.userName;
+				}
+			});
+			let url = location.href.split('?')[0];
+			history.replaceState('', '', url);
+		},
 		request(method, url, data, key, token, func) {
 			axios({
 				method: method,
@@ -97,11 +146,11 @@ new Vue({
 				} else {
 					this.$alert(res.data.message, '提示', {
 						confirmButtonText: '确定',
-						// callback: () => {
-						// 	if (res.data.code == 3005 || res.data.code == 3006) {
-						// 		// window.location.href = './login.html';
-						// 	}
-						// },
+						callback: () => {
+							if (res.data.code == 3005 || res.data.code == 3006) {
+								window.location.href = '../login/login.html';
+							}
+						},
 					});
 				}
 			});
@@ -393,33 +442,28 @@ new Vue({
 			};
 			switch (channel) {
 				case 0:
-					if (this.dsp_option.input[0].mute == 0) {
-						this.dsp_option.input[0].mute = 1;
-					} else {
-						this.dsp_option.input[0].mute = 0;
-					}
+					this.dsp_option.input[0].mute = this.dsp_option.input[0].mute == 0 ? 1 : 0;
 					params_obj[key] = this.dsp_option.input[0].mute;
 					break;
 				default:
 					if (key == 'mute') {
-						if (this.dsp_option.output[channel - 1].mute == 0) {
-							this.dsp_option.output[channel - 1].mute = 1;
-						} else {
-							this.dsp_option.output[channel - 1].mute = 0;
-						}
+						this.dsp_option.output[channel - 1].mute = this.dsp_option.output[channel - 1].mute == 0 ? 1 : 0;
 						params_obj[key] = this.dsp_option.output[channel - 1].mute;
 					} else if (key == 'limit_enable') {
-						if (this.dsp_option.output[channel - 1].limit_enable == 0) {
-							this.dsp_option.output[channel - 1].limit_enable = 1;
-						} else {
-							this.dsp_option.output[channel - 1].limit_enable = 0;
-						}
+						this.dsp_option.output[channel - 1].limit_enable = this.dsp_option.output[channel - 1].limit_enable == 0 ? 1 : 0;
 						params_obj[key] = this.dsp_option.output[channel - 1].limit_enable;
 					}
 					break;
 			}
-			debugger;
-			// this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.loginToken, () => {});
+			this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.loginToken, () => {
+				// 判断是否点下的是压限开关且是否开启 将标识符置为true
+				if (key === 'limit_enable') {
+					this.dsp_option[`limit${channel}_flag`] = this.dsp_option.output[channel - 1].limit_enable == 1 ? true : false;
+					if (!this.dsp_option[`limit${channel}_flag`]) {
+						this.dsp_option[`output${channel}LimitTh`] = '+20';
+					}
+				}
+			});
 		},
 		// 格式化时间 收集数据 在点自检按钮时再发出
 		set_time() {
@@ -429,7 +473,7 @@ new Vue({
 				schedule: {},
 			};
 			if (this.sys_option.check_ststus == 0) {
-				if (this.sys_option.day_time.length == 0) {
+				if (JSON.stringify(this.sys_option.day_time).length < 10) {
 					this.$message.error('请选择时间');
 				} else if (this.sys_option.select_time == -1) {
 					this.$message.error('请选择自检类型');

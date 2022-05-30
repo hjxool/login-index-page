@@ -735,30 +735,34 @@ var index = new Vue({
 			// 				break;
 			// 		}
 			// }
+
+			// switch (index) {
+			// 	case 0:
+			// 		window.open(`./高清矩阵/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 1:
+			// 		window.open(`./调音台/sound.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 2:
+			// 		window.open(`./场景/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 3:
+			// 		window.open(`./摄像机/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 4:
+			// 		window.open(`./吸顶扬声器/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 5:
+			// 		window.open(`./视频会议/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// 	case 6:
+			// 		window.open(`./专业设备/frequency.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+			// 		break;
+			// }
 			//#endregion
-			// 临时 根据索引跳转到指定页面
-			switch (index) {
-				case 0:
-					window.open(`./高清矩阵/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 1:
-					window.open(`./调音台/sound.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 2:
-					window.open(`./场景/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 3:
-					window.open(`./摄像机/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 4:
-					window.open(`./吸顶扬声器/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 5:
-					window.open(`./视频会议/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
-				case 6:
-					window.open(`./专业设备/frequency.html?loginToken=${this.loginToken}&userName=${this.userName}`);
-					break;
+			// 根据url跳转服务器地址
+			if (i.serverUrl.length > 10) {
+				window.open(`${i.serverUrl}/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
 			}
 		},
 		// 跳转广播设备卡片

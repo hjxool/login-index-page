@@ -1,0 +1,133 @@
+* {
+	user-select: none;
+}
+#index {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	display: grid;
+	grid-template-rows: 70px 42px auto;
+	min-width: 1000px;
+	min-height: 800px;
+	overflow: auto;
+	background-image: url(./img/背景.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	.header {
+		display: flex;
+		align-items: center;
+		position: relative;
+		z-index: 10;
+	}
+	.nav_bar {
+		position: relative;
+		background: linear-gradient(0deg, #040d19, #041f52);
+		display: grid;
+		grid-template-columns: 78px auto 100px;
+		grid-template-areas: '. b c';
+	}
+	.channel_ctrl_box {
+		display: grid;
+		grid-auto-rows: 400px;
+		align-items: center;
+		justify-items: center;
+		overflow-y: auto;
+		overflow-x: hidden;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		height: 100%;
+		.control_box {
+			height: 370px;
+			display: grid;
+			grid-template-columns: 20px auto 20px;
+			background: linear-gradient(0deg, rgba(4, 18, 39, 0.3), rgba(12, 40, 92, 0.3), rgba(9, 28, 62, 0.3), rgba(13, 47, 110, 0.3));
+			border: 1px solid #020b27;
+			box-shadow: 0px 39px 98px 0px rgba(16, 56, 129, 0.55);
+			border-radius: 5px;
+			.slider_box {
+				display: grid;
+				grid-auto-flow: column;
+				grid-auto-columns: 130px;
+				grid-template-rows: 90%;
+				align-content: center;
+				overflow: auto;
+				position: relative;
+				.single_slider {
+					display: grid;
+					grid-template-rows: 40px auto;
+					background: linear-gradient(0deg, rgba(24, 56, 116, 0.8), rgba(12, 41, 95, 0.8));
+					border: 1px solid transparent;
+					.slider_name {
+						border: 1px solid #030b2f;
+						font-size: 14px;
+						color: #25aeee;
+					}
+					.slider_body {
+						border: 1px solid #030b2f;
+						display: grid;
+						grid-template-columns: repeat(2, 1fr);
+						.slider_num {
+							width: 60px;
+							height: 20px;
+							background: #061546;
+							border: 1px solid #1645b0;
+							padding-right: 6px;
+							// .input_box {
+							// 	width: 30px;
+							// 	outline: none;
+							// 	background: none;
+							// 	border: none;
+							// 	// 输入框不受布局样式影响，只受内部自身属性影响
+							// 	text-align: right;
+							// 	font-size: 12px;
+							// 	color: #abcbff;
+							// }
+						}
+						.slider {
+							width: 64px;
+							height: 240px;
+							display: grid;
+							grid-template-rows: 30px auto 30px;
+							justify-items: center;
+							align-items: center;
+							.slider_bar {
+								width: 8px;
+								height: 100%;
+								background: linear-gradient(90deg, #051125, #0d2e6a);
+								border: 1px solid #030b26;
+								border-radius: 4px;
+								position: absolute;
+								left: 0;
+								right: 0;
+								margin: 0 auto;
+							}
+							.slider_cover {
+								width: 8px;
+								background: linear-gradient(90deg, #158766, #1ebab8);
+								border-radius: 4px;
+								position: absolute;
+								bottom: 0;
+								left: 0;
+								right: 0;
+								margin: 0 auto;
+							}
+							.slider_thumb {
+								width: 26px;
+								height: 36px;
+								position: absolute;
+								left: 0;
+								right: 0;
+								margin: 0 auto;
+								cursor: grab;
+								&:active {
+									cursor: grabbing;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

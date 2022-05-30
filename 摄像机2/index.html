@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>摄像机</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../common_style.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
+          v-for="option,index in static_param.options" @click="module_select(index)">{{option}}</div>
+        <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="device_ctrl.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{device_ctrl.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
+    <!-- 身体 -->
+    <div style="overflow: hidden;position: relative;">
+      <div class="camera_box" v-show="static_param.option_selected==0">
+        <!-- 选择摄像机 -->
+        <div class="box_style flex_shrink two_row_layout" style="width: 280px;height: 480px;">
+          <span class="title">摄像机位</span>
+          <div class="border_top center">
+            <div class="button center" style="width: 140px;height: 60px;"
+              v-for="camera,index in static_param.camera_list" @click="static_param.camera_select=index">
+              <img :src="static_param.camera_select == index?'./img/button2light.png':'./img/button2.png'"
+                class="bg_img">
+              <span :style="camera_style(index)">{{camera}}</span>
+            </div>
+          </div>
+        </div>
+        <!-- 摄像机控制 -->
+        <div class="box_style flex_shrink two_row_layout" style="width: 280px;height: 480px;">
+          <span class="title">摄像机{{static_param.camera_list[static_param.camera_select]}}</span>
+          <div class="border_top center">
+            <!-- 方向 -->
+            <div class="camera_orientation">
+              <img src="./img/upbutton.png" class="button" style="grid-area: up;" @click="camera_ctrl(0)">
+              <img src="./img/leftbutton.png" class="button" style="grid-area: left;" @click="camera_ctrl(2)">
+              <img src="./img/rightbutton.png" class="button" style="grid-area: right;" @click="camera_ctrl(3)">
+              <img src="./img/downbutton.png" class="button" style="grid-area: down;" @click="camera_ctrl(1)">
+            </div>
+            <!-- 远近 -->
+            <div class="center">
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(4)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">变倍长</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(5)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">变倍短</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(6)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">设置</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(7)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">调用</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(8)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">删除</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(9)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">垂直翻转</span>
+              </div>
+              <div class="center button" style="width: 110px;height: 52px;" @click="camera_ctrl(10)">
+                <img src="./img/button2.png" class="bg_img">
+                <span class="simple_text_style">自动聚焦</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="../common_function.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

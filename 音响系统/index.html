@@ -104,8 +104,8 @@
                       :slider_max="'+12'" :slider_min="'-80'" :device_id="device_id" :token="loginToken"
                       :order_key="'gain'"></single-slider>
                     <single-slider :channel="dsp_option.output[index]" :in_title="'增益'" :out_title="'压限'" :in_or_out="1"
-                      :slider_max="'+20'" :slider_min="'-40'" :device_id="device_id" :token="loginToken"
-                      :order_key="'limit_threshold'"></single-slider>
+                      :slider_max="dsp_option[`output${index+1}LimitTh`]" :slider_min="'-40'" :device_id="device_id"
+                      :token="loginToken" :order_key="'limit_threshold'"></single-slider>
                     <!-- 小遮罩 -->
                     <div class="box_shadow" v-show="dsp_option.output[index].limit_enable==1"></div>
                   </div>
@@ -121,9 +121,10 @@
               </div>
 
               <div class="dsp_output_bottom">
-                <single-slider v-for="geq,index2 in dsp_option.geq_list[index]" :channel="geq" :in_title="'100HZ'"
-                  :out_title="'压限'" :in_or_out="0" :slider_max="'+20'" :slider_min="'-20'" :device_id="device_id"
-                  :token="loginToken" :order_key="`geq${index2+1}_gain`"></single-slider>
+                <single-slider v-for="geq,index2 in dsp_option.geq_list[index]" :channel="geq"
+                  :in_title="dsp_option.geq_title_list[index2]" :out_title="'压限'" :in_or_out="0" :slider_max="'+20'"
+                  :slider_min="'-20'" :device_id="device_id" :token="loginToken" :order_key="`geq${index2+1}_gain`">
+                </single-slider>
               </div>
             </div>
           </div>

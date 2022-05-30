@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dsp_g4650</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../common_style.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
+          v-for="option,index in static_param.options" @click="module_select(index)">{{option}}</div>
+        <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="channel_ctrl.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{channel_ctrl.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
+    <!-- 身体 -->
+    <div style="overflow: hidden;position: relative;">
+      <!-- 状态显示 -->
+      <div class="center" style="height:100%;overflow: auto;" v-show="static_param.option_selected==0">
+        <!-- 电源状态控制及温度显示 -->
+        <div class="power_box flex_shrink">
+          <!--通道状态显示  -->
+          <div style="display:flex;justify-content: space-around;margin: 20px 0;">
+            <div class="status_box" v-for="channel in channel_ctrl.list">
+              <img src="./img/背景框.png" class="bg_img">
+              <!-- 标题 -->
+              <div style="display:flex;align-items: center;">
+                <img src="./img/装饰条2.png" style="width: 18px;height: 18px;">
+                <span class="title">通道{{channel.channel_no}}</span>
+                <img src="./img/装饰条3.png" style="width: 18px;height: 18px;">
+              </div>
+              <!-- 内容 -->
+              <div class="center min_box_layout">{{channel.channel_temperature}}</div>
+            </div>
+          </div>
+          <!-- 电源状态及开关 -->
+          <div class="power_ctrl">
+            <img src="./img/背景框2.png" class="bg_img">
+            <!-- 标题 -->
+            <div class="center" style="width: 100%;height: 30px;">
+              <img src="./img/装饰条1.png" class="bg_img">
+              <span class="title">电源状态</span>
+            </div>
+            <!-- 设置 -->
+            <div style="display:flex;">
+              <div class="power_set_layout">
+                <span class="title" style="margin-bottom: 18px;">电源温度</span>
+                <div class="center min_box_layout">{{channel_ctrl.power_temperature}}</div>
+              </div>
+              <div class="power_set_layout">
+                <span class="title" style="margin-bottom: 10px;">电源开关</span>
+                <img :src="channel_ctrl.power_status==0?'./img/按钮暗.png':'./img/按钮亮.png'" class="button"
+                  style="width: 44px;height: 44px;" @click="power_ctrl">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 通道控制 -->
+      <div class="center" style="height:100%;overflow: auto;" v-show="static_param.option_selected==1">
+        <!-- 通道控制 -->
+        <div class="control_box flex_shrink" style="max-width: 720px;">
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+
+          <div class="slider_box" @mousewheel.prevent="scroll_x($event)">
+            <div class="single_slider" v-for="channel,index in channel_ctrl.list">
+              <span class="slider_name center">通道{{channel.channel_no}}</span>
+              <div class="slider_body">
+                <!-- 静音 -->
+                <div class="center button" @mousedown.stop="mute_button(channel)" style="width: 60px;height: 30px;">
+                  <img :src="channel.channel_mute==0?'./img/静音通常.png':'./img/静音.png'" class="bg_img">
+                  <span :style="{fontSize: '12px',color:channel.channel_mute==0?'#ABCBFF':'#FFABCF'}">静音</span>
+                </div>
+                <!-- 输入框 -->
+                <div class="slider_num center">
+                  <span style="font-size: 12px;color: #ABCBFF;">{{channel.channel_gain}}dB</span>
+                </div>
+                <!-- 滑块 -->
+                <div class="slider">
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_max}}</span>
+
+                  <div style="width: 100%;height: 100%;position: relative;z-index: 10;cursor: pointer;">
+                    <img src="./img/滑块小.png" class="bg_img">
+                    <div class="slider_bar"></div>
+                    <div :style="change_cover_height(channel.channel_gain)" class="slider_cover"></div>
+                    <img :style="change_slider_bottom(channel.channel_gain)" class="slider_thumb" src="./img/滑块.png"
+                      @mousedown.stop="slider_move($event,channel)" draggable="false">
+                  </div>
+
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_min}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="../common_function.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

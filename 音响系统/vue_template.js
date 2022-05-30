@@ -2,7 +2,10 @@
 Vue.component('level-component', {
 	template: `
     <div class="level_box">
-      <div class="level_title">电平</div>
+      <div class="level_title">
+        电平
+        <span style="font-size:12px;color:#25aeee;">(dBu)</span>
+      </div>
       <div class="level_display">
         <div class="level_bar">
           <span class="level_range">{{level_max}}</span>
@@ -47,7 +50,15 @@ Vue.component('level-component', {
 			// 显示效果时从下往上，但是节点渲染是从上往下，所以要用总数-基数
 			let lump_opacity = '0.5'; //单独维护的色块透明度
 			let total_num = Math.floor(this.total_height / 10);
-			let percent = (Number(this.display_value) - Number(this.level_min)) / (Number(this.level_max) - Number(this.level_min));
+			let calcu_num;
+			if (Number(this.display_value) < Number(this.level_min)) {
+				calcu_num = Number(this.level_min);
+			} else if (Number(this.display_value) > Number(this.level_max)) {
+				calcu_num = Number(this.level_max);
+			} else {
+				calcu_num = Number(this.display_value);
+			}
+			let percent = (calcu_num - Number(this.level_min)) / (Number(this.level_max) - Number(this.level_min));
 			let rendering_num = Math.floor((this.total_height * percent) / 10 + 0.5);
 			if (index + 1 > total_num - rendering_num) {
 				lump_opacity = '1';
@@ -79,9 +90,21 @@ Vue.component('single-slider', {
 		// 对象里的属性不同
 		judge_in_or_out() {
 			if (this.in_or_out == 1) {
-				this.sliderNum_temp = this.sliderNum = Number(this.channel.limit_threshold);
+				if (Number(this.channel.limit_threshold) < Number(this.slider_min)) {
+					this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
+				} else if (Number(this.channel.limit_threshold) > Number(this.slider_max)) {
+					this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
+				} else {
+					this.sliderNum_temp = this.sliderNum = Number(this.channel.limit_threshold);
+				}
 			} else {
-				this.sliderNum_temp = this.sliderNum = Number(this.channel.gain);
+				if (Number(this.channel.gain) < Number(this.slider_min)) {
+					this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
+				} else if (Number(this.channel.gain) > Number(this.slider_max)) {
+					this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
+				} else {
+					this.sliderNum_temp = this.sliderNum = Number(this.channel.gain);
+				}
 			}
 		},
 		// 封装的请求方法
@@ -155,7 +178,7 @@ Vue.component('single-slider', {
 			let content = this.$refs.slider;
 			let sliderBottom = content.offsetHeight - e.target.offsetTop - e.target.offsetHeight / 2;
 			let mouseY = e.clientY;
-			window.onmousemove = (e) => {
+			document.onmousemove = (e) => {
 				let mouseH = mouseY - e.clientY;
 				let nowY = mouseH + sliderBottom;
 				if (nowY < 0) {
@@ -171,13 +194,14 @@ Vue.component('single-slider', {
 				this.sliderNum = nowY;
 				this.sliderNum_temp = nowY;
 			};
-			window.onmouseup = () => {
+			document.onmouseup = () => {
 				let params_obj = {};
 				params_obj.deviceid = this.device_id;
 				params_obj.channel = this.channel.channel_id;
 				params_obj[this.order_key] = this.sliderNum;
 				this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
-				window.onmousemove = false;
+				document.onmousemove = false;
+				document.onmouseup = false;
 			};
 		},
 		sliderTurnTo: function (e) {
@@ -217,7 +241,7 @@ Vue.component('single-slider', {
           <div class="slider_display">
             <div class="slider_num">
               <input @keyup.enter="command_send" v-model.number="sliderNum" maxlength="5" class="slider_num_input">
-              <span style="font-size: 12px;color: #ABCBFF;">dB</span>
+              <span style="font-size: 12px;color: #ABCBFF;">{{in_or_out==0?'dB':'dBu'}}</span>
             </div>
             <div class="slider_box">
               <span class="slider_range">{{slider_max}}</span>

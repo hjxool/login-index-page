@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>edp</title>
+  <link rel="icon" href="./img/logo.ico">
+  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../common_style.css">
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div id="index" v-cloak>
+    <!-- 头部 -->
+    <div class="header">
+      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;">
+      <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
+      <!-- <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div> -->
+      <!-- <span style="font-size: 30px;color: #F5F5F5;margin: 0 35px;">DSP</span> -->
+      <!-- <span style="font-size: 14px;color: #F5F5F5;padding-top: 10px;">视频信号</span> -->
+      <div style="margin-left: auto;margin-right: 30px;">
+        <img src="./img/设置按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最小化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/最大化按钮.png" class="button" style="width: 45px;height: 45px;">
+        <img src="./img/关闭按钮.png" class="button" style="width: 45px;height: 45px;">
+      </div>
+      <!-- 头部背景 -->
+      <img src="./img/抬头背景.png" class="bg_img">
+    </div>
+    <!-- 头部下 -->
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
+          v-for="option,index in static_param.options" @click="module_select(index)">{{option}}</div>
+        <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="channel_ctrl.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{channel_ctrl.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
+    <!-- 身体 -->
+    <div style="display: flex;justify-content: center;overflow: hidden;">
+      <!-- 通道控制 -->
+      <div class="channel_ctrl_box" v-show="static_param.option_selected==0">
+        <!-- 输入 -->
+        <div class="control_box" style="max-width: 720px;">
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+
+          <div class="slider_box" @mousewheel.prevent="scroll_x($event)">
+            <div :class="channel_style(input)" v-for="input,index in channel_ctrl.input_list"
+              @mousedown="select_channel($event,'input',input,index)" ref="input_channel">
+              <span class="slider_name center">IN{{input.channel_no}}</span>
+              <div class="slider_body">
+                <!-- 静音 -->
+                <div class="center button" @mousedown.stop="mute_button(input,'input')"
+                  style="width: 60px;height: 30px;">
+                  <img :src="input.mute==0?'./img/静音通常.png':'./img/静音.png'" class="bg_img">
+                  <span :style="{fontSize: '12px',color:input.mute==0?'#ABCBFF':'#FFABCF'}">静音</span>
+                </div>
+                <!-- 输入框 -->
+                <div class="slider_num center">
+                  <!-- <input v-model.number="input.temp" maxlength="5" class="input_box" @keydown.enter="gain_control(input)"> -->
+                  <span style="font-size: 12px;color: #ABCBFF;">{{input.volume}}dB</span>
+                </div>
+                <!-- 滑块 -->
+                <div class="slider">
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_max}}</span>
+
+                  <div style="width: 100%;height: 100%;position: relative;z-index: 10;cursor: pointer;">
+                    <img src="./img/滑块小.png" class="bg_img">
+                    <div class="slider_bar"></div>
+                    <div :style="change_cover_height(input.step)" class="slider_cover"></div>
+                    <img :style="change_slider_bottom(input.step)" class="slider_thumb" src="./img/滑块.png"
+                      @mousedown.stop="slider_move($event,input,'input')" draggable="false">
+                  </div>
+
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_min}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+        </div>
+        <!-- 输出 -->
+        <div class="control_box" style="max-width: 720px;">
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+
+          <div class="slider_box" @mousewheel.prevent="scroll_x($event)">
+            <div :class="channel_style(output)" v-for="output,index in channel_ctrl.output_list"
+              @mousedown="select_channel($event,'output',output,index)" ref="output_channel">
+              <span class="slider_name center">OUT{{output.channel_no}}</span>
+              <div class="slider_body">
+                <!-- 静音 -->
+                <div class="center button" @mousedown.stop="mute_button(output,'output')"
+                  style="width: 60px;height: 30px;">
+                  <img :src="output.mute==0?'./img/静音通常.png':'./img/静音.png'" class="bg_img">
+                  <span :style="{fontSize: '12px',color:output.mute==0?'#ABCBFF':'#FFABCF'}">静音</span>
+                </div>
+                <!-- 输入框 -->
+                <div class="slider_num center">
+                  <span style="font-size: 12px;color: #ABCBFF;">{{output.volume}}dB</span>
+                </div>
+                <!-- 滑块 -->
+                <div class="slider">
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_max}}</span>
+
+                  <div style="width: 100%;height: 100%;position: relative;z-index: 10;cursor: pointer;">
+                    <img src="./img/滑块小.png" class="bg_img">
+                    <div class="slider_bar"></div>
+                    <div :style="change_cover_height(output.step)" class="slider_cover"></div>
+                    <img :style="change_slider_bottom(output.step)" class="slider_thumb" src="./img/滑块.png"
+                      @mousedown.stop="slider_move($event,output,'output')" draggable="false">
+                  </div>
+
+                  <span style="font-size: 12px;color: #2e71df;">{{static_param.input_min}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img src="./img/装饰点.png" style="width: 20px;height: 20px;">
+        </div>
+      </div>
+      <!-- 矩阵 -->
+      <div class="rect_box" v-show="static_param.option_selected==1">
+        <!-- 矩阵头 -->
+        <div class="rect_header">
+          <div></div>
+          <span class="center" style="font-size: 16px;color:whitesmoke;" v-for="input in 16">输入{{input}}</span>
+        </div>
+        <!-- 矩阵身 -->
+        <div class="rect_body">
+          <!-- 通道栏 -->
+          <div class="output_box">
+            <span class="center" style="font-size: 16px;color:whitesmoke;" v-for="input in 16">输出{{input}}</span>
+          </div>
+          <!-- 小方块显示区域 -->
+          <div class="rect_interact_box">
+            <div class="rect_interact_row" v-for="output,row in rect.list">
+              <img class="button" style="width: 100%;height: 50px;" v-for="input,col in output"
+                :src="input==0?'./img/滤波选项暗.png':'./img/滤波选项亮.png'" @click="ctrl_rect(row,col,input)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 场景 -->
+      <div class="scene_box center" v-show="static_param.option_selected==2">
+        <div class="scroll">
+          <div class="single_setting_box flex_shrink" v-for="set in scene.list" @click="loading_setting(set)"
+            title="跳转到对应场景" draggable="false">
+            <span style="font-size: 18px;color: #AEC9FF;margin:0 20px">{{set.scene_no}}</span>
+            <!-- 切换输入框和文本框显示 -->
+            <span v-show="!set.input_display" style="font-size: 18px;color: #FFFFFF;">{{set.scene_name}}</span>
+            <input v-show="set.input_display" v-model="set.scene_name" @keydown.enter="edit_setting_name(set)"
+              class="input_bg" @blur="set.input_display=false" @click.stop v-focus>
+
+            <img @click.stop="set.input_display = true" title="编辑场景名称" src="./img/编辑按钮.png" style="right: 50px;"
+              class="setting_icon">
+            <img @click.stop="save_setting(set)" style="right: 20px;" class="setting_icon" title="保存到当前场景"
+              src="./img/对勾按钮.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../module/jquery-3.6.0.js"></script>
+  <script src="../module/vue.js"></script>
+  <script src="../module/element-ui.js"></script>
+  <script src="../module/axios.min.js"></script>
+  <script src="../common_function.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>
