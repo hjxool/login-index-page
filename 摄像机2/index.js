@@ -21,28 +21,13 @@ new Vue({
 	},
 	mixins: [common_functions],
 	mounted() {
-		// 临时自动登陆获取token
-		this.request(
-			'post',
-			'http://182.150.116.22:18009/api/user/login',
-			{
-				userName: 'libo',
-				password: '123456Aa',
-			},
-			'74935343174538',
-			this.loginToken,
-			(res) => {
-				this.loginToken = res.data.data.token;
-				this.userName = 'libo';
-				this.module_select(0);
-			}
-		);
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
 		} else {
 			this.get_token();
 		}
+		this.module_select(0);
 	},
 	methods: {
 		// 导航栏选择

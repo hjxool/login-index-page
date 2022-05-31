@@ -3,6 +3,8 @@
 }
 * {
 	box-sizing: border-box;
+	-webkit-user-drag: none;
+	-moz-user-select: none;
 }
 body {
 	margin: 0;
