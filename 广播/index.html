@@ -30,7 +30,22 @@
       <img src="./img/抬头背景.png" class="bg_img">
     </div>
     <!-- 头部下 -->
-    <div class="header_bottom"></div>
+    <div class="nav_bar">
+      <!-- 选项卡 -->
+      <div style="grid-area: b;display: flex;">
+        <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
+          v-for="option,index in static_param.options" @click="module_select(index)">
+          {{option}}
+          <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+        </div>
+      </div>
+      <!-- 设备状态 -->
+      <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
+        <img style="width: 15px;height: 12px;margin-right: 8px;"
+          :src="static_param.is_online==0?'./img/警告标识.png':'./img/设备在线图标.png'">
+        <span style="font-size: 12px;color: rgb(171, 203, 255);">{{static_param.is_online==0?'设备离线':'设备在线'}}</span>
+      </div>
+    </div>
     <!-- 身体 -->
     <div class="center">
       <!-- 采集器 -->
@@ -40,36 +55,33 @@
           <!-- 终端名称 -->
           <div class="row_style" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
             <span class="row_style_text">终端名称</span>
-            <el-input size="small" clearable></el-input>
+            <el-input size="small" clearable v-model="collector.name"></el-input>
           </div>
           <!-- 状态和地址 -->
-          <div class="center" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
+          <div class="center" style="width: 540px;height: 50px;margin: 20px 0;">
             <div class="row_style" style="width: 50%;">
               <span class="row_style_text">连接状态</span>
-              <span :style="{fontSize: '16px',color:'red'}">未连接</span>
+              <span :style="{fontSize: '16px',color:collector.status==0?'red':'green'}">未连接</span>
             </div>
             <div class="row_style" style="width: 50%;">
               <span class="row_style_text">地址</span>
-              <span style="font-size: 16px;color: aliceblue;">10.50.7.15</span>
+              <span style="font-size: 16px;color: aliceblue;">{{collector.ip===null?'无':collector.ip}}</span>
             </div>
           </div>
           <!-- 采播状态 -->
           <div class="row_style" style="width: 540px;height: 90px;margin: 20px 0;">
-            <span class="row_style_text">终端名称</span>
+            <span class="row_style_text">通道状态</span>
             <div class="status_grid">
-              <div class="checker center" :style="{background:'green'}" v-for="status in 16">{{status_num(status)}}
+              <div class="checker center" :style="{background:status==0?'#D8BFD8':'green'}"
+                v-for="status,index in collector.channelStatus">{{status_num(index+1)}}
               </div>
             </div>
           </div>
           <!-- 按钮 -->
           <div class="center">
-            <div class="center button" style="margin-right: 68px;width: 90px;height: 46px;">
+            <div class="center button" style="width: 90px;height: 46px;" @click="save_set('collector')">
               <img src="./img/button2.png" class="bg_img">
               <span style="font-size:20px;color: aliceblue;">保存</span>
-            </div>
-            <div class="center button" style="width: 90px;height: 46px;">
-              <img src="./img/button2.png" class="bg_img">
-              <span style="font-size:20px;color: aliceblue;">取消</span>
             </div>
           </div>
         </div>
@@ -81,36 +93,33 @@
           <!-- 终端名称 -->
           <div class="row_style" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
             <span class="row_style_text">终端名称</span>
-            <el-input size="small" clearable></el-input>
+            <el-input size="small" clearable v-model="alarm.name"></el-input>
           </div>
           <!-- 状态和地址 -->
           <div class="center" style="width: 540px;height: 50px;align-items: center;margin: 20px 0;">
             <div class="row_style" style="width: 50%;">
               <span class="row_style_text">连接状态</span>
-              <span :style="{fontSize: '16px',color:'red'}">未连接</span>
+              <span :style="{fontSize: '16px',color:alarm.status==0?'red':'green'}">未连接</span>
             </div>
             <div class="row_style" style="width: 50%;">
               <span class="row_style_text">地址</span>
-              <span style="font-size: 16px;color: aliceblue;">10.50.7.15</span>
+              <span style="font-size: 16px;color: aliceblue;">{{alarm.ip===null?'无':alarm.ip}}</span>
             </div>
           </div>
           <!-- 采播状态 -->
           <div class="row_style" style="width: 540px;height: 90px;margin: 20px 0;">
-            <span class="row_style_text">终端名称</span>
+            <span class="row_style_text">通道状态</span>
             <div class="status_grid">
-              <div class="checker center" :style="{background:'red'}" v-for="status in 16">{{status_num(status)}}
+              <div class="checker center" :style="{background:status==0?'#D8BFD8':'green'}"
+                v-for="status,index in alarm.channelStatus">{{status_num(index+1)}}
               </div>
             </div>
           </div>
           <!-- 按钮 -->
           <div class="center">
-            <div class="center button" style="margin-right: 68px;width: 90px;height: 46px;">
+            <div class="center button" style="width: 90px;height: 46px;" @click="save_set('alarm')">
               <img src="./img/button2.png" class="bg_img">
               <span style="font-size:20px;color: aliceblue;">保存</span>
-            </div>
-            <div class="center button" style="width: 90px;height: 46px;">
-              <img src="./img/button2.png" class="bg_img">
-              <span style="font-size:20px;color: aliceblue;">取消</span>
             </div>
           </div>
         </div>

@@ -32,6 +32,7 @@ body {
 	justify-content: space-around;
 	flex-wrap: wrap;
 	align-content: center;
+	z-index: 10;
 }
 .column_center {
 	display: flex;
@@ -73,9 +74,12 @@ body {
 		position: relative;
 		z-index: 10;
 	}
-	.header_bottom {
+	.nav_bar {
 		position: relative;
 		background: linear-gradient(0deg, #040d19, #041f52);
+		display: grid;
+		grid-template-columns: 78px auto 100px;
+		grid-template-areas: '. b c';
 	}
 	.box_style {
 		background: linear-gradient(172deg, rgba(5, 37, 148, 0.259), rgba(26, 69, 233, 0));

@@ -35,8 +35,10 @@
       <!-- 选项卡 -->
       <div style="grid-area: b;display: flex;">
         <div class="button flex_shrink center" style="width:110px;font-size: 16px;color: #fff;"
-          v-for="option,index in static_param.options" @click="module_select(index)">{{option}}</div>
-        <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+          v-for="option,index in static_param.options" @click="module_select(index)">
+          {{option}}
+          <img :src="static_param.option_selected==index?'./img/选项切换亮.png':'./img/选项切换暗.png'" class="bg_img">
+        </div>
       </div>
       <!-- 设备状态 -->
       <div style="grid-area:c;justify-self: end;margin-right: 20px;display: flex;align-items: center;">
