@@ -1,0 +1,120 @@
+[v-cloak] {
+	display: none !important;
+}
+* {
+	box-sizing: border-box;
+	user-select: none;
+}
+body {
+	margin: 0;
+}
+::-webkit-scrollbar {
+	height: 5px;
+	width: 4px;
+	background: rgba(9, 37, 92, 0.78);
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+	width: 150px;
+	height: 150px;
+	background: #0e52d4;
+	border-radius: 3px;
+}
+.bg_img {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: -1;
+}
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	align-content: center;
+	z-index: 10;
+	position: relative;
+}
+.column_center {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.flex_shrink {
+	flex-shrink: 0;
+}
+
+.button {
+	position: relative;
+	z-index: 10;
+	cursor: pointer;
+	&:active {
+		transform: scale(0.9);
+	}
+}
+.two_row_layout {
+	display: grid;
+	grid-template-rows: 40px auto;
+}
+
+#index {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	display: grid;
+	grid-template-rows: 70px 42px auto;
+	min-width: 1000px;
+	min-height: 800px;
+	overflow: auto;
+	background-image: url(./img/背景.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	.header {
+		display: flex;
+		align-items: center;
+		position: relative;
+		z-index: 10;
+	}
+	.nav_bar {
+		position: relative;
+		background: linear-gradient(0deg, #040d19, #041f52);
+		display: grid;
+		grid-template-columns: 78px auto 100px;
+		grid-template-areas: '. b c';
+	}
+	.box_style {
+		background: linear-gradient(0deg, rgba(9, 28, 62, 0.228), rgba(15, 33, 51, 0.228), rgba(58, 92, 127, 0.228), rgba(15, 33, 51, 0.228));
+		border: 1px solid rgba(57, 71, 96, 0.6);
+		border-radius: 6px;
+		.title {
+			font-size: 18px;
+			color: #779fdf;
+			align-self: center;
+			margin-left: 22px;
+		}
+		.border_top {
+			border-top: 2px solid #2e415d;
+		}
+		.row_style {
+			display: grid;
+			grid-template-columns: 100px auto;
+			.row_style_text {
+				font-size: 18px;
+				color: rgba(255, 255, 255, 0.8);
+			}
+			.status_grid {
+				display: grid;
+				grid-template-columns: repeat(8, 50px);
+				grid-template-rows: repeat(2, 40px);
+			}
+		}
+	}
+}
+.el-input__inner {
+	background: #08172e;
+	border: 1px solid #1f3956;
+	color: rgb(109, 161, 255, 0.8);
+}
+.el-input__icon {
+	color: #4070fa;
+}

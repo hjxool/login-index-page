@@ -18,6 +18,10 @@ new Vue({
 		}
 	},
 	methods: {
+		// 返回首页
+		return_home() {
+			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
+		},
 		// 获取地址栏token
 		get_token() {
 			let temp = location.search.substring(1).split('&');

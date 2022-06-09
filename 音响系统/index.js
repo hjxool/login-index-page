@@ -482,8 +482,8 @@ new Vue({
 					params.schedule.sys_check = 1;
 					params.schedule.timing_type = this.sys_option.select_time;
 					// 格式化时间
-					let temp = JSON.stringify(this.sys_option.day_time);
-					params.schedule.check_time = temp.split('T')[1].split('.')[0];
+					let temp = this.sys_option.day_time.toString();
+					params.schedule.check_time = temp.split(' ')[4];
 					// 分类发送
 					switch (this.sys_option.select_time) {
 						case 0:
@@ -528,6 +528,10 @@ new Vue({
 				border: this.sys_option.check_ststus == 1 ? 'none' : '1px solid #325ecb',
 			};
 			return style;
+		},
+		// 返回首页
+		return_home() {
+			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
 		},
 	},
 });

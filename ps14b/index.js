@@ -32,6 +32,10 @@ new Vue({
 		this.module_select(0);
 	},
 	methods: {
+		// 返回首页
+		return_home() {
+			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
+		},
 		// 导航栏选择
 		module_select(index) {
 			switch (index) {

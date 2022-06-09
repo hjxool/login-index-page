@@ -4,11 +4,13 @@ const common_functions = {
 		get_token() {
 			let temp = location.search.substring(1).split('&');
 			temp.forEach((e) => {
-				if (e.indexOf('loginToken') != -1) {
-					this.loginToken = e.split('=')[1];
+				let key = e.split('=')[0];
+				let value = e.split('=')[1];
+				if (key.indexOf('loginToken') != -1) {
+					this.loginToken = value;
 					window.sessionStorage.loginToken = this.loginToken;
-				} else if (e.indexOf('userName') != -1) {
-					this.userName = e.split('=')[1];
+				} else if (key.indexOf('userName') != -1) {
+					this.userName = value;
 					window.sessionStorage.userName = this.userName;
 				}
 			});

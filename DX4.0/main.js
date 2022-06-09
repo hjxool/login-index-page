@@ -1,0 +1,10 @@
+// let zhuanyeUrl = 'http://192.168.30.66:18113/';
+let zhuanyeUrl = 'http://182.150.116.22:18113/';
+let timing_detail_url = zhuanyeUrl + 'api/dx/channelDetail';
+let push_sequence_switch_url = zhuanyeUrl + 'api/dx/sequenceSwitch';
+let push_channel_switch_url = zhuanyeUrl + 'api/dx/channelSwitch';
+let push_set_delay_url = zhuanyeUrl + 'api/dx/channelDelay';
+let setting_list_url = zhuanyeUrl + 'api/dx/sceneInfo';
+let loading_setting_url = zhuanyeUrl + 'api/dx/loadScene';
+let save_setting_url = zhuanyeUrl + 'api/dx/saveScene';
+let edit_setting_name_url = zhuanyeUrl + 'api/dx/updateSceneName';

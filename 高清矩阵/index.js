@@ -24,6 +24,10 @@ new Vue({
 		}
 	},
 	methods: {
+		// 返回首页
+		return_home() {
+			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
+		},
 		// 获取地址栏token
 		get_token() {
 			let temp = location.search.substring(1).split('&');
@@ -77,7 +81,14 @@ new Vue({
 			} else {
 				if (this.static_param.video_source_checked != -1) {
 					this.static_param.video_out_checked = index;
-					this.request('post', video_out_url, { device_id: '0x12345622F955000000000000', input_no: this.static_param.video_source_checked + 1, output_no: this.static_param.video_out_checked + 1 }, '123456', this.loginToken, () => {});
+					this.request(
+						'post',
+						video_out_url,
+						{ device_id: '0x12345622F955000000000000', input_no: this.static_param.video_source_checked + 1, output_no: this.static_param.video_out_checked + 1 },
+						'123456',
+						this.loginToken,
+						() => {}
+					);
 				} else {
 					this.$message.warning('请先选择输入信号');
 				}

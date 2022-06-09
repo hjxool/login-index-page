@@ -16,10 +16,8 @@
 
   <div id="index" v-cloak>
     <!-- 遮罩 -->
-    <div
-      v-if="showAddScene || showEditScene || tipsOfDeleteDevice || newTag || newItem || editTagName || checkPlatform==2 || checkPlatform==5 || smartTempCtrl || videoDeviceIP ||new_and_edit_alert_rule==1||new_and_edit_alert_rule==2"
-      id="shadow"></div>
-    <div v-if="message_detail_display" @click="message_detail_display=false" class="shadow"></div>
+    <div v-show="shadow_gray" id="shadow" @click="hidden_gray"></div>
+    <div v-show="shadow" @click="hidden_transparent" class="shadow"></div>
     <img src="./img/背景.png" id="bgimg">
     <!-- 抬头样式 -->
     <div class="header">
@@ -42,8 +40,8 @@
       <!-- 左边栏 -->
       <div class="left flex_shrink">
         <div class="nav" @click="left_bar_turn_to(0)">
-          <img src="./img/个人@2x.png" class="navIcon">
-          <span class="navTitle">个人中心</span>
+          <img src="./img/工具@2x.png" class="navIcon">
+          <span class="navTitle">项目中心</span>
           <div class="navBar"></div>
         </div>
 
@@ -56,9 +54,12 @@
           <div class="navBar"></div>
         </div>
 
-        <div class="nav">
-          <img src="./img/运维@2x.png" class="navIcon">
-          <span class="navTitle">运维中心</span>
+        <div class="nav" style="cursor: not-allowed;">
+          <!-- 临时遮罩 -->
+          <div style="display: flex;flex-direction: column;align-items: center;flex-shrink: 0;opacity: 0.7;">
+            <img src="./img/运维@2x.png" class="navIcon">
+            <span class="navTitle">运维中心</span>
+          </div>
           <div class="navBar"></div>
         </div>
 
@@ -69,8 +70,8 @@
         </div>
 
         <div class="nav" @click="left_bar_turn_to(4)">
-          <img src="./img/工具@2x.png" class="navIcon">
-          <span class="navTitle">项目中心</span>
+          <img src="./img/个人@2x.png" class="navIcon">
+          <span class="navTitle">个人中心</span>
           <div class="navBar"></div>
         </div>
       </div>
@@ -79,11 +80,11 @@
         <div class="item_and_place_box">
           <div v-for="i,index in item" style="display: flex;width: 100%;flex-direction: column;
             align-items: center;">
-            <div class="item">
+            <div class="item" @click="clickItem(index)">
               <img src="./img/项目底图.png" style="width: 100%;height: 100%;position: absolute;z-index: -1;">
-              <img @click="clickNewTag(i)" src="./img/加号.png" class="add_item_button">
+              <img @click.stop="clickNewTag(i)" src="./img/加号.png" class="add_item_button">
               <span class="item_text" :title="i.projectName">{{i.projectName}}</span>
-              <img v-if="i.isEmpty==0" @click="clickItem(index)" class="display_place_list_button"
+              <img v-if="i.isEmpty==0" class="display_place_list_button"
                 :src="itemFocus==index?'./img/点击隐藏场所.png':'./img/点击显示场所.png'">
             </div>
 
@@ -162,7 +163,7 @@
                   <div style="width: 90px;height: 90px;position: relative;">
                     <img :src="i.modelPictureUrl"
                       style="width: 100%;height: 100%;position: absolute;object-fit: contain;">
-                    <img src="./img//默认显示图片.png" style="width: 100%;height: 100%;">
+                    <div style="width: 100%;height: 100%;background: #fff;"></div>
                   </div>
                   <div class="deviceName">{{i.name}}</div>
                 </div>
@@ -170,15 +171,13 @@
                 <div class="deviceCtrl">
                   <img v-if="i.isOnline==1" src="./img/online.png" class="state">
                   <img v-if="i.isOnline==0" src="./img/offline.png" class="state">
-
                   <img src="./img/button.png" class="setButton" @click="goToCommand(i,index)">
-
-                  <img v-if="i.status==0" src="./img/on.png" class="state">
-                  <img v-if="i.status==1" src="./img/off.png" class="state">
+                  <!-- <img v-if="i.status==0" src="./img/on.png" class="state">
+                  <img v-if="i.status==1" src="./img/off.png" class="state"> -->
                 </div>
               </div>
             </div>
-
+            <!-- 可分配设备列表 -->
             <div class="deviceList" v-if="showDeviceList">
               <!-- 搜索栏 -->
               <div class="searchSet layout">
@@ -214,7 +213,6 @@
 
               <div class="buttonSet layout">
                 <img src="./img/save.png" class="saveButton" @click="batchAddDevice">
-                <img src="./img/cancel.png" class="saveButton" @click="showDeviceList=false">
               </div>
             </div>
           </div>
@@ -276,7 +274,7 @@
             <img src="./img/newSceneButton.png" class="sceneButton" @click="clickSceneButton">
           </div>
           <!-- 告警窗口 -->
-          <div v-if="managerFocus==2" class="alertContainer">
+          <!-- <div v-if="managerFocus==2" class="alertContainer">
             <div class="alert_button_container">
               <div v-for="i,index in alert_button" @click="click_alert(index)"
                 style="width: 90px;height: 40px;position: relative;cursor: pointer;margin-right: 13px;">
@@ -324,27 +322,27 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div v-show="platformJump==1"
         style="flex-grow: 1;height: 97%;margin-right: 5px;display: flex;align-items: center;justify-content: center;">
         <!-- 消息中心 -->
-        <div v-if="nav_bar_click==1" style="width: 100%;height: 100%;display: grid;grid-template-columns: 20.71% auto;">
+        <div v-if="nav_bar_click==1" style="width: 100%;height: 100%;display: grid;grid-template-columns: 230px 900px;">
           <div class="message_center_type_scroll">
             <div v-for="type,index in message_types" @click="res_message_list(type,index)"
               :class="['message_center_type',message_center_focus==index?'message_center_type_focus':'']">
               <img :src="[type.type==0?'./img/系统消息图标.png':'./img/设备消息图标.png']"
                 style="width: 11.67%;height: 45.71%;margin: 0 0.78vw 0 1.3vw;">
               <span class="message_type_text">{{type.name}}</span>
-              <el-badge :value="type.value" style="position: absolute;right: 1.14vw;height: 18px;"></el-badge>
+              <el-badge :value="type.value" style="position: absolute;right: 14px;height: 18px;"></el-badge>
             </div>
           </div>
 
           <div v-show="message_center_focus!=-1" class="message_center_content_scroll">
             <div v-for="list,index in message_types_list" class="message_content_box">
-              <span style="font-size: 1.48vh;color: #D5EAF9;">{{list.title}}</span>
-              <span style="font-size: 1.48vh;color: #D5EAF9;opacity: 0.5;">{{list.content}}</span>
+              <span style="font-size: 20px;color: #D5EAF9;">{{list.title}}</span>
+              <span style="font-size: 16px;color: #D5EAF9;opacity: 0.5;">{{list.content}}</span>
             </div>
           </div>
         </div>
@@ -493,6 +491,8 @@
     </div>
     <!-- 添加新场景弹框 -->
     <div v-if="showAddScene || showEditScene" class="addScene">
+      <!-- 小局部遮罩 -->
+      <div class="local_shadow" v-show="local_shadow" @click="hidden_local"></div>
       <!-- 关闭按钮 -->
       <img src="./img/tipsClose.png" class="addSceneCloseButton" @click="resSceneDetail">
       <!-- 场景名称容器 -->
@@ -528,7 +528,7 @@
             <!-- 星期几 -->
             <div class="zhixingriqi layout">
               <div class="zhixingshijianheriqi">执行日期</div>
-              <div class="selectWeek" @click="showWeekContainer=!showWeekContainer">
+              <div class="selectWeek" @click="selec_tweek">
                 每周执行
                 <img src="./img/icon2.png" class="selectButton">
               </div>
@@ -563,8 +563,14 @@
             <div class="singleDevice layout" v-for="i,index in addSceneDeviceList">
               <img v-if="i.checked" src="./img/checkbox1.png" class="checkbox" @click="addSceneDevice(i)">
               <img v-if="!i.checked" src="./img/checkbox.png" class="checkbox" @click="addSceneDevice(i)">
-              <div v-if="showEditScene" class="info">{{i.name}}、{{i.model}}</div>
-              <div v-if="showAddScene" class="info">{{i.name}}、{{i.modelName}}</div>
+              <div v-if="showEditScene" class="info">
+                <span style="font-size: 18px;color: #88cdff;">{{i.name}}、{{i.model}}</span>
+                <span style="color: #00FFFF;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
+              </div>
+              <div v-if="showAddScene" class="info">
+                <span style="font-size: 18px;color: #88cdff;">{{i.name}}、{{i.modelName}}</span>
+                <span style="color: #00FFFF;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
+              </div>
               <!-- 配置按钮 -->
               <img src="./img/config.png" class="configButton" @click="sceneDeviceConfig(i,index)">
             </div>
@@ -582,48 +588,18 @@
       <div class="raiseBlock"></div>
     </div>
     <!-- 小弹窗遮罩 -->
-    <div v-if="setUserGroupAndOrder" id="userGroupShadow"></div>
+    <div v-show="setUserGroupAndOrder" id="userGroupShadow" @click="saveConfigSet"></div>
     <!-- 用户组和顺序配置 -->
-    <div v-if="setUserGroupAndOrder" class="setUserGroupAndOrder layout">
-      <div class="layout" style="width: 100%;height: 40px;">
-        <!-- 改变内容标题 -->
-        <div style="width: 80px;height: 18px;" class="layout">
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userGroupAndOrderText1">用户组
-          </div>
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userGroupAndOrderText2">
-            {{addSceneDeviceList[sceneDeviceSelected].param.paramUser}}</div>
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==2" class="userGroupAndOrderText1">音量
-          </div>
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==2" class="userGroupAndOrderText2">
-            {{addSceneDeviceList[sceneDeviceSelected].param.paramVolume}}</div>
-        </div>
-        <!-- 滑块部分 -->
-        <div class="userSetSliderContainer layout">
-          <img src="./img/slider.png" style="width: 224px;height: 44px;position: absolute;z-index: -1;">
-          <input v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userSetSlider" type="range"
-            :min="groupMin" :max="groupMax" step="1" v-model="addSceneDeviceList[sceneDeviceSelected].param.paramUser">
-          <input v-if="addSceneDeviceList[sceneDeviceSelected].platform==2" class="userSetSlider" type="range" :min="0"
-            :max="64" step="1" v-model="addSceneDeviceList[sceneDeviceSelected].param.paramVolume">
-        </div>
-      </div>
-
-      <div class="layout" style="width: 100%;height: 40px;">
-        <!-- 标题 -->
-        <div style="width: 80px;height: 18px;" class="layout">
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userGroupAndOrderText1">顺序
-          </div>
-          <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userGroupAndOrderText2">
-            {{addSceneDeviceList[sceneDeviceSelected].param.paramOrder}}</div>
-        </div>
-        <!-- 滑块 -->
-        <div v-if="addSceneDeviceList[sceneDeviceSelected].platform==3" class="userSetSliderContainer layout">
-          <img src="./img/slider.png" style="width: 224px;height: 44px;position: absolute;z-index: -1;">
-          <input class="userSetSlider" type="range" :min="orderMin" :max="orderMax" step="1"
-            v-model="addSceneDeviceList[sceneDeviceSelected].param.paramOrder">
-        </div>
+    <div v-show="setUserGroupAndOrder" class="setUserGroupAndOrder">
+      <div class="layout" style="width: 70%;height: 80px;">
+        <span style="color: #4070fa;font-size: 18px;">预设</span>
+        <el-select v-model="config_select" placeholder="请选择预设配置" style="width: 150px;" size="small" clearable>
+          <el-option v-for="option in config_options" :key="option.value" :label="option.label" :value="option.value">
+          </el-option>
+        </el-select>
       </div>
       <!-- 关闭按钮 -->
-      <img src="./img/close.png" style="width: 82px;height: 36px;" @click="saveConfigSet">
+      <img src="./img/save.png" style="width: 82px;height: 36px;cursor: pointer;" @click="saveConfigSet">
     </div>
     <!-- 广播和教育设备弹窗 -->
     <div v-if="checkPlatform==2 || checkPlatform==5" v-loading="eduDevicePushLoading" class="soundDeviceContainer"
@@ -727,7 +703,7 @@
     <div v-if="smartTempCtrl" class="smartTempCtrl">
       <div
         style="width: 100%;height: 35px;display: flex;align-items: center;justify-content: flex-end;border-bottom: 1px solid #206CEA;">
-        <img @click="smartTempCtrl=false" src="./img/tipsClose.png"
+        <img @click="smartTempCtrl=false;shadow_gray=false;" src="./img/tipsClose.png"
           style="width: 35px;height: 34px;margin-right: 8px;cursor: pointer;">
       </div>
       <div class="layout" style="width: 100%;height: 135px;align-content:center;">
@@ -768,7 +744,7 @@
     <!-- 新建告警规则弹窗 -->
     <div v-show="new_and_edit_alert_rule==1 || new_and_edit_alert_rule==2" class="alert_rule_box">
       <div style="position: relative;border-bottom: 1px solid #206CEA;">
-        <img @click="new_and_edit_alert_rule=0" src="./img/tipsClose.png"
+        <img @click="new_and_edit_alert_rule=0;shadow_gray=false;" src="./img/tipsClose.png"
           style="width: 35px;height: 100%;position: absolute;right: 0;cursor: pointer;">
       </div>
       <div style="display: flex;flex-wrap: wrap;align-content: start;justify-content: center;position: relative;">
@@ -821,7 +797,7 @@
       <!-- 确定按钮 -->
       <img src="./img/确定.png" style="width: 90px;height: 44px;cursor: pointer;justify-self: left;" @click="resNewPlace">
       <!-- 关闭按钮 -->
-      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="newTag=false">
+      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="newTag=false;shadow_gray=false;">
     </div>
 
     <!-- 修改场所名弹框 -->
@@ -833,7 +809,7 @@
       <!-- 确定按钮 -->
       <img src="./img/确定.png" style="width: 90px;height: 44px;cursor: pointer;justify-self: left;" @click="resEditTag">
       <!-- 关闭按钮 -->
-      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="editTagName=false">
+      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="editTagName=false;shadow_gray=false;">
     </div>
 
     <!-- 新建项目弹框 -->
@@ -845,14 +821,14 @@
       <!-- 确定按钮 -->
       <img src="./img/确定.png" style="width: 90px;height: 44px;cursor: pointer;justify-self: left;" @click="resNewItem">
       <!-- 关闭按钮 -->
-      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="newItem=false">
+      <img src="./img/tipsClose.png" class="newTagBoxClose" @click="newItem=false;shadow_gray=false;">
     </div>
 
     <!-- 消息中心详情 -->
     <!-- <div v-show="message_detail_display" class="message_detail_layout">
       <div
         style="border-bottom: 1px solid #206CEA;position: relative;width: 100%;height: 100%;display: flex;align-items: center;">
-        <img @click="message_detail_display=false" src="./img/tipsClose.png"
+        <img @click="message_detail_display=false;shadow_gray=false;" src="./img/tipsClose.png"
           style="height: 70.83%;width: 5.74%;cursor: pointer;position: absolute;right: 9px;object-fit: cover;">
       </div> -->
     <!-- 消息中心 -->

@@ -35,6 +35,8 @@ let res_message_detail_url = url + 'api/log/msg'; //获取消息详情
 let res_clear_message_unread_url = url + 'api/log/all/isread'; //一键清除未读
 let res_download_module_detail_url = url + 'api/resource/detail'; //下载中心模块详情
 let res_download_module_list_url = url + 'api/resource/list'; //下载中心模块下的列表
+// let listSceneInfo = 'http://192.168.30.66:18113/api/scene/listSceneInfo'; //获取场景预设配置
+let listSceneInfo = 'http://182.150.116.22:18113/api/scene/listSceneInfo'; //获取场景预设配置
 
 // 登录接口
 let login_html_url = url + 'api/user/login';

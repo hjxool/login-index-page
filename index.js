@@ -16,13 +16,7 @@ var index = new Vue({
 		sceneType: 2, //手动/自动场景
 		sceneStatus: 0, //指定场景状态
 		startTime: '', //自启动时间
-		groupMin: 0, //用户组最小值
-		groupMax: 0, //用户组最大值
-		orderMin: 0, //顺序最小值
-		orderMax: 0, //顺序最大值
-		sceneDeviceSelected: -1, //点的是哪一个设备配置
 		checkPlatform: -1, //点击卡片按钮判断是哪个平台的设备
-		configPlatform: -1, //点击配置按钮判断是哪个平台设备
 		userName: '',
 		showDeviceList: false, //设备列表显示和隐藏
 		showPower: false, //电源设备列表
@@ -57,7 +51,7 @@ var index = new Vue({
 		projectId: '', //项目ID
 		customerId: '', //用户ID
 		placeId: '', //场所ID
-		sceneName: '', //新增场景名
+		sceneName: '新场景', //新增场景名
 		deviceId: '', //设备ID
 		sceneId: '', //场景ID
 		deviceLinkToPlaceId: 0, //设备和场所关系主键
@@ -100,7 +94,7 @@ var index = new Vue({
 		manager: [
 			{ name: '设备管理', dark: './img/设备暗.png', light: './img/设备明.png' },
 			{ name: '场景管理', dark: './img/场景暗.png', light: './img/场景明.png' },
-			{ name: '告警管理', dark: './img/告警暗.png', light: './img/告警亮.png' },
+			// { name: '告警管理', dark: './img/告警暗.png', light: './img/告警亮.png' },
 			// { name: '平台入口', dark: './img/pingtaian.png', light: './img/pingtailiang.png' },
 		],
 		// 选择执行日期
@@ -165,53 +159,33 @@ var index = new Vue({
 		clearTimer: null, //场所刷新计时器
 		clear_message_num_timer: null, //未跳转消息中心前消息数计时器
 		clear_message_all_timer: null, //同时刷新消息数和列表
+		// 消息中心
 		message_types: [
 			{
 				type: 0,
 				name: '系统消息',
-				value: '12',
-				list: [
-					{ title: '1111111', content: 'qweqwdsadasd' },
-					{ title: '22', content: 'bdfbdfb' },
-					{ title: '333333', content: '大苏打' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-					{ title: '44444444', content: '股份大股东' },
-				],
+				value: '1',
+				list: [{ title: '服务器异常', content: '存储数据达到上限，请及时清理' }],
 			},
 			{
 				type: 1,
-				name: '设备一消息',
-				value: '8',
-				list: [
-					{ title: 'dasdas', content: 'qweqwdsadasd' },
-					{ title: 'bv', content: 'bdfbdfb' },
-					{ title: 'yyyyyyyyyt', content: '大苏打' },
-				],
-			},
-			{
-				type: 1,
-				name: '设备二消息',
-				value: '8',
-				list: [
-					{ title: '1111111', content: 'qweqwdsadasd' },
-					{ title: '44444444', content: '股份大股东' },
-				],
+				name: 'edp',
+				value: '1',
+				list: [{ title: '离线', content: '设备离线，请检查网络状况' }],
 			},
 		],
 		message_center_focus: -1,
 		message_types_list: [],
+		shadow: false, //所有弹窗遮罩
+		shadow_gray: false, //灰色遮罩
+		local_shadow: false, //弹窗上的弹窗的局部遮罩
+		config_select: '', //配置选择的预设
+		// 配置的预设列表
+		config_options: [
+			{ value: 1, label: '预设1' },
+			{ value: 2, label: '预设2' },
+			{ value: 3, label: '预设3' },
+		],
 	},
 	created: function () {
 		if (!window.location.search) {
@@ -277,11 +251,20 @@ var index = new Vue({
 		getToken: function () {
 			let temp = location.search.substring(1).split('&');
 			temp.forEach((e) => {
-				if (e.indexOf('loginToken') != -1) {
+				let key = e.split('=')[0];
+				if (key.indexOf('loginToken') != -1) {
 					this.loginToken = e.split('=')[1];
 					window.sessionStorage.loginToken = this.loginToken;
 				}
-				if (e.indexOf('userName') != -1) {
+				if (key.indexOf('userName') != -1) {
+					this.userName = e.split('=')[1];
+					window.sessionStorage.userName = this.userName;
+				}
+				if (key.indexOf('token') != -1) {
+					this.loginToken = e.split('=')[1];
+					window.sessionStorage.loginToken = this.loginToken;
+				}
+				if (key.indexOf('zh') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
 				}
@@ -348,7 +331,6 @@ var index = new Vue({
 				this.itemFocus = -1;
 			} else {
 				this.platformJump = 0;
-				this.showDeviceList = false;
 				this.itemFocus = index;
 				this.projectId = this.item[index].projectId;
 				this.customerId = this.item[index].customerId;
@@ -358,7 +340,15 @@ var index = new Vue({
 		// 请求场所标签列表
 		resPlaceList: function (placePageNum) {
 			this.tags = [];
-			this.request('post', placeUrl, this.userName, { projectId: this.projectId, customerId: this.customerId, pageNum: placePageNum, pageSize: this.placePageSize }, '74935343174538', this.loginToken, this.placeList);
+			this.request(
+				'post',
+				placeUrl,
+				this.userName,
+				{ projectId: this.projectId, customerId: this.customerId, pageNum: placePageNum, pageSize: this.placePageSize },
+				'74935343174538',
+				this.loginToken,
+				this.placeList
+			);
 		},
 		// 获取场所列表后执行事件
 		placeList: function (res) {
@@ -385,6 +375,8 @@ var index = new Vue({
 			this.projectId = obj.projectId;
 			this.customerId = obj.customerId;
 			this.newTag = true;
+			this.shadow_gray_target = 'newTag';
+			this.shadow_gray = true;
 			this.$nextTick(() => {
 				this.$refs.inputTag.focus();
 			});
@@ -393,6 +385,7 @@ var index = new Vue({
 		resNewPlace: function () {
 			this.request('post', addPlaceUrl, this.userName, { name: this.tagName, projectId: this.projectId, customerId: this.customerId }, '74935343174538', this.loginToken, this.addTagSucess);
 			this.newTag = false;
+			this.shadow_gray = false;
 		},
 		// 新增场所成功提示
 		addTagSucess: function () {
@@ -407,14 +400,25 @@ var index = new Vue({
 		clickEditTag: function (obj) {
 			this.placeId = obj.placeId;
 			this.editTagName = true;
+			this.shadow_gray_target = 'editTagName';
+			this.shadow_gray = true;
 			this.$nextTick(() => {
 				this.$refs.inputTag.focus();
 			});
 		},
 		// 编辑场所
 		resEditTag: function () {
-			this.request('post', editPlaceTagUrl, this.userName, { id: this.placeId, name: this.tagName, projectId: this.projectId, customerId: this.customerId }, '74935343174538', this.loginToken, this.editTagNameSuccess);
+			this.request(
+				'post',
+				editPlaceTagUrl,
+				this.userName,
+				{ id: this.placeId, name: this.tagName, projectId: this.projectId, customerId: this.customerId },
+				'74935343174538',
+				this.loginToken,
+				this.editTagNameSuccess
+			);
 			this.editTagName = false;
+			this.shadow_gray = false;
 		},
 		// 编辑场所成功提示
 		editTagNameSuccess: function () {
@@ -428,6 +432,8 @@ var index = new Vue({
 		// 新建项目按钮
 		clickNewItem: function () {
 			this.newItem = true;
+			this.shadow_gray_target = 'newItem';
+			this.shadow_gray = true;
 			this.$nextTick(() => {
 				this.$refs.inputTag.focus();
 			});
@@ -436,6 +442,7 @@ var index = new Vue({
 		resNewItem: function () {
 			this.request('post', addItemUrl, this.userName, { type: 'project', projectName: this.itemName, customerId: this.customerId }, '74935343174538', this.loginToken, this.addItemSuccess);
 			this.newItem = false;
+			this.shadow_gray = false;
 		},
 		// 新增项目成功提示
 		addItemSuccess: function () {
@@ -469,13 +476,11 @@ var index = new Vue({
 				message: '删除场所成功',
 				type: 'success',
 			});
-			this.showDeviceList = false;
 			this.resPlaceList(1);
 		},
 		// 点击场所切换样式之后所取用的场所ID就取自这里
 		clickPlace: function (index) {
 			this.platformJump = 0;
-			this.showDeviceList = false;
 			this.placeFocus = index;
 			this.placeId = this.tags[index].placeId;
 			// 点击场所时不刷新消息列表
@@ -501,10 +506,24 @@ var index = new Vue({
 		},
 		// 点击显示可分配设备列表
 		showDeviceListButton: function () {
-			this.showDeviceList = !this.showDeviceList;
-			if (this.showDeviceList) {
-				this.resDeviceList();
-			}
+			this.showDeviceList = true;
+			this.shadow = true;
+			// 记录是哪个弹窗
+			this.shadow_target = 'showDeviceList';
+			this.resDeviceList();
+		},
+		// 遮罩点击功能
+		hidden_transparent() {
+			this[this.shadow_target] = false;
+			this.shadow = false;
+		},
+		hidden_gray() {
+			this[this.shadow_gray_target] = false;
+			this.shadow_gray = false;
+		},
+		hidden_local() {
+			this[this.local_shadow_target] = false;
+			this.local_shadow = false;
 		},
 		// 请求可分配设备列表
 		resDeviceList: function () {
@@ -535,6 +554,7 @@ var index = new Vue({
 		resSceneDetail: function () {
 			this.showAddScene = false;
 			this.showEditScene = false;
+			this.shadow_gray = false;
 			if (this.placeId) {
 				this.request('post', sceneDetailUrl, this.userName, { placeId: this.placeId }, '74935343174538', this.loginToken, this.sceneDetail);
 			}
@@ -545,9 +565,9 @@ var index = new Vue({
 			this.manual = res.data.data.manual;
 			for (let i = 0; i < this.timing.length; i++) {
 				if (this.timing[i].status == 0) {
-					this.timing[i].switch0or1 = false;
+					this.$set(this.timing[i], 'switch0or1', false);
 				} else {
-					this.timing[i].switch0or1 = true;
+					this.$set(this.timing[i], 'switch0or1', true);
 				}
 			}
 		},
@@ -568,39 +588,45 @@ var index = new Vue({
 				});
 			} else {
 				for (let i = 0; i < this.addSceneDeviceList.length; i++) {
-					if (this.addSceneDeviceList[i].checked) {
-						if (this.addSceneDeviceList[i].platform == 2) {
-							let obj = {};
-							obj.deviceId = this.addSceneDeviceList[i].deviceId;
-							obj.param = {};
-							obj.param.paramVolume = this.addSceneDeviceList[i].param.paramVolume;
-							checkedDeviceList.push(obj);
-						} else if (this.addSceneDeviceList[i].platform == 3) {
-							let obj = {};
-							obj.deviceId = this.addSceneDeviceList[i].deviceId;
-							obj.param = {};
-							obj.param.paramUser = this.addSceneDeviceList[i].param.paramUser;
-							obj.param.paramOrder = this.addSceneDeviceList[i].param.paramOrder;
-							checkedDeviceList.push(obj);
-						} else {
-							let obj = {};
-							obj.deviceId = this.addSceneDeviceList[i].deviceId;
-							obj.param = {};
-							checkedDeviceList.push(obj);
-						}
+					if (this.addSceneDeviceList[i].checked && Object.keys(this.addSceneDeviceList[i]).indexOf('param') != -1) {
+						let obj = {};
+						obj.deviceId = this.addSceneDeviceList[i].deviceId;
+						obj.param = {
+							scene_no: this.addSceneDeviceList[i].param.scene_no.toString(),
+						};
+						checkedDeviceList.push(obj);
 					}
 				}
 				if (this.showAddScene) {
-					this.request('post', addSceneUrl, this.userName, { scene: { placeId: this.placeId, sceneName: this.sceneName, type: this.sceneType, startTime: this.startTime, exeDate: exeDate, status: 1 }, deviceList: checkedDeviceList }, '74935343174538', this.loginToken, this.resSceneDetail);
+					this.request(
+						'post',
+						addSceneUrl,
+						this.userName,
+						{ scene: { placeId: this.placeId, sceneName: this.sceneName, type: this.sceneType, startTime: this.startTime, exeDate: exeDate, status: 1 }, deviceList: checkedDeviceList },
+						'74935343174538',
+						this.loginToken,
+						this.resSceneDetail
+					);
 				} else if (this.showEditScene) {
-					this.request('post', addSceneUrl, this.userName, { scene: { id: this.sceneId, placeId: this.placeId, sceneName: this.sceneName, type: this.sceneType, startTime: this.startTime, exeDate: exeDate, status: this.sceneStatus }, deviceList: checkedDeviceList }, '74935343174538', this.loginToken, this.resSceneDetail);
+					this.request(
+						'post',
+						addSceneUrl,
+						this.userName,
+						{
+							scene: { id: this.sceneId, placeId: this.placeId, sceneName: this.sceneName, type: this.sceneType, startTime: this.startTime, exeDate: exeDate, status: this.sceneStatus },
+							deviceList: checkedDeviceList,
+						},
+						'74935343174538',
+						this.loginToken,
+						this.resSceneDetail
+					);
 				}
 			}
 		},
 		// 切换-自动执行-开关状态
 		switchStatus: function (i) {
 			this.request('post', updateSceneStatusUrl, this.userName, { sceneId: i.sceneId }, '74935343174538', this.loginToken, this.resSceneDetail);
-			this.$forceUpdate();
+			// this.$forceUpdate();
 		},
 		// 删除场景
 		delScene: function (i) {
@@ -631,8 +657,9 @@ var index = new Vue({
 		resManualScene: function (i) {
 			this.request('post', updateSceneStatusUrl, this.userName, { sceneId: i.sceneId }, '74935343174538', this.loginToken, this.resSceneDetail);
 		},
-		// 拖拽到卡包
+		// 拖拽添加过程
 		dragstartToAdd: function (e, i) {
+			this.shadow = false;
 			this.deviceId = i.id;
 			this.draging = e.target.classList[0];
 		},
@@ -657,11 +684,14 @@ var index = new Vue({
 					this.resAddDevice(deviceIdList);
 				}
 			}
+			this.shadow = true;
 		},
 		// 拖拽到删除区域
 		dropDelete: function (e) {
 			e.preventDefault();
 			this.tipsOfDeleteDevice = true;
+			this.shadow_gray_target = 'tipsOfDeleteDevice';
+			this.shadow_gray = true;
 		},
 		// 点击确认删除
 		deleteTipsButton: function (e) {
@@ -671,6 +701,7 @@ var index = new Vue({
 				this.resDleteDevice(idList);
 			}
 			this.tipsOfDeleteDevice = false;
+			this.shadow_gray = false;
 		},
 		// 如果输入框为空则刷新列表
 		ifDeviceInputIsEpt: function () {
@@ -697,6 +728,7 @@ var index = new Vue({
 		goToCommand: function (i, index) {
 			this.deviceId = i.deviceId;
 			this.imgSrc = i.modelPictureUrl;
+			// window.location.href = `./DX4.0/index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
 			//#region
 			// switch (i.platform) {
 			// 	case 1:
@@ -762,7 +794,7 @@ var index = new Vue({
 			//#endregion
 			// 根据url跳转服务器地址
 			if (i.serverUrl.length > 10) {
-				window.open(`${i.serverUrl}/index.html?loginToken=${this.loginToken}&userName=${this.userName}`);
+				window.location.href = `${i.serverUrl}/index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
 			}
 		},
 		// 跳转广播设备卡片
@@ -806,7 +838,15 @@ var index = new Vue({
 					} else if (!reg2.test(this.volumeInput)) {
 						this.$message.error('只能为0~64的数字');
 					} else {
-						this.request('post', soundDeviceEditUrl, this.userName, { power: this.soundDevicePower, vol: Number(this.volumeInput), id: this.deviceId, cmd: 1 }, 'hsIot/cmd/' + this.deviceId, this.loginToken, this.editSoundDeviceConfig);
+						this.request(
+							'post',
+							soundDeviceEditUrl,
+							this.userName,
+							{ power: this.soundDevicePower, vol: Number(this.volumeInput), id: this.deviceId, cmd: 1 },
+							'hsIot/cmd/' + this.deviceId,
+							this.loginToken,
+							this.editSoundDeviceConfig
+						);
 					}
 					break;
 				case 5:
@@ -834,7 +874,15 @@ var index = new Vue({
 		// 教育设备下发时loading遮罩
 		async eduDeviceLoading() {
 			this.eduDevicePushLoading = true;
-			await this.request('post', saveEduDeviceConfigUrl, this.userName, { srcDeviceId: this.deviceId, tarDeviceIdList: this.checkedEduDeviceID }, '74935343174538', this.loginToken, this.editEduDeviceTips);
+			await this.request(
+				'post',
+				saveEduDeviceConfigUrl,
+				this.userName,
+				{ srcDeviceId: this.deviceId, tarDeviceIdList: this.checkedEduDeviceID },
+				'74935343174538',
+				this.loginToken,
+				this.editEduDeviceTips
+			);
 		},
 		// 保存教育设备参数成功提示
 		editEduDeviceTips: function (res) {
@@ -882,7 +930,15 @@ var index = new Vue({
 		// 教育设备是跨场所的，获取所有场所下的教育设备
 		resGetEduDeviceList: function () {
 			this.checkPlatform = 5;
-			this.request('post', getAllPlaceEduDeviceUrl, this.userName, { currentPage: 1, pageSize: 9999, platform: this.checkPlatform, isOnline: '1' }, '74935343174538', this.loginToken, this.getEduDeviceList);
+			this.request(
+				'post',
+				getAllPlaceEduDeviceUrl,
+				this.userName,
+				{ currentPage: 1, pageSize: 9999, platform: this.checkPlatform, isOnline: '1' },
+				'74935343174538',
+				this.loginToken,
+				this.getEduDeviceList
+			);
 		},
 		// 获取教育设备后执行
 		getEduDeviceList: function (res) {
@@ -924,6 +980,12 @@ var index = new Vue({
 				}
 			});
 		},
+		// 点击展开日期选择
+		selec_tweek() {
+			this.showWeekContainer = true;
+			this.local_shadow_target = 'showWeekContainer';
+			this.local_shadow = true;
+		},
 		// 日期全选
 		selectAll: function () {
 			for (let i = 0; i < 7; i++) {
@@ -955,46 +1017,46 @@ var index = new Vue({
 				this.checkAllFlag = 1;
 				this.checkAll = false;
 			}
-			this.$forceUpdate();
+			// this.$forceUpdate();
 		},
 		// 新建场景设备配置
-		sceneDeviceConfig: function (i, index) {
-			this.sceneDeviceSelected = index;
-			this.configPlatform = i.platform;
-			switch (i.platform) {
-				case 2:
-					this.deviceId = i.deviceId;
-					this.request('post', soundDeviceDetailUrl, this.userName, { id: this.deviceId }, '74935343174538', this.loginToken, this.soundDeviceConfig);
-					break;
-				case 3:
-					this.deviceId = i.deviceId;
-					this.request('post', userGroupAndSeqUrl, this.userName, { deviceId: this.deviceId }, '74935343174538', this.loginToken, this.userGroupAndSeq);
-					break;
-			}
-		},
-		// 广播设备点击配置后执行
-		soundDeviceConfig: function (res) {
-			this.setUserGroupAndOrder = true;
-			this.addSceneDeviceList[this.sceneDeviceSelected].param.paramVolume = res.data.data.vol;
-			this.soundDevicePower = res.data.data.power;
-		},
-		// 专业设备点击配置后执行
-		userGroupAndSeq: function (res) {
-			this.setUserGroupAndOrder = true;
-			this.groupMin = res.data.data.minUser;
-			this.groupMax = res.data.data.maxUser;
-			this.orderMin = res.data.data.minOrder;
-			this.orderMax = res.data.data.maxOrder;
+		sceneDeviceConfig: function (obj, index) {
+			this.config_options = [];
+			this.request('post', listSceneInfo, this.userName, { device_id: obj.deviceId }, '123456', this.loginToken, (res) => {
+				console.log('配置', res);
+				if (res.data.data === '该设备无预设场景！') {
+					this.$message.info('暂无预设配置');
+				} else {
+					this.scene_config_index = index;
+					this.config_select = res.data.data[0].now_scene;
+					res.data.data.forEach((e) => {
+						let temp = {
+							value: e.scene_no,
+							label: e.scene_name ? e.scene_name : `预设${e.scene_no}`,
+						};
+						this.config_options.push(temp);
+					});
+					this.setUserGroupAndOrder = true;
+				}
+			});
+			//#region
+			// this.configPlatform = i.platform;
+			// switch (i.platform) {
+			// 	case 2:
+			// 		this.deviceId = i.deviceId;
+			// 		this.request('post', soundDeviceDetailUrl, this.userName, { id: this.deviceId }, '74935343174538', this.loginToken, this.soundDeviceConfig);
+			// 		break;
+			// 	case 3:
+			// 		this.deviceId = i.deviceId;
+			// 		this.request('post', userGroupAndSeqUrl, this.userName, { deviceId: this.deviceId }, '74935343174538', this.loginToken, this.userGroupAndSeq);
+			// 		break;
+			// }
+			//#endregion
 		},
 		// 关闭配置按钮后保存设置
 		saveConfigSet: function () {
-			switch (this.configPlatform) {
-				case 2:
-					this.request('post', soundDeviceEditUrl, this.userName, { power: this.soundDevicePower, vol: this.addSceneDeviceList[this.sceneDeviceSelected].param.paramVolume, id: this.deviceId, cmd: 1 }, 'hsIot/cmd/' + this.deviceId, this.loginToken, function () {});
-					break;
-				case 3:
-					break;
-			}
+			this.addSceneDeviceList[this.scene_config_index].param = { scene_no: this.config_select };
+			this.$set(this.addSceneDeviceList[this.scene_config_index], 'config_name', this.config_options[this.config_select - 1].label);
 			this.setUserGroupAndOrder = false;
 		},
 		// 新建场景设备全选
@@ -1053,7 +1115,6 @@ var index = new Vue({
 			this.refresh_place_device = false;
 			this.managerFocus = index;
 			// 关闭场所管理器弹框
-			this.showDeviceList = false;
 			switch (index) {
 				case 0:
 					this.refresh_place_device = true;
@@ -1072,17 +1133,15 @@ var index = new Vue({
 			this.addSceneDeviceList = this.placeDeviceListArray;
 			// 新建场景里的设备列表，进行再构造将所有设备的特有属性
 			for (let i = 0; i < this.addSceneDeviceList.length; i++) {
-				this.addSceneDeviceList[i].checked = false;
-				this.addSceneDeviceList[i].param = {};
-				this.addSceneDeviceList[i].param.paramUser = 0;
-				this.addSceneDeviceList[i].param.paramOrder = 0;
-				this.addSceneDeviceList[i].param.paramVolume = 0;
+				this.$set(this.addSceneDeviceList[i], 'checked', false);
+				// 循环发送请求查看每个设备是否有配置预设
 			}
 			this.showAddScene = true;
-			this.sceneName = '';
+			this.shadow_gray_target = 'showAddScene';
+			this.shadow_gray = true;
+			this.sceneName = '新场景';
 			this.sceneType = 2;
 			this.startTime = '';
-			this.showWeekContainer = false;
 			this.clearAll();
 			this.checkAllFlag = 1;
 			this.checkAll = false;
@@ -1090,7 +1149,8 @@ var index = new Vue({
 		// 点击编辑按钮查看修改
 		clickSceneEditButton: function (i) {
 			this.showEditScene = true;
-			this.showWeekContainer = false;
+			this.shadow_gray_target = 'showEditScene';
+			this.shadow_gray = true;
 			this.sceneId = i.sceneId;
 			// 循环改值前先回溯到初始值
 			for (let i = 0; i < 7; i++) {
@@ -1116,9 +1176,9 @@ var index = new Vue({
 			this.sceneStatus = this.sceneEdit.status;
 			for (let i = 0; i < this.addSceneDeviceList.length; i++) {
 				if (this.addSceneDeviceList[i].flag == 1) {
-					this.addSceneDeviceList[i].checked = true;
+					this.$set(this.addSceneDeviceList[i], 'checked', true);
 				} else if (this.addSceneDeviceList[i].flag == 0) {
-					this.addSceneDeviceList[i].checked = false;
+					this.$set(this.addSceneDeviceList[i], 'checked', false);
 				}
 			}
 			let count = 0;
@@ -1137,7 +1197,7 @@ var index = new Vue({
 				this.checkAllFlag = 1;
 				this.checkAll = false;
 			}
-			this.$forceUpdate();
+			// this.$forceUpdate();
 		},
 		// 展开可分配设备列表
 		showPowerList: function () {
@@ -1178,10 +1238,14 @@ var index = new Vue({
 			this.alert_rule_id = alert_rule.id;
 			this.alert_rule_status = alert_rule.status;
 			this.new_and_edit_alert_rule = 2;
+			this.shadow_gray_target = [new_and_edit_alert_rule];
+			this.shadow_gray = true;
 		},
 		// 点击新建告警规则按钮
 		new_alert_rule: function () {
 			this.new_and_edit_alert_rule = 1;
+			this.shadow_gray_target = 'new_and_edit_alert_rule';
+			this.shadow_gray = true;
 			for (let i of this.alert_method_options) {
 				i.check = false;
 			}
@@ -1227,20 +1291,30 @@ var index = new Vue({
 					this.request('post', res_new_alert_url, this.userName, { context: context, method: method }, '74935343174538', this.loginToken, function () {
 						_this.res_alert_rule_detail();
 						_this.new_and_edit_alert_rule = 0;
+						this.shadow_gray = false;
 						_this.alert_content = '';
 						for (let i of _this.alert_method_options) {
 							i.check = false;
 						}
 					});
 				} else if (this.new_and_edit_alert_rule == 2) {
-					this.request('post', res_edit_alert_url, this.userName, { id: this.alert_rule_id, method: method, context: context, status: this.alert_rule_status }, '74935343174538', this.loginToken, function () {
-						_this.res_alert_rule_detail();
-						_this.new_and_edit_alert_rule = 0;
-						_this.alert_content = '';
-						for (let i of _this.alert_method_options) {
-							i.check = false;
+					this.request(
+						'post',
+						res_edit_alert_url,
+						this.userName,
+						{ id: this.alert_rule_id, method: method, context: context, status: this.alert_rule_status },
+						'74935343174538',
+						this.loginToken,
+						function () {
+							_this.res_alert_rule_detail();
+							_this.new_and_edit_alert_rule = 0;
+							this.shadow_gray = false;
+							_this.alert_content = '';
+							for (let i of _this.alert_method_options) {
+								i.check = false;
+							}
 						}
-					});
+					);
 				}
 			}
 		},
@@ -1266,7 +1340,10 @@ var index = new Vue({
 		left_bar_turn_to: function (par) {
 			switch (par) {
 				case 0:
-					window.open(`${userCenterLink}?token=${this.loginToken}&zh=${this.userName}`);
+					if (this.managerFocus == 0) {
+						this.refresh_place_device = true;
+					}
+					this.platformJump = 0;
 					break;
 				case 1:
 					this.nav_bar_click = par;
@@ -1285,10 +1362,7 @@ var index = new Vue({
 					this.download_center_jump = 0;
 					break;
 				case 4:
-					if (this.managerFocus == 0) {
-						this.refresh_place_device = true;
-					}
-					this.platformJump = 0;
+					window.location.href = `${userCenterLink}?token=${this.loginToken}&zh=${this.userName}`;
 					break;
 			}
 		},
@@ -1357,6 +1431,8 @@ var index = new Vue({
 				_this.message_center_detail = res.data.data;
 			});
 			this.message_detail_display = true;
+			this.shadow_target = 'message_detail_display';
+			this.shadow = true;
 		},
 		// 下载中心模块列表
 		download_sort: function (type) {
@@ -1445,9 +1521,17 @@ var index = new Vue({
 						this.download_center_list = res.data.data;
 					});
 				} else {
-					this.request('post', res_download_module_list_url, this.userName, { currentPage: this.download_center_list.currentPage - 1, pageSize: 13, type: type, name: this.download_list_search }, 'test123', this.loginToken, (res) => {
-						this.download_center_list = res.data.data;
-					});
+					this.request(
+						'post',
+						res_download_module_list_url,
+						this.userName,
+						{ currentPage: this.download_center_list.currentPage - 1, pageSize: 13, type: type, name: this.download_list_search },
+						'test123',
+						this.loginToken,
+						(res) => {
+							this.download_center_list = res.data.data;
+						}
+					);
 				}
 			}
 		},
@@ -1459,9 +1543,17 @@ var index = new Vue({
 						this.download_center_list = res.data.data;
 					});
 				} else {
-					this.request('post', res_download_module_list_url, this.userName, { currentPage: this.download_center_list.currentPage + 1, pageSize: 13, type: type, name: this.download_list_search }, 'test123', this.loginToken, (res) => {
-						this.download_center_list = res.data.data;
-					});
+					this.request(
+						'post',
+						res_download_module_list_url,
+						this.userName,
+						{ currentPage: this.download_center_list.currentPage + 1, pageSize: 13, type: type, name: this.download_list_search },
+						'test123',
+						this.loginToken,
+						(res) => {
+							this.download_center_list = res.data.data;
+						}
+					);
 				}
 			}
 		},

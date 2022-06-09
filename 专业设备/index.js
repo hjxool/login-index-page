@@ -532,7 +532,14 @@ let power_frequency = new Vue({
 			}
 			length = Math.floor(length * 10 + 0.5) / 10;
 			this.processor_detail.delay.time_delay = length;
-			this.request('post', push_delay_url, { device_id: this.resCommonParams.deviceId, channel_name_no: this.processor_detail.delay.channel_name_no, time_delay: length }, '123456', this.resCommonParams.loginToken, (res) => {});
+			this.request(
+				'post',
+				push_delay_url,
+				{ device_id: this.resCommonParams.deviceId, channel_name_no: this.processor_detail.delay.channel_name_no, time_delay: length },
+				'123456',
+				this.resCommonParams.loginToken,
+				(res) => {}
+			);
 		},
 		slider_move(e) {
 			let dom = this.$refs.delay_slider;
@@ -556,7 +563,14 @@ let power_frequency = new Vue({
 				this.processor_detail.delay.time_delay = length;
 			};
 			window.onmouseup = (e) => {
-				this.request('post', push_delay_url, { device_id: this.resCommonParams.deviceId, channel_name_no: this.processor_detail.delay.channel_name_no, time_delay: this.processor_detail.delay.time_delay }, '123456', this.resCommonParams.loginToken, (res) => {});
+				this.request(
+					'post',
+					push_delay_url,
+					{ device_id: this.resCommonParams.deviceId, channel_name_no: this.processor_detail.delay.channel_name_no, time_delay: this.processor_detail.delay.time_delay },
+					'123456',
+					this.resCommonParams.loginToken,
+					(res) => {}
+				);
 				window.onmousemove = false;
 			};
 		},
@@ -644,9 +658,16 @@ let power_frequency = new Vue({
 		// 点击查询固定波段的均衡
 		res_filter_peq(index) {
 			this.static_par.filter_peq_section = index;
-			this.request('post', filter_peq_url, { device_id: this.resCommonParams.deviceId, isInput: this.processor_detail.filter_peq.isInput, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: index }, '123456', this.resCommonParams.loginToken, (res) => {
-				this.processor_detail.filter_peq = res.data.data[0];
-			});
+			this.request(
+				'post',
+				filter_peq_url,
+				{ device_id: this.resCommonParams.deviceId, isInput: this.processor_detail.filter_peq.isInput, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: index },
+				'123456',
+				this.resCommonParams.loginToken,
+				(res) => {
+					this.processor_detail.filter_peq = res.data.data[0];
+				}
+			);
 		},
 		// 均衡启闭
 		filter_peq_button() {
@@ -673,17 +694,45 @@ let power_frequency = new Vue({
 		filter_recover_button(flag) {
 			// flag 1为输入 0输出
 			if (flag == 1) {
-				this.request('post', push_filter_recover_url, { device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no }, '123456', this.resCommonParams.loginToken, () => {
-					this.request('post', filter_peq_url, { device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: this.static_par.filter_peq_section }, '123456', this.resCommonParams.loginToken, (res) => {
-						this.processor_detail.filter_peq = res.data.data[0];
-					});
-				});
+				this.request(
+					'post',
+					push_filter_recover_url,
+					{ device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no },
+					'123456',
+					this.resCommonParams.loginToken,
+					() => {
+						this.request(
+							'post',
+							filter_peq_url,
+							{ device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: this.static_par.filter_peq_section },
+							'123456',
+							this.resCommonParams.loginToken,
+							(res) => {
+								this.processor_detail.filter_peq = res.data.data[0];
+							}
+						);
+					}
+				);
 			} else if (flag == 0) {
-				this.request('post', push_filter_recover_url, { device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no }, '123456', this.resCommonParams.loginToken, () => {
-					this.request('post', filter_peq_url, { device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: this.static_par.filter_peq_section }, '123456', this.resCommonParams.loginToken, (res) => {
-						this.processor_detail.filter_peq = res.data.data[0];
-					});
-				});
+				this.request(
+					'post',
+					push_filter_recover_url,
+					{ device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no },
+					'123456',
+					this.resCommonParams.loginToken,
+					() => {
+						this.request(
+							'post',
+							filter_peq_url,
+							{ device_id: this.resCommonParams.deviceId, isInput: flag, channel_no: this.processor_detail.filter_peq.channel_no, paragraph_no: this.static_par.filter_peq_section },
+							'123456',
+							this.resCommonParams.loginToken,
+							(res) => {
+								this.processor_detail.filter_peq = res.data.data[0];
+							}
+						);
+					}
+				);
 			}
 		},
 		// 延时单位转换显示
@@ -723,11 +772,18 @@ let power_frequency = new Vue({
 			} else {
 				row.splice(col_index, 1, 0);
 			}
-			this.request('post', push_matrix_url, { device_id: this.resCommonParams.deviceId, channel_in_no: col_index + 1, channel_out_no: row_index + 1, matrix_status: row[col_index] }, '55555', this.resCommonParams.loginToken, () => {});
+			this.request(
+				'post',
+				push_matrix_url,
+				{ device_id: this.resCommonParams.deviceId, channel_in_no: col_index + 1, channel_out_no: row_index + 1, matrix_status: row[col_index] },
+				'55555',
+				this.resCommonParams.loginToken,
+				() => {}
+			);
 		},
 		// 返回首页
 		return_index_page() {
-			window.location.href = '../index.html';
+			window.location.href = `../index.html?loginToken=${this.resCommonParams.loginToken}&userName=${this.resCommonParams.userName}`;
 		},
 	},
 });
