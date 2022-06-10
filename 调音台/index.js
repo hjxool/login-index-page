@@ -24,10 +24,11 @@ let sound = new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.deviceId = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
-		this.deviceId = '0x022222222200000000000000';
+		// this.deviceId = '0x022222222200000000000000';
 		this.request('post', sound_url, { device_id: this.deviceId }, '74935343174538', this.loginToken, this.sound_console_detail);
 	},
 	methods: {
@@ -45,6 +46,9 @@ let sound = new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.deviceId = e.split('=')[1];
+					window.sessionStorage.device_id = this.deviceId;
 				}
 			});
 			let url = location.href.split('?')[0];

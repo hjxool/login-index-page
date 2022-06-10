@@ -84,10 +84,11 @@ let power_frequency = new Vue({
 		if (!location.search) {
 			this.resCommonParams.loginToken = window.sessionStorage.loginToken;
 			this.resCommonParams.userName = window.sessionStorage.userName;
+			this.resCommonParams.deviceId = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
-		this.resCommonParams.deviceId = '0x333333333333333333000000';
+		// this.resCommonParams.deviceId = '0x333333333333333333000000';
 		this.request('post', processor_detail_url, { device_id: this.resCommonParams.deviceId }, '74935343174538', this.resCommonParams.loginToken, this.processor_param);
 		this.total_page_loading = false;
 	},
@@ -102,6 +103,9 @@ let power_frequency = new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.resCommonParams.userName = e.split('=')[1];
 					window.sessionStorage.userName = e.split('=')[1];
+				} else if (e.indexOf('deviceId') != -1) {
+					this.resCommonParams.deviceId = e.split('=')[1];
+					window.sessionStorage.device_id = e.split('=')[1];
 				}
 			});
 			let url = location.href.split('?')[0];

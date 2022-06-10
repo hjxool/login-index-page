@@ -7,6 +7,7 @@ new Vue({
 		return {
 			loginToken: '',
 			userName: '',
+			device_id: '',
 			static_param: {},
 		};
 	},
@@ -14,6 +15,7 @@ new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
@@ -33,6 +35,9 @@ new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.device_id = e.split('=')[1];
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];
@@ -71,7 +76,7 @@ new Vue({
 		},
 		// 音箱位置
 		sound_box_ctrl(type) {
-			this.request('post', sound_box_url, { device_id: '0x12345622F955000000000000', type: type }, '123456', this.loginToken, () => {});
+			this.request('post', sound_box_url, { device_id: this.device_id, type: type }, '123456', this.loginToken, () => {});
 		},
 	},
 });

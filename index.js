@@ -794,7 +794,7 @@ var index = new Vue({
 			//#endregion
 			// 根据url跳转服务器地址
 			if (i.serverUrl.length > 10) {
-				window.location.href = `${i.serverUrl}/index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
+				window.location.href = `${i.serverUrl}/index.html?loginToken=${this.loginToken}&userName=${this.userName}&deviceId=${i.deviceId}`;
 			}
 		},
 		// 跳转广播设备卡片

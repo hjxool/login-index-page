@@ -57,6 +57,7 @@ new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
@@ -80,7 +81,7 @@ new Vue({
 					this.dsp_option.output2LimitTh = res.data.data.output2LimitTh;
 				});
 			}
-		}, 180000);
+		}, 30000);
 		// websocket获取DSP页面数据
 		this.ws_link = new WebSocket(`${ws_url}/${this.device_id}/level?token=${this.loginToken}`);
 		this.ws_link.onmessage = (res) => {
@@ -119,6 +120,9 @@ new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.device_id = e.split('=')[1];
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];

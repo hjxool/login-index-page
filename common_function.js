@@ -12,6 +12,9 @@ const common_functions = {
 				} else if (key.indexOf('userName') != -1) {
 					this.userName = value;
 					window.sessionStorage.userName = this.userName;
+				} else if (key.indexOf('deviceId') != -1) {
+					this.device_id = value;
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];

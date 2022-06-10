@@ -29,6 +29,7 @@ new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}

@@ -23,16 +23,18 @@ new Vue({
 		};
 	},
 	mounted() {
-		this.request('post', 'http://182.150.116.22:18009/api/user/login', { userName: 'houjie', password: '123456Aa' }, '74935343174538', '123', (res) => {
-			this.loginToken = res.data.data.token;
-			this.module_select(0);
-		});
-		// if (!location.search) {
-		// 	this.loginToken = window.sessionStorage.loginToken;
-		// 	this.userName = window.sessionStorage.userName;
-		// } else {
-		// 	this.get_token();
-		// }
+		// this.request('post', 'http://182.150.116.22:18009/api/user/login', { userName: 'houjie', password: '123456Aa' }, '74935343174538', '123', (res) => {
+		// 	this.loginToken = res.data.data.token;
+		// 	this.module_select(0);
+		// });
+		if (!location.search) {
+			this.loginToken = window.sessionStorage.loginToken;
+			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
+		} else {
+			this.get_token();
+		}
+		this.module_select(0);
 	},
 	methods: {
 		// 获取地址栏token
@@ -45,6 +47,9 @@ new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.device_id = e.split('=')[1];
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];

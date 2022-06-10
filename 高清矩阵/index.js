@@ -19,6 +19,7 @@ new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
@@ -38,6 +39,9 @@ new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.device_id = e.split('=')[1];
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];
@@ -84,7 +88,7 @@ new Vue({
 					this.request(
 						'post',
 						video_out_url,
-						{ device_id: '0x12345622F955000000000000', input_no: this.static_param.video_source_checked + 1, output_no: this.static_param.video_out_checked + 1 },
+						{ device_id: this.device_id, input_no: this.static_param.video_source_checked + 1, output_no: this.static_param.video_out_checked + 1 },
 						'123456',
 						this.loginToken,
 						() => {}

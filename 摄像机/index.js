@@ -17,6 +17,7 @@ new Vue({
 		if (!location.search) {
 			this.loginToken = window.sessionStorage.loginToken;
 			this.userName = window.sessionStorage.userName;
+			this.device_id = window.sessionStorage.device_id;
 		} else {
 			this.get_token();
 		}
@@ -36,6 +37,9 @@ new Vue({
 				} else if (e.indexOf('userName') != -1) {
 					this.userName = e.split('=')[1];
 					window.sessionStorage.userName = this.userName;
+				} else if (e.indexOf('deviceId') != -1) {
+					this.device_id = e.split('=')[1];
+					window.sessionStorage.device_id = this.device_id;
 				}
 			});
 			let url = location.href.split('?')[0];
@@ -82,10 +86,10 @@ new Vue({
 		},
 		camera_ctrl(type) {
 			let name = this.static_param.camera_list[this.static_param.camera_select];
-			this.request('post', camera_ctrl_url, { device_id: '0x12345622F955000000000000', type: type, name: name }, '123456', this.loginToken, (res) => {
+			this.request('post', camera_ctrl_url, { device_id: this.device_id, type: type, name: name }, '123456', this.loginToken, (res) => {
 				if (res.data.code == 1000) {
 					setTimeout(() => {
-						this.request('post', camera_ctrl_url, { device_id: '0x12345622F955000000000000', type: 4, name: name }, '123456', this.loginToken, () => {});
+						this.request('post', camera_ctrl_url, { device_id: this.device_id, type: 4, name: name }, '123456', this.loginToken, () => {});
 					}, 1000);
 				}
 			});
