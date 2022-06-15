@@ -226,11 +226,21 @@ Vue.component('single-slider', {
 		},
 		// 改变滑块进度条高度
 		change_cover_height: function (par) {
+			if (par < Number(this.slider_min)) {
+				par = Number(this.slider_min);
+			} else if (par > Number(this.slider_max)) {
+				par = Number(this.slider_max);
+			}
 			let temp = (par - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min));
 			return `height:${temp * 100}%;`;
 		},
 		// 改变滑块离底部距离
 		change_slider_bottom: function (par) {
+			if (par < Number(this.slider_min)) {
+				par = Number(this.slider_min);
+			} else if (par > Number(this.slider_max)) {
+				par = Number(this.slider_max);
+			}
 			let temp = (par - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min));
 			return `bottom:calc(${temp * 100}% - 18px);`;
 		},

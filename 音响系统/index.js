@@ -31,7 +31,7 @@ new Vue({
 				select_week: -1, //选择一周中的某天
 				select_month: -1, //选择一月中的某天
 				weeks: ['周一', '周二', '周三', '周四', '周五', '周六', '周七'],
-				day_time: {}, //当天时间
+				day_time: '', //当天时间
 				check_ststus: 0, //自检开关状态
 			},
 			history: {
@@ -73,12 +73,14 @@ new Vue({
 		this.limit_timer = setInterval(() => {
 			if (this.dsp_option.limit1_flag) {
 				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
-					this.dsp_option.output1LimitTh = res.data.data.output1LimitTh;
+					// this.dsp_option.output1LimitTh = res.data.data.output1LimitTh;
+					this.dsp_option.output[0].limit_threshold = res.data.data.output1LimitTh;
 				});
 			}
 			if (this.dsp_option.limit2_flag) {
 				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
-					this.dsp_option.output2LimitTh = res.data.data.output2LimitTh;
+					// this.dsp_option.output2LimitTh = res.data.data.output2LimitTh;
+					this.dsp_option.output[1].limit_threshold = res.data.data.output2LimitTh;
 				});
 			}
 		}, 30000);
@@ -258,7 +260,15 @@ new Vue({
 			for (let i = 0; i < this.channel_num; i++) {
 				this[`echarts${i}`].setOption({
 					tooltip: {
-						formatter: `${this.history.history_day}<br/>时间：{b}<br>${this.history.display_title}：{c} ${this.history.display_unit}`,
+						// formatter: `{b}<br>${this.history.display_title}：{c} ${this.history.display_unit}`,
+						formatter: (value) => {
+							let format_text = `
+						  日期：${value[0].axisValue.split(' ')[0]}<br>
+						  时间：${value[0].axisValue.split(' ')[1]}<br>
+						  ${this.history.display_title}：${value[0].data} ${this.history.display_unit}
+						`;
+							return format_text;
+						},
 					},
 					series: [
 						{
@@ -278,12 +288,12 @@ new Vue({
 						this.history.data_null = false; //控制数据为空时的显示
 						this.channel_num = num.length;
 						// 获取当天日期
-						this.history.history_day = res.data.data.output1.timeList[0].split(' ')[0];
+						// this.history.history_day = res.data.data.output1.timeList[0].split(' ')[0];
 						// 截取时间戳组成新数组
 						this.history.output1.timeList = [];
 						for (const e of res.data.data.output1.timeList) {
-							let time = e.split(' ')[1];
-							this.history.output1.timeList.push(time);
+							// let time = e.split(' ')[1];
+							this.history.output1.timeList.push(e);
 						}
 						// 将数据进行取整
 						this.history.output1.currentList = [];
@@ -309,8 +319,8 @@ new Vue({
 
 						this.history.output2.timeList = [];
 						for (const e of res.data.data.output2.timeList) {
-							let time = e.split(' ')[1];
-							this.history.output2.timeList.push(time);
+							// let time = e.split(' ')[1];
+							this.history.output2.timeList.push(e);
 						}
 						// 通道2
 						this.history.output2.currentList = [];
@@ -421,7 +431,14 @@ new Vue({
 				},
 				tooltip: {
 					trigger: 'axis',
-					formatter: `${this.history.history_day}<br/>时间：{b}<br>电压：{c} V`,
+					formatter: (value) => {
+						let format_text = `
+						  日期：${value[0].axisValue.split(' ')[0]}<br>
+						  时间：${value[0].axisValue.split(' ')[1]}<br>
+						  电压：${value[0].data} V
+						`;
+						return format_text;
+					},
 				},
 				series: [
 					{
@@ -463,9 +480,9 @@ new Vue({
 				// 判断是否点下的是压限开关且是否开启 将标识符置为true
 				if (key === 'limit_enable') {
 					this.dsp_option[`limit${channel}_flag`] = this.dsp_option.output[channel - 1].limit_enable == 1 ? true : false;
-					if (!this.dsp_option[`limit${channel}_flag`]) {
-						this.dsp_option[`output${channel}LimitTh`] = '+20';
-					}
+					// if (!this.dsp_option[`limit${channel}_flag`]) {
+					// 	this.dsp_option[`output${channel}LimitTh`] = '+20';
+					// }
 				}
 			});
 		},

@@ -174,7 +174,8 @@
                 </div>
                 <span style="font-size: 18px;color: #88CDFF;">每天</span>
               </div>
-              <el-time-picker class="date_time" placeholder="选择时间（必填项）" v-model="sys_option.day_time">
+              <el-time-picker class="date_time" placeholder="选择时间（必填项）" v-model="sys_option.day_time"
+                :picker-options="{selectableRange: '00:01:00 - 23:40:59'}">
               </el-time-picker>
             </div>
             <!-- 每周 -->
