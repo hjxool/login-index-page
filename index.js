@@ -87,6 +87,7 @@ var index = new Vue({
 		managerFocus: 0, //右边栏中点的是哪个
 		alert_button_focus: 0, //告警按钮点中的是哪个
 		nav_bar_click: -1, //左边导航栏点中的是哪一个
+		nav_bar_click_style: 0, //左边栏选中哪个就改变字体颜色
 		platformJump: 0, //右侧内容容器切换,0代表项目场所详情，1代表左边栏
 		download_center_jump: 0, //下载中心跳转层级,0表示最外层功能模块，1表示二级跳转，2表示3级跳转
 		download_center_sort_type: -1, //跨域时保存下载中心类别，请求用
@@ -144,10 +145,10 @@ var index = new Vue({
 		],
 		// 下载中心
 		download_center_sort: [
-			{ type: 1, src_normal: './img/下载桌面.png', src_hover: './img/下载桌面选中.png' },
-			{ type: 2, src_normal: './img/下载移动.png', src_hover: './img/下载移动选中.png' },
-			{ type: 3, src_normal: './img/下载固件.png', src_hover: './img/下载固件选中.png' },
-			{ type: 4, src_normal: './img/下载其他.png', src_hover: './img/下载其他选中.png' },
+			{ type: 1, src_normal: './img/下载桌面选中.png' },
+			{ type: 2, src_normal: './img/下载移动选中.png' },
+			{ type: 3, src_normal: './img/下载固件选中.png' },
+			{ type: 4, src_normal: './img/下载其他选中.png' },
 		],
 		draging: '', //正在拖拽元素
 		eduDevicePushLoading: false, //教育设备下发时加载遮罩
@@ -1338,6 +1339,9 @@ var index = new Vue({
 		},
 		// 跳转消息中心
 		left_bar_turn_to: function (par) {
+			if (par != 2) {
+				this.nav_bar_click_style = par;
+			}
 			switch (par) {
 				case 0:
 					if (this.managerFocus == 0) {

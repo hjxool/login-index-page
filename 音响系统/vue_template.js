@@ -81,6 +81,7 @@ Vue.component('single-slider', {
 			mute: this.channel.mute, //静音
 			sliderNum: Number, //音量
 			sliderNum_temp: Number, //传递给子组件的中间变量
+			timer: null, //防抖计时器
 		};
 	},
 	mounted() {
@@ -171,7 +172,14 @@ Vue.component('single-slider', {
 				params_obj.channel = this.channel.channel_id;
 				params_obj[this.order_key] = this.sliderNum;
 				this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
+			} else {
+				this.$message.error('只能输入数字！');
 			}
+		},
+		// 防抖
+		debounce(func, delay) {
+			clearTimeout(this.timer);
+			this.timer = setTimeout(func, delay);
 		},
 		silderMove: function (e) {
 			let nowY_temp;
@@ -250,7 +258,7 @@ Vue.component('single-slider', {
           <div class="slider_name">{{in_or_out==1?out_title:in_title}}</div>
           <div class="slider_display">
             <div class="slider_num">
-              <input @keyup.enter="command_send" v-model.number="sliderNum" maxlength="5" class="slider_num_input">
+              <input @input="debounce(command_send,1500)" v-model.number="sliderNum" maxlength="5" class="slider_num_input">
               <span style="font-size: 12px;color: #ABCBFF;">{{in_or_out==0?'dB':'dBu'}}</span>
             </div>
             <div class="slider_box">

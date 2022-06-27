@@ -165,7 +165,10 @@
           </div>
           <!-- 定时功能 -->
           <div class="set_time_box flex_shrink">
-            <div class="button" :style="check_button_style()" @click="set_time">功能定时自检开关</div>
+            <div style="display: flex;">
+              <div class="button" :style="check_button_style()" @click="set_time">功能定时自检开关</div>
+              <div class="button get_status_button" @click="get_status">获取通道状态</div>
+            </div>
             <!-- 每天 -->
             <div class="set_time" style="height: 74px;margin:10px 0;">
               <div class="select_all_box" @click="sys_option.select_time=0">

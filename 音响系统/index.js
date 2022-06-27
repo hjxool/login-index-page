@@ -550,6 +550,17 @@ new Vue({
 			};
 			return style;
 		},
+		// 手动获取通道状态
+		get_status() {
+			this.request('post', getOutputStatus, { deviceid: this.device_id, type: 'cmd' }, '74935343174538', this.loginToken, (res) => {
+				debugger;
+				if (res.data.data != {} && res.data.data != null) {
+					this.sys_option.status = [];
+					this.sys_option.status.push(res.data.data.output1);
+					this.sys_option.status.push(res.data.data.output2);
+				}
+			});
+		},
 		// 返回首页
 		return_home() {
 			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;

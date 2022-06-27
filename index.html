@@ -41,7 +41,7 @@
       <div class="left flex_shrink">
         <div class="nav" @click="left_bar_turn_to(0)">
           <img src="./img/工具@2x.png" class="navIcon">
-          <span class="navTitle">项目中心</span>
+          <span class="navTitle" :style="{color:nav_bar_click_style==0?'#3E6BFF':'#fff'}">项目中心</span>
           <div class="navBar"></div>
         </div>
 
@@ -50,7 +50,7 @@
             id="message_center_badge">
             <img src="./img/消息@2x.png" class="navIcon" style="width: 100%;height: 100%;">
           </el-badge>
-          <span class="navTitle">消息中心</span>
+          <span class="navTitle" :style="{color:nav_bar_click_style==1?'#3E6BFF':'#fff'}">消息中心</span>
           <div class="navBar"></div>
         </div>
 
@@ -58,20 +58,20 @@
           <!-- 临时遮罩 -->
           <div style="display: flex;flex-direction: column;align-items: center;flex-shrink: 0;opacity: 0.7;">
             <img src="./img/运维@2x.png" class="navIcon">
-            <span class="navTitle">运维中心</span>
+            <span class="navTitle" :style="{color:nav_bar_click_style==2?'#3E6BFF':'#fff'}">运维中心</span>
           </div>
           <div class="navBar"></div>
         </div>
 
         <div class="nav" @click="left_bar_turn_to(3)">
           <img src="./img/工具@2x.png" class="navIcon">
-          <span class="navTitle">下载中心</span>
+          <span class="navTitle" :style="{color:nav_bar_click_style==3?'#3E6BFF':'#fff'}">下载中心</span>
           <div class="navBar"></div>
         </div>
 
         <div class="nav" @click="left_bar_turn_to(4)">
           <img src="./img/个人@2x.png" class="navIcon">
-          <span class="navTitle">个人中心</span>
+          <span class="navTitle" :style="{color:nav_bar_click_style==4?'#3E6BFF':'#fff'}">个人中心</span>
           <div class="navBar"></div>
         </div>
       </div>
@@ -221,57 +221,49 @@
             <div style="width: 99%;height: 100%;overflow-y: auto;">
               <!-- 自动和手动场景容器 -->
               <div class="sceneList">
-                <!-- 自动场景外容器 -->
-                <div class="singleScene">
-                  <img src="./img/自动.png" class="sceneType">
-                  <!-- 内容器 -->
-                  <div class="detailContainer layout">
-                    <!-- 每一条数据的容器 -->
-                    <div class="barContainer layout" v-for="i,index in timing">
-                      <div class="name">
-                        <div class="sceneTypeIcon layout">
-                          <img src="./img/autoclock.png" class="listIcon">
-                        </div>
-                        <div class="nameDisplay">
-                          {{i.sceneName}}
-                          <el-switch v-model="i.switch0or1" @change="switchStatus(i)" class="switchIcon"
-                            active-color="#3674F6" inactive-color="#435386">
-                          </el-switch>
-                        </div>
+                <!-- 自动 -->
+                <div class="detailContainer layout">
+                  <!-- 每一条数据的容器 -->
+                  <div class="barContainer layout" v-for="i,index in timing">
+                    <div class="name">
+                      <div class="sceneTypeIcon layout">
+                        <img src="./img/autoclock.png" class="listIcon">
                       </div>
-                      <!-- 编辑和删除 -->
-                      <img src="./img/编辑.png" class="sceneEditButton" @click="clickSceneEditButton(i)">
-                      <img src="./img/删除.png" class="sceneEditButton" @click="delScene(i)">
+                      <div class="nameDisplay">
+                        {{i.sceneName}}
+                        <el-switch v-model="i.switch0or1" @change="switchStatus(i)" class="switchIcon"
+                          active-color="#3674F6" inactive-color="#435386">
+                        </el-switch>
+                      </div>
                     </div>
+                    <!-- 编辑和删除 -->
+                    <img src="./img/编辑.png" class="sceneEditButton" @click="clickSceneEditButton(i)">
+                    <img src="./img/删除.png" class="sceneEditButton" @click="delScene(i)">
                   </div>
                 </div>
-
-                <div class="singleScene">
-                  <img src="./img/手动.png" class="sceneType">
-
-                  <div class="detailContainer layout">
-                    <div class="barContainer layout" v-for="i,index in manual">
-                      <div class="name">
-                        <div class="sceneTypeIcon layout">
-                          <img src="./img/手动1.png" class="listIcon">
-                        </div>
-
-                        <div class="nameDisplay">
-                          {{i.sceneName}}
-                          <img src="./img/执行.png" class="manualAct" @click="resManualScene(i)">
-                        </div>
+                <!-- 手动 -->
+                <div class="detailContainer layout">
+                  <div class="barContainer layout" v-for="i,index in manual">
+                    <div class="name">
+                      <div class="sceneTypeIcon layout">
+                        <img src="./img/手动1.png" class="listIcon">
                       </div>
 
-                      <img src="./img/编辑.png" class="sceneEditButton" @click="clickSceneEditButton(i)">
-                      <img src="./img/删除.png" class="sceneEditButton" @click="delScene(i)">
+                      <div class="nameDisplay">
+                        {{i.sceneName}}
+                        <img src="./img/执行.png" class="manualAct" @click="resManualScene(i)">
+                      </div>
                     </div>
+
+                    <img src="./img/编辑.png" class="sceneEditButton" @click="clickSceneEditButton(i)">
+                    <img src="./img/删除.png" class="sceneEditButton" @click="delScene(i)">
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- 新建场景按钮 -->
-            <img src="./img/newSceneButton.png" class="sceneButton" @click="clickSceneButton">
+            <div class="sceneButton" @click="clickSceneButton">新建场景</div>
           </div>
           <!-- 告警窗口 -->
           <!-- <div v-if="managerFocus==2" class="alertContainer">
@@ -388,9 +380,8 @@
             </div>
           </div> -->
           <div v-show="(nav_bar_click==3&&download_center_jump==0)" class="download_center">
-            <div v-for="i in download_center_sort" @click="download_sort(i.type)" style="width: 160px;height: 180px;">
-              <img :src="i.src_normal" @mouseenter="switchImg($event,i.src_hover)"
-                @mouseleave="switchImg($event,i.src_normal)" style="width: 100%;height: 100%;">
+            <div v-for="i in download_center_sort" @click="download_sort(i.type)" class="download_card">
+              <img :src="i.src_normal" style="width: 100%;height: 100%;">
             </div>
           </div>
         </div>
@@ -448,7 +439,7 @@
             <div
               style="width: 100%;height: 100%;display: flex;justify-content: center;flex-wrap: wrap;align-content: center;">
               <div class="download_detail_content_box">
-                <div class="download_detail_interval" style="font-size: 1.66vh;color: #d5eaf9;">
+                <div class="download_detail_interval">
                   版本{{download_center_detail.version}}</div>
                 <div class="download_detail_interval">
                   <div class="download_detail_name">创建时间</div>
@@ -564,12 +555,12 @@
               <img v-if="i.checked" src="./img/checkbox1.png" class="checkbox" @click="addSceneDevice(i)">
               <img v-if="!i.checked" src="./img/checkbox.png" class="checkbox" @click="addSceneDevice(i)">
               <div v-if="showEditScene" class="info">
-                <span style="font-size: 18px;color: #88cdff;">{{i.name}}、{{i.model}}</span>
-                <span style="color: #00FFFF;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
+                <span style="font-size: 18px;color: #fff;">{{i.name}}、{{i.model}}</span>
+                <span style="color: #fff;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
               </div>
               <div v-if="showAddScene" class="info">
-                <span style="font-size: 18px;color: #88cdff;">{{i.name}}、{{i.modelName}}</span>
-                <span style="color: #00FFFF;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
+                <span style="font-size: 18px;color: #fff;">{{i.name}}、{{i.modelName}}</span>
+                <span style="color: #fff;font-size: 18px;" v-if="i.config_name">{{i.config_name}}</span>
               </div>
               <!-- 配置按钮 -->
               <img src="./img/config.png" class="configButton" @click="sceneDeviceConfig(i,index)">
@@ -589,10 +580,10 @@
     </div>
     <!-- 小弹窗遮罩 -->
     <div v-show="setUserGroupAndOrder" id="userGroupShadow" @click="saveConfigSet"></div>
-    <!-- 用户组和顺序配置 -->
+    <!-- 用户组和顺序配置  -->
     <div v-show="setUserGroupAndOrder" class="setUserGroupAndOrder">
       <div class="layout" style="width: 70%;height: 80px;">
-        <span style="color: #4070fa;font-size: 18px;">预设</span>
+        <span style="color: #fff;font-size: 18px;">预设</span>
         <el-select v-model="config_select" placeholder="请选择预设配置" style="width: 150px;" size="small" clearable>
           <el-option v-for="option in config_options" :key="option.value" :label="option.label" :value="option.value">
           </el-option>
