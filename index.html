@@ -322,10 +322,11 @@
         <!-- 消息中心 -->
         <div v-if="nav_bar_click==1" style="width: 100%;height: 100%;display: grid;grid-template-columns: 230px 900px;">
           <div class="message_center_type_scroll">
-            <div v-for="type,index in message_types" @click="res_message_list(type,index)"
-              :class="['message_center_type',message_center_focus==index?'message_center_type_focus':'']">
+            <div v-for="type,index in message_types" @click="res_message_list(type,index)" class="message_center_type">
+              <img src="./img/消息选中.png" class="message_center_layout" v-show="message_center_focus==index">
+              <img src="./img/消息.png" class="message_center_layout" v-show="message_center_focus!=index">
               <img :src="[type.type==0?'./img/系统消息图标.png':'./img/设备消息图标.png']"
-                style="width: 11.67%;height: 45.71%;margin: 0 0.78vw 0 1.3vw;">
+                style="width: 24px;height: 24px;margin:0 16px;">
               <span class="message_type_text">{{type.name}}</span>
               <el-badge :value="type.value" style="position: absolute;right: 14px;height: 18px;"></el-badge>
             </div>
@@ -333,8 +334,8 @@
 
           <div v-show="message_center_focus!=-1" class="message_center_content_scroll">
             <div v-for="list,index in message_types_list" class="message_content_box">
-              <span style="font-size: 20px;color: #D5EAF9;">{{list.title}}</span>
-              <span style="font-size: 16px;color: #D5EAF9;opacity: 0.5;">{{list.content}}</span>
+              <span style="font-size: 20px;color: #fff;">{{list.title}}</span>
+              <span style="font-size: 16px;color: #fff;opacity: 0.5;">{{list.content}}</span>
             </div>
           </div>
         </div>
