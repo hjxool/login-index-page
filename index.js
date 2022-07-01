@@ -1339,7 +1339,7 @@ var index = new Vue({
 		},
 		// 跳转消息中心
 		left_bar_turn_to: function (par) {
-			if (par != 2) {
+			if (par != 2 && par != 4) {
 				this.nav_bar_click_style = par;
 			}
 			switch (par) {
@@ -1357,6 +1357,7 @@ var index = new Vue({
 					this.res_message_center_list();
 					break;
 				case 2:
+					window.open(`http://47.108.53.124:10008/screen/`);
 					break;
 				case 3:
 					this.nav_bar_click = par;
