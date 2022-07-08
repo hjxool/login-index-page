@@ -90,21 +90,31 @@ Vue.component('single-slider', {
 	methods: {
 		// 对象里的属性不同
 		judge_in_or_out() {
-			if (this.in_or_out == 1) {
-				if (Number(this.channel.limit_threshold) < Number(this.slider_min)) {
-					this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
-				} else if (Number(this.channel.limit_threshold) > Number(this.slider_max)) {
-					this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
-				} else {
-					this.sliderNum_temp = this.sliderNum = Number(this.channel.limit_threshold);
-				}
-			} else {
+			if (this.in_title.indexOf('Hz') != -1) {
 				if (Number(this.channel.gain) < Number(this.slider_min)) {
 					this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
-				} else if (Number(this.channel.gain) > Number(this.slider_max)) {
-					this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
+				} else if (Number(this.channel.gain) > 8) {
+					this.sliderNum_temp = this.sliderNum = 8;
 				} else {
 					this.sliderNum_temp = this.sliderNum = Number(this.channel.gain);
+				}
+			} else {
+				if (this.in_or_out == 1) {
+					if (Number(this.channel.limit_threshold) < Number(this.slider_min)) {
+						this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
+					} else if (Number(this.channel.limit_threshold) > Number(this.slider_max)) {
+						this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
+					} else {
+						this.sliderNum_temp = this.sliderNum = Number(this.channel.limit_threshold);
+					}
+				} else {
+					if (Number(this.channel.gain) < Number(this.slider_min)) {
+						this.sliderNum_temp = this.sliderNum = Number(this.slider_min);
+					} else if (Number(this.channel.gain) > Number(this.slider_max)) {
+						this.sliderNum_temp = this.sliderNum = Number(this.slider_max);
+					} else {
+						this.sliderNum_temp = this.sliderNum = Number(this.channel.gain);
+					}
 				}
 			}
 		},
@@ -158,12 +168,22 @@ Vue.component('single-slider', {
 		command_send: function () {
 			let reg = /(^\-?\d+$)|(^\+?\d+$)|(^\-?\d+\.\d+$)|(^\+?\d+\.\d+$)/;
 			if (reg.test(this.sliderNum)) {
-				if (this.sliderNum < Number(this.slider_min)) {
-					this.sliderNum = Number(this.slider_min);
-				} else if (this.sliderNum > Number(this.slider_max)) {
-					this.sliderNum = Number(this.slider_max);
+				if (this.in_title.indexOf('Hz') != -1) {
+					if (this.sliderNum < Number(this.slider_min)) {
+						this.sliderNum = Number(this.slider_min);
+					} else if (this.sliderNum > 8) {
+						this.sliderNum = 8;
+					} else {
+						this.sliderNum = Math.floor(this.sliderNum * 10 + 0.5) / 10;
+					}
 				} else {
-					this.sliderNum = Math.floor(this.sliderNum * 10 + 0.5) / 10;
+					if (this.sliderNum < Number(this.slider_min)) {
+						this.sliderNum = Number(this.slider_min);
+					} else if (this.sliderNum > Number(this.slider_max)) {
+						this.sliderNum = Number(this.slider_max);
+					} else {
+						this.sliderNum = Math.floor(this.sliderNum * 10 + 0.5) / 10;
+					}
 				}
 				this.sliderNum_temp = this.sliderNum;
 				// 由传入的key动态生成对象
@@ -173,7 +193,11 @@ Vue.component('single-slider', {
 				params_obj[this.order_key] = this.sliderNum;
 				this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
 			} else {
-				this.$message.error('只能输入数字！');
+				if (this.in_title.indexOf('Hz') != -1) {
+					this.$message.error('只能输入小于8的数字！');
+				} else {
+					this.$message.error('只能输入数字！');
+				}
 			}
 		},
 		// 防抖
@@ -182,22 +206,30 @@ Vue.component('single-slider', {
 			this.timer = setTimeout(func, delay);
 		},
 		silderMove: function (e) {
-			let nowY_temp;
 			let content = this.$refs.slider;
 			let sliderBottom = content.offsetHeight - e.target.offsetTop - e.target.offsetHeight / 2;
 			let mouseY = e.clientY;
+			let geq_max;
+			if (this.in_title.indexOf('Hz') != -1) {
+				geq_max = ((8 - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min))) * content.offsetHeight;
+			}
 			document.onmousemove = (e) => {
 				let mouseH = mouseY - e.clientY;
 				let nowY = mouseH + sliderBottom;
+				if (this.in_title.indexOf('Hz') != -1) {
+					if (nowY > geq_max) {
+						nowY = geq_max;
+					}
+				} else {
+					if (nowY > content.offsetHeight) {
+						nowY = content.offsetHeight;
+					}
+				}
 				if (nowY < 0) {
 					nowY = 0;
 				}
-				if (nowY > content.offsetHeight) {
-					nowY = content.offsetHeight;
-				}
 				nowY = (nowY / content.offsetHeight) * (Number(this.slider_max) - Number(this.slider_min)) + Number(this.slider_min);
 				nowY = Math.floor(nowY * 10 + 0.5) / 10;
-				nowY_temp = nowY;
 				// sliderNum和sliderNum_temp不一样 前者是用于显示在面板上 后者用于回调改变滑块高度 两者没有关联关系 仅在面板输入时做了一次等值
 				this.sliderNum = nowY;
 				this.sliderNum_temp = nowY;
@@ -215,11 +247,18 @@ Vue.component('single-slider', {
 		sliderTurnTo: function (e) {
 			let content = this.$refs.slider;
 			let nowY = content.offsetHeight - (e.clientY - Math.ceil(content.getBoundingClientRect().top));
+			if (this.in_title.indexOf('Hz') != -1) {
+				let geq_max = ((8 - Number(this.slider_min)) / (Number(this.slider_max) - Number(this.slider_min))) * content.offsetHeight;
+				if (nowY > geq_max) {
+					nowY = geq_max;
+				}
+			} else {
+				if (nowY > content.offsetHeight) {
+					nowY = content.offsetHeight;
+				}
+			}
 			if (nowY < 0) {
 				nowY = 0;
-			}
-			if (nowY > content.offsetHeight) {
-				nowY = content.offsetHeight;
 			}
 			// 差值是以0为基准的
 			nowY = (nowY / content.offsetHeight) * (Number(this.slider_max) - Number(this.slider_min)) + Number(this.slider_min);
