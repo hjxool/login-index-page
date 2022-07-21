@@ -183,6 +183,12 @@ new Vue({
 					// message.type = 'level';
 					this.request('post', getChannelDetail, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
 						console.log(res);
+						if (typeof res.data.data != 'object') {
+							this.$alert('当前设备无DSP数据', '提示', {
+								confirmButtonText: '确定',
+							});
+							return;
+						}
 						this.dsp_option.input = res.data.data.input;
 						this.dsp_option.output = res.data.data.output;
 						// 将特殊通道抽出 重新组成对象数组
@@ -210,6 +216,15 @@ new Vue({
 					});
 					this.request('post', getOutputStatus, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
 						this.sys_option.status = [];
+						if (res.data.data.output1 == null || res.data.data.output2 == null || res.data.data == null) {
+							let t = {
+								dsp_sta: 0,
+								amp_sta: 0,
+								spk_sta: 0,
+							};
+							this.sys_option.status.push(t);
+							return;
+						}
 						this.sys_option.status.push(res.data.data.output1);
 						this.sys_option.status.push(res.data.data.output2);
 					});
@@ -553,7 +568,6 @@ new Vue({
 		// 手动获取通道状态
 		get_status() {
 			this.request('post', getOutputStatus, { deviceid: this.device_id, type: 'cmd' }, '74935343174538', this.loginToken, (res) => {
-				debugger;
 				if (res.data.data != {} && res.data.data != null) {
 					this.sys_option.status = [];
 					this.sys_option.status.push(res.data.data.output1);
