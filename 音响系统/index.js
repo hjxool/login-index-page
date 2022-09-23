@@ -1,9 +1,8 @@
 new Vue({
 	el: '#temp',
+	mixins: [common_functions],
 	data() {
 		return {
-			loginToken: '',
-			device_id: '20220331_141135_6623415100445969',
 			channel_num: 2, //通道数
 			// 总选项卡
 			sound_item_options: [
@@ -14,14 +13,11 @@ new Vue({
 			option_focus: 0, //总选项卡选中
 			// DSP参数
 			dsp_option: {
-				input: [],
+				input: '',
 				output: [],
-				geq_list: [], //geq通道列表
 				geq_title_list: ['60Hz', '230Hz', '910Hz', '4000Hz', '14000Hz'], //geq通道名称
-				output1LimitTh: '+20', //输出通道1压限上限
-				output2LimitTh: '+20', //输出通道2压限上限
-				limit1_flag: false, //压限打开时轮询标识
-				limit2_flag: false,
+				// limit1_flag: false, //压限打开时轮询标识
+				// limit2_flag: false,
 			},
 			// 系统功能参数
 			sys_option: {
@@ -55,54 +51,46 @@ new Vue({
 	},
 	mounted() {
 		if (!location.search) {
-			this.loginToken = window.sessionStorage.loginToken;
-			this.userName = window.sessionStorage.userName;
-			this.device_id = window.sessionStorage.device_id;
+			this.token = window.sessionStorage.token;
+			this.id = window.sessionStorage.id;
 		} else {
 			this.get_token();
 		}
-		// 第一次加载echart页面时才初始化echart对象
-		this.first_load = true;
+		for (let i = 1; i <= 2; i++) {
+			// 两个通道同步请求 需要两个标识符
+			this[`first_load${i}`] = true;
+		}
 		// echart设置
 		let dom = document.getElementsByClassName('history_echart');
-		for (let i = 0; i < this.channel_num; i++) {
-			this[`echarts${i}`] = echarts.init(dom[i]); //动态创建对象属性并赋值
+		for (let i = 1; i <= 2; i++) {
+			this[`echarts${i}`] = echarts.init(dom[i - 1]); //动态创建对象属性并赋值
 		}
-		this.res_history();
-		this.history_timer = setInterval(this.res_history, 600000);
-		this.limit_timer = setInterval(() => {
-			if (this.dsp_option.limit1_flag) {
-				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
-					// this.dsp_option.output1LimitTh = res.data.data.output1LimitTh;
-					this.dsp_option.output[0].limit_threshold = res.data.data.output1LimitTh;
-				});
-			}
-			if (this.dsp_option.limit2_flag) {
-				this.request('post', getLimitThreshold, { deviceid: this.device_id }, '123456', this.loginToken, (res) => {
-					// this.dsp_option.output2LimitTh = res.data.data.output2LimitTh;
-					this.dsp_option.output[1].limit_threshold = res.data.data.output2LimitTh;
-				});
-			}
-		}, 30000);
+		this.switch_option(0);
+		this.history_timer = setInterval(() => {
+			this.history_switch(this.history.history_data_option);
+		}, 600000);
 		// websocket获取DSP页面数据
-		this.ws_link = new WebSocket(`${ws_url}/${this.device_id}/level?token=${this.loginToken}`);
+		this.ws_link = new WebSocket(`${ws_url}`);
 		this.ws_link.onmessage = (res) => {
 			let data = JSON.parse(res.data);
-			if (Object.keys(data).indexOf('data') != -1) {
-				let keys = Object.keys(data.data);
-				if (this.option_focus == 1) {
-					// 能找到input1说明有数据
-					if (keys.indexOf('input1') != -1) {
-						this.dsp_option.input[0].level = data.data.input1;
-						this.dsp_option.output[0].level = data.data.output1;
-						this.dsp_option.output[1].level = data.data.output2;
-					} else {
-						this.$message.info(data.message);
+			console.log('websocket', data);
+			if (data.contents != null || data.contents.length > 0) {
+				for (let i = 0; i < data.contents.length; i++) {
+					let t = data.contents[i];
+					if (t.deviceId == this.id) {
+						// websocket会推多种类型消息 要筛选出其中要的设备
+						for (let key in t.attributes) {
+							if (key == 'out1_th') {
+								this.dsp_option.output[0].limit_threshold = t.attributes[key];
+							}
+							if (key == 'out2_th') {
+								this.dsp_option.output[1].limit_threshold = t.attributes[key];
+							}
+						}
 					}
 				}
-			} else {
-				this.$message.info(data.message);
 			}
+			// 	this.$message.info(data.message);
 		};
 		this.ws_link.onerror = (res) => {
 			this.$message.error(res.message);
@@ -112,55 +100,6 @@ new Vue({
 		};
 	},
 	methods: {
-		// 获取地址栏token
-		get_token() {
-			let temp = location.search.substring(1).split('&');
-			temp.forEach((e) => {
-				if (e.indexOf('loginToken') != -1) {
-					this.loginToken = e.split('=')[1];
-					window.sessionStorage.loginToken = this.loginToken;
-				} else if (e.indexOf('userName') != -1) {
-					this.userName = e.split('=')[1];
-					window.sessionStorage.userName = this.userName;
-				} else if (e.indexOf('deviceId') != -1) {
-					this.device_id = e.split('=')[1];
-					window.sessionStorage.device_id = this.device_id;
-				}
-			});
-			let url = location.href.split('?')[0];
-			history.replaceState('', '', url);
-		},
-		request(method, url, data, key, token, func) {
-			axios({
-				method: method,
-				url: url,
-				data: {
-					client: 'PC',
-					user: '',
-					version: '1.0.1',
-					data: data,
-					key: key,
-				},
-				headers: { token: token },
-			}).then((res) => {
-				if (res.data.code == 1000) {
-					if (res.data.data) {
-						func(res);
-					} else {
-						this.$message.error('数据为空');
-					}
-				} else {
-					this.$alert(res.data.message, '提示', {
-						confirmButtonText: '确定',
-						callback: () => {
-							if (res.data.code == 3005 || res.data.code == 3006) {
-								window.location.href = '../login/login.html';
-							}
-						},
-					});
-				}
-			});
-		},
 		// 总选项选中样式
 		option_style(index) {
 			let style = {
@@ -172,68 +111,76 @@ new Vue({
 		},
 		// 切换选项卡同时重新获取节点初始化echart
 		switch_option(index) {
-			// let message = { deviceid: this.device_id };
 			switch (index) {
 				case 0:
-					// message.type = 'xxx';
-					this.res_history();
+					this.history_switch(0);
 					this.option_focus = index;
 					break;
 				case 1:
-					// message.type = 'level';
-					this.request('post', getChannelDetail, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
-						console.log(res);
-						if (typeof res.data.data != 'object') {
-							this.$alert('当前设备无DSP数据', '提示', {
-								confirmButtonText: '确定',
-							});
-							return;
-						}
-						this.dsp_option.input = res.data.data.input;
-						this.dsp_option.output = res.data.data.output;
-						// 将特殊通道抽出 重新组成对象数组
-						this.dsp_option.geq_list = [];
-						for (let e of this.dsp_option.output) {
-							let array2 = [];
-							let array = Object.entries(e).filter((e2) => {
-								return e2[0].indexOf('geq') != -1;
-							});
-							for (let e3 of array) {
-								let obj = {};
-								obj.gain = e3[1];
-								obj.channel_id = e.channel_id; //下达命令时需要有当前通道id geq所属一个通道id
-								array2.push(obj);
-							}
-							this.dsp_option.geq_list.push(array2);
-						}
-						this.option_focus = index; //数据加载回来以后再跳转
-					});
+					this.get_device_status(index);
 					break;
 				case 2:
-					// message.type = 'xxx';
-					this.request('post', getPowerVol, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
-						this.sys_option.power_value = res.data.data.powerVol;
-					});
-					this.request('post', getOutputStatus, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
-						this.sys_option.status = [];
-						if (res.data.data.output1 == null || res.data.data.output2 == null || res.data.data == null) {
-							let t = {
-								dsp_sta: 0,
-								amp_sta: 0,
-								spk_sta: 0,
-							};
-							this.sys_option.status.push(t);
-							return;
-						}
-						this.sys_option.status.push(res.data.data.output1);
-						this.sys_option.status.push(res.data.data.output2);
-					});
-					this.option_focus = index;
+					this.get_device_status(index);
 					break;
 			}
-			// if (this.ws_link.readyState == 1) {
-			// this.ws_link.send(JSON.stringify(message));
-			// }
+		},
+		// 获取设备状态
+		get_device_status(index) {
+			this.dsp_option.output = [];
+			this.sys_option.status = [];
+			this.request('get', `${getChannelDetail}/${this.id}`, this.token, (res) => {
+				console.log('dsp数据', res);
+				this.option_focus = index;
+				if (res.data.data == null) {
+					return;
+				}
+				this.dsp_option.input = {
+					level: res.data.data.properties.level.propertyValue.in1.propertyValue,
+					mute: res.data.data.properties.in1_mute.propertyValue,
+					gain: res.data.data.properties.in1_gain.propertyValue,
+				};
+				let t = {
+					level: res.data.data.properties.level.propertyValue.out1.propertyValue,
+					gain: res.data.data.properties.out1_gain.propertyValue,
+					limit_threshold: res.data.data.properties.out1_th.propertyValue,
+					limit_enable: res.data.data.properties.out1_th_dyn.propertyValue,
+					mute: res.data.data.properties.out1_mute.propertyValue,
+					geq_list: [
+						{ gain: res.data.data.properties.out1_geq1.propertyValue },
+						{ gain: res.data.data.properties.out1_geq2.propertyValue },
+						{ gain: res.data.data.properties.out1_geq3.propertyValue },
+						{ gain: res.data.data.properties.out1_geq4.propertyValue },
+						{ gain: res.data.data.properties.out1_geq5.propertyValue },
+					],
+				};
+				let t2 = {
+					level: res.data.data.properties.level.propertyValue.out2.propertyValue,
+					gain: res.data.data.properties.out2_gain.propertyValue,
+					limit_threshold: res.data.data.properties.out2_th.propertyValue,
+					limit_enable: res.data.data.properties.out2_th_dyn.propertyValue,
+					mute: res.data.data.properties.out2_mute.propertyValue,
+					geq_list: [
+						{ gain: res.data.data.properties.out2_geq1.propertyValue },
+						{ gain: res.data.data.properties.out2_geq2.propertyValue },
+						{ gain: res.data.data.properties.out2_geq3.propertyValue },
+						{ gain: res.data.data.properties.out2_geq4.propertyValue },
+						{ gain: res.data.data.properties.out2_geq5.propertyValue },
+					],
+				};
+				this.dsp_option.output.push(t, t2);
+				this.sys_option.power_value = res.data.data.properties.amp_msg.propertyValue.power_vol.propertyValue;
+				let t3 = {
+					dsp_sta: res.data.data.properties.dev_state.propertyValue.out1.propertyValue.dsp_sta.propertyValue,
+					amp_sta: res.data.data.properties.dev_state.propertyValue.out1.propertyValue.amp_sta.propertyValue,
+					spk_sta: res.data.data.properties.dev_state.propertyValue.out1.propertyValue.spk_sta.propertyValue,
+				};
+				let t4 = {
+					dsp_sta: res.data.data.properties.dev_state.propertyValue.out2.propertyValue.dsp_sta.propertyValue,
+					amp_sta: res.data.data.properties.dev_state.propertyValue.out2.propertyValue.amp_sta.propertyValue,
+					spk_sta: res.data.data.properties.dev_state.propertyValue.out2.propertyValue.spk_sta.propertyValue,
+				};
+				this.sys_option.status.push(t3, t4);
+			});
 		},
 		// 历史记录选中样式
 		history_option_style(index) {
@@ -248,136 +195,76 @@ new Vue({
 			this.history.history_data_option = index;
 			switch (index) {
 				case 0:
-					this.history.output1.y_data = this.history.output1.voltageList;
-					this.history.output2.y_data = this.history.output2.voltageList;
-					this.history.display_title = '电压';
-					this.history.display_unit = 'V';
+					for (let i = 1; i <= 2; i++) {
+						this.res_history(`properties.amp_msg.propertyValue.output${i}.propertyValue.voltage`, `电压output${i}`, i, '电压', 'V');
+					}
 					break;
 				case 1:
-					this.history.output1.y_data = this.history.output1.currentList;
-					this.history.output2.y_data = this.history.output2.currentList;
-					this.history.display_title = '电流';
-					this.history.display_unit = 'A';
+					for (let i = 1; i <= 2; i++) {
+						this.res_history(`properties.amp_msg.propertyValue.output${i}.propertyValue.current`, `电流output${i}`, i, '电流', 'A');
+					}
 					break;
 				case 2:
-					this.history.output1.y_data = this.history.output1.powerList;
-					this.history.output2.y_data = this.history.output2.powerList;
-					this.history.display_title = '功率';
-					this.history.display_unit = 'W';
+					for (let i = 1; i <= 2; i++) {
+						this.res_history(`properties.amp_msg.propertyValue.output${i}.propertyValue.power`, `功率output${i}`, i, '功率', 'W');
+					}
 					break;
 				case 3:
-					this.history.output1.y_data = this.history.output1.temperatureList;
-					this.history.output2.y_data = this.history.output2.temperatureList;
-					this.history.display_title = '温度';
-					this.history.display_unit = '℃';
+					for (let i = 1; i <= 2; i++) {
+						this.res_history(`properties.amp_msg.propertyValue.output${i}.propertyValue.tempreture`, `温度output${i}`, i, '温度', '℃');
+					}
 					break;
-			}
-			for (let i = 0; i < this.channel_num; i++) {
-				this[`echarts${i}`].setOption({
-					tooltip: {
-						// formatter: `{b}<br>${this.history.display_title}：{c} ${this.history.display_unit}`,
-						formatter: (value) => {
-							let format_text = `
-						  日期：${value[0].axisValue.split(' ')[0]}<br>
-						  时间：${value[0].axisValue.split(' ')[1]}<br>
-						  ${this.history.display_title}：${value[0].data} ${this.history.display_unit}
-						`;
-							return format_text;
-						},
-					},
-					series: [
-						{
-							data: this.history[`output${i + 1}`].y_data,
-						},
-					],
-				});
 			}
 		},
 		// 每隔十分钟查询历史数据
-		res_history() {
-			if (this.option_focus == 0) {
-				this.request('post', getAmpHistoryData, { deviceid: this.device_id }, '74935343174538', this.loginToken, (res) => {
-					console.log(res);
-					let num = Object.keys(res.data.data);
-					if (num.length > 0) {
-						this.history.data_null = false; //控制数据为空时的显示
-						this.channel_num = num.length;
-						// 获取当天日期
-						// this.history.history_day = res.data.data.output1.timeList[0].split(' ')[0];
-						// 截取时间戳组成新数组
-						this.history.output1.timeList = [];
-						for (const e of res.data.data.output1.timeList) {
-							// let time = e.split(' ')[1];
-							this.history.output1.timeList.push(e);
-						}
-						// 将数据进行取整
-						this.history.output1.currentList = [];
-						for (const e of res.data.data.output1.currentList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output1.currentList.push(temp);
-						}
-						this.history.output1.voltageList = [];
-						for (const e of res.data.data.output1.voltageList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output1.voltageList.push(temp);
-						}
-						this.history.output1.powerList = [];
-						for (const e of res.data.data.output1.powerList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output1.powerList.push(temp);
-						}
-						this.history.output1.temperatureList = [];
-						for (const e of res.data.data.output1.temperatureList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output1.temperatureList.push(temp);
-						}
-
-						this.history.output2.timeList = [];
-						for (const e of res.data.data.output2.timeList) {
-							// let time = e.split(' ')[1];
-							this.history.output2.timeList.push(e);
-						}
-						// 通道2
-						this.history.output2.currentList = [];
-						for (const e of res.data.data.output2.currentList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output2.currentList.push(temp);
-						}
-						this.history.output2.voltageList = [];
-						for (const e of res.data.data.output2.voltageList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output2.voltageList.push(temp);
-						}
-						this.history.output2.powerList = [];
-						for (const e of res.data.data.output2.powerList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output2.powerList.push(temp);
-						}
-						this.history.output2.temperatureList = [];
-						for (const e of res.data.data.output2.temperatureList) {
-							let temp = Math.floor(Number(e) * 10) / 10;
-							this.history.output2.temperatureList.push(temp);
-						}
-						if (this.first_load) {
-							for (let i = 1; i <= this.channel_num; i++) {
-								this.history_echart(i);
-							}
-							this.first_load = false;
-						} else {
-							this.history_switch(this.history.history_data_option);
-						}
-					} else {
-						// this.history.data_null = true;
-						this.history.output1.timeList = ['04:43', '04:53', '05:03', '05:13'];
-						this.history.output1.voltageList = [1, 2, 3];
-						this.history.output2.timeList = ['04:43', '04:53', '05:03', '05:13'];
-						this.history.output2.voltageList = [1, 2, 3];
-						for (let i = 1; i <= this.channel_num; i++) {
-							this.history_echart(i);
-						}
+		res_history(fieldPath, res_name, channel, title, unit) {
+			this.request(
+				'post',
+				device_status_history,
+				this.token,
+				{
+					condition: { deviceId: this.id, fieldPath: fieldPath },
+					pageNum: 1,
+					pageSize: 100,
+				},
+				(res) => {
+					console.log(res_name, res);
+					if (res.data.data.data.length == 0 || res.data.data == null) {
+						this.$message.info(res_name + '无历史数据');
+						return;
 					}
-				});
-			}
+					// 截取时间戳组成新数组
+					this.history[`output${channel}`].timeList = [];
+					this.history[`output${channel}`].y_data = [];
+					for (let e of res.data.data.data) {
+						let temp = Math.floor(Number(e.propertyValue) * 10) / 10;
+						this.history[`output${channel}`].y_data.push(temp);
+						this.history[`output${channel}`].timeList.push(e.created);
+					}
+					if (this[`first_load${channel}`]) {
+						this.history_echart(channel);
+						this[`first_load${channel}`] = false;
+					} else {
+						this[`echarts${channel}`].setOption({
+							tooltip: {
+								formatter: (value) => {
+									let format_text = `
+                  日期：${value[0].axisValue.split(' ')[0]}<br>
+                  时间：${value[0].axisValue.split(' ')[1]}<br>
+                  ${title}：${value[0].data} ${unit}
+                `;
+									return format_text;
+								},
+							},
+							series: [
+								{
+									data: this.history[`output${channel}`].y_data,
+								},
+							],
+						});
+					}
+				}
+			);
 		},
 		// 第一次加载页面时 设置图表配置
 		history_echart(index) {
@@ -458,7 +345,7 @@ new Vue({
 				series: [
 					{
 						type: 'line',
-						data: this.history[`output${index}`].voltageList,
+						data: this.history[`output${index}`].y_data,
 						smooth: true, //平滑显示
 						symbol: 'none', //线段上的装饰点
 						lineStyle: {
@@ -468,36 +355,27 @@ new Vue({
 					},
 				],
 			};
-			this[`echarts${index - 1}`].setOption(option);
+			this[`echarts${index}`].setOption(option);
 		},
 		// dsp界面按钮控制
-		dsp_button(channel, key) {
-			let params_obj = {
-				deviceid: this.device_id,
-				channel: channel,
-			};
-			switch (channel) {
-				case 0:
-					this.dsp_option.input[0].mute = this.dsp_option.input[0].mute == 0 ? 1 : 0;
-					params_obj[key] = this.dsp_option.input[0].mute;
-					break;
-				default:
-					if (key == 'mute') {
-						this.dsp_option.output[channel - 1].mute = this.dsp_option.output[channel - 1].mute == 0 ? 1 : 0;
-						params_obj[key] = this.dsp_option.output[channel - 1].mute;
-					} else if (key == 'limit_enable') {
-						this.dsp_option.output[channel - 1].limit_enable = this.dsp_option.output[channel - 1].limit_enable == 0 ? 1 : 0;
-						params_obj[key] = this.dsp_option.output[channel - 1].limit_enable;
-					}
-					break;
-			}
-			this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.loginToken, () => {
+		dsp_button(key, value, index) {
+			let attributes = {};
+			attributes[key] = value ? 0 : 1;
+			this.request('put', `${sendCmdtoDevice}/8`, this.token, { contentType: 0, contents: [{ deviceId: this.id, attributes: attributes }] }, (res) => {
+				switch (key) {
+					case 'in1_mute':
+						this.dsp_option.input.mute = value ? 0 : 1;
+						break;
+					case `out${index + 1}_th_dyn`:
+						this.dsp_option.output[index].limit_enable = value ? 0 : 1;
+						break;
+					case `out${index + 1}_mute`:
+						this.dsp_option.output[index].mute = value ? 0 : 1;
+						break;
+				}
 				// 判断是否点下的是压限开关且是否开启 将标识符置为true
-				if (key === 'limit_enable') {
-					this.dsp_option[`limit${channel}_flag`] = this.dsp_option.output[channel - 1].limit_enable == 1 ? true : false;
-					// if (!this.dsp_option[`limit${channel}_flag`]) {
-					// 	this.dsp_option[`output${channel}LimitTh`] = '+20';
-					// }
+				if (key === `out${index + 1}_th_dyn`) {
+					this.dsp_option[`limit${index + 1}_flag`] = value ? false : true;
 				}
 			});
 		},
@@ -567,17 +445,7 @@ new Vue({
 		},
 		// 手动获取通道状态
 		get_status() {
-			this.request('post', getOutputStatus, { deviceid: this.device_id, type: 'cmd' }, '74935343174538', this.loginToken, (res) => {
-				if (res.data.data != {} && res.data.data != null) {
-					this.sys_option.status = [];
-					this.sys_option.status.push(res.data.data.output1);
-					this.sys_option.status.push(res.data.data.output2);
-				}
-			});
-		},
-		// 返回首页
-		return_home() {
-			window.location.href = `../index.html?loginToken=${this.loginToken}&userName=${this.userName}`;
+			this.request('put', `${sendCmdtoDevice}/11`, this.token, { contentType: 2, contents: [{ deviceId: this.id, identifier: 'dev_check', attributes: {} }] });
 		},
 	},
 });

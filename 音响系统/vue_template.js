@@ -76,6 +76,7 @@ Vue.component('level-component', {
 // 滑块组件
 Vue.component('single-slider', {
 	props: ['channel', 'device_id', 'token', 'in_title', 'out_title', 'in_or_out', 'slider_max', 'slider_min', 'order_key'],
+	mixins: [common_functions],
 	data: function () {
 		return {
 			mute: this.channel.mute, //静音
@@ -118,38 +119,6 @@ Vue.component('single-slider', {
 				}
 			}
 		},
-		// 封装的请求方法
-		request: function (method, url, data, key, token, func) {
-			axios({
-				method: method,
-				url: url,
-				data: {
-					client: 'PC',
-					user: '',
-					version: '1.0.1',
-					data: data,
-					key: key,
-				},
-				headers: { token: token },
-			}).then((res) => {
-				if (res.data.code == 1000) {
-					if (res.data.data) {
-						func(res);
-					} else {
-						this.$message.error('数据为空');
-					}
-				} else {
-					this.$alert(res.data.message, '提示', {
-						confirmButtonText: '确定',
-						callback: () => {
-							if (res.data.code == 3005 || res.data.code == 3006) {
-								window.location.href = '../login/login.html';
-							}
-						},
-					});
-				}
-			});
-		},
 		// 静音
 		// soundOff: function () {
 		// 	if (this.mute == 0) {
@@ -187,11 +156,9 @@ Vue.component('single-slider', {
 				}
 				this.sliderNum_temp = this.sliderNum;
 				// 由传入的key动态生成对象
-				let params_obj = {};
-				params_obj.deviceid = this.device_id;
-				params_obj.channel = this.channel.channel_id;
-				params_obj[this.order_key] = this.sliderNum;
-				this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
+				let attributes = {};
+				attributes[this.order_key] = this.sliderNum;
+				this.request('put', `${sendCmdtoDevice}/8`, this.token, { contentType: 0, contents: [{ deviceId: this.device_id, attributes: attributes }] });
 			} else {
 				if (this.in_title.indexOf('Hz') != -1) {
 					this.$message.error('只能输入小于8的数字！');
@@ -235,11 +202,9 @@ Vue.component('single-slider', {
 				this.sliderNum_temp = nowY;
 			};
 			document.onmouseup = () => {
-				let params_obj = {};
-				params_obj.deviceid = this.device_id;
-				params_obj.channel = this.channel.channel_id;
-				params_obj[this.order_key] = this.sliderNum;
-				this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
+				let attributes = {};
+				attributes[this.order_key] = this.sliderNum;
+				this.request('put', `${sendCmdtoDevice}/8`, this.token, { contentType: 0, contents: [{ deviceId: this.device_id, attributes: attributes }] });
 				document.onmousemove = false;
 				document.onmouseup = false;
 			};
@@ -265,11 +230,9 @@ Vue.component('single-slider', {
 			nowY = Math.floor(nowY * 10 + 0.5) / 10;
 			this.sliderNum = nowY;
 			this.sliderNum_temp = nowY;
-			let params_obj = {};
-			params_obj.deviceid = this.device_id;
-			params_obj.channel = this.channel.channel_id;
-			params_obj[this.order_key] = this.sliderNum;
-			this.request('post', sendCmdtoDevice, params_obj, '74935343174538', this.token, () => {});
+			let attributes = {};
+			attributes[this.order_key] = this.sliderNum;
+			this.request('put', `${sendCmdtoDevice}/8`, this.token, { contentType: 0, contents: [{ deviceId: this.device_id, attributes: attributes }] });
 		},
 		// 改变滑块进度条高度
 		change_cover_height: function (par) {

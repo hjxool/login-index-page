@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>音响系统</title>
   <link rel="icon" href="./img/logo.ico">
-  <link rel="stylesheet" href="../module/element-ui.css">
+  <link rel="stylesheet" href="../../module/element-ui.css">
   <link rel="stylesheet" href="./index.css">
   <link rel="stylesheet" href="./vue_template.css">
 </head>
@@ -16,8 +16,8 @@
   <div id="temp" v-cloak>
     <!-- 头部 -->
     <div class="header">
-      <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;"
-        @click="return_home">
+      <!-- <img src="./img/返回按钮.png" class="button" style="margin: 0 12px 0 24px;width: 45px;height: 45px;"
+        @click="return_home"> -->
       <img src="./img/logo.png" style="width: 200px;height: 26px;margin: 0 15px;">
       <div style="width: 2px;height: 22px;margin: 0 15px;background: #035AB0;"></div>
       <span style="font-size: 30px;color: #F5F5F5;margin: 0 12px;">DSP</span>
@@ -74,15 +74,15 @@
             <span class="dsp_input_title center">输入一</span>
             <div class="center">
               <div class="dsp_input_control">
-                <level-component :level_max="'+12'" :level_min="'-48'" :display_value="dsp_option.input[0].level">
+                <level-component :level_max="'+12'" :level_min="'-48'" :display_value="dsp_option.input.level">
                 </level-component>
-                <single-slider :channel="dsp_option.input[0]" :in_title="'增益'" :out_title="'压限'" :in_or_out="0"
-                  :slider_max="'+12'" :slider_min="'-80'" :device_id="device_id" :token="loginToken"
-                  :order_key="'gain'">
+                <single-slider :channel="dsp_option.input" :in_title="'增益'" :out_title="'压限'" :in_or_out="0"
+                  :slider_max="'+12'" :slider_min="'-80'" :device_id="id" :token="token" :order_key="'in1_gain'">
                 </single-slider>
               </div>
               <img class="button" style="width: 130px;height:44px;"
-                :src="dsp_option.input[0].mute==0?'./img/静音亮.png':'./img/静音暗.png'" @click="dsp_button(0,'mute')">
+                :src="dsp_option.input.mute==1?'./img/静音亮.png':'./img/静音暗.png'"
+                @click="dsp_button('in1_mute',dsp_option.input.mute)">
             </div>
           </div>
           <!-- 输出 -->
@@ -92,33 +92,30 @@
                 <div class="dsp_output_text">输出{{index+1}}</div>
                 <div class="dsp_output_top_control">
                   <div class="dsp_output_top_control1">
-                    <level-component :level_max="'+12'" :level_min="'-48'"
-                      :display_value="dsp_option.output[index].level">
+                    <level-component :level_max="'+12'" :level_min="'-48'" :display_value="out.level">
                     </level-component>
-                    <single-slider :channel="dsp_option.output[index]" :in_title="'增益'" :out_title="'压限'" :in_or_out="0"
-                      :slider_max="'+12'" :slider_min="'-80'" :device_id="device_id" :token="loginToken"
-                      :order_key="'gain'"></single-slider>
-                    <single-slider :channel="dsp_option.output[index]" :in_title="'增益'" :out_title="'压限'" :in_or_out="1"
-                      :slider_max="dsp_option[`output${index+1}LimitTh`]" :slider_min="'-40'" :device_id="device_id"
-                      :token="loginToken" :order_key="'limit_threshold'"></single-slider>
+                    <single-slider :channel="out" :in_title="'增益'" :out_title="'压限'" :in_or_out="0" :slider_max="'+12'"
+                      :slider_min="'-80'" :device_id="id" :token="token" :order_key="'gain'">
+                    </single-slider>
+                    <single-slider :channel="out" :in_title="'增益'" :out_title="'压限'" :in_or_out="1" :slider_max="'+20'"
+                      :slider_min="'-40'" :device_id="id" :token="token" :order_key="'limit_threshold'"></single-slider>
                     <!-- 小遮罩 -->
-                    <div class="box_shadow" v-show="dsp_option.output[index].limit_enable==1"></div>
+                    <div class="box_shadow" v-show="out.limit_enable==1"></div>
                   </div>
                   <div class="dsp_output_top_control2">
                     <img class="dsp_output_button button"
-                      :src="dsp_option.output[index].limit_enable==1?'./img/动态压限开关亮.png':'./img/动态压限开关暗.png'"
-                      @click="dsp_button(index+1,'limit_enable')">
-                    <img class="dsp_output_button button"
-                      :src="dsp_option.output[index].mute==0?'./img/静音亮.png':'./img/静音暗.png'"
-                      @click="dsp_button(index+1,'mute')">
+                      :src="out.limit_enable==1?'./img/动态压限开关亮.png':'./img/动态压限开关暗.png'"
+                      @click="dsp_button(`out${index+1}_th_dyn`,out.limit_enable,index)">
+                    <img class="dsp_output_button button" :src="out.mute==1?'./img/静音亮.png':'./img/静音暗.png'"
+                      @click="dsp_button(`out${index+1}_mute`,out.mute,index)">
                   </div>
                 </div>
               </div>
 
               <div class="dsp_output_bottom">
-                <single-slider v-for="geq,index2 in dsp_option.geq_list[index]" :channel="geq"
+                <single-slider v-for="geq,index2 in out.geq_list" :channel="geq"
                   :in_title="dsp_option.geq_title_list[index2]" :out_title="'压限'" :in_or_out="0" :slider_max="'+20'"
-                  :slider_min="'-20'" :device_id="device_id" :token="loginToken" :order_key="`geq${index2+1}_gain`">
+                  :slider_min="'-20'" :device_id="id" :token="token" :order_key="`geq${index2+1}_gain`">
                 </single-slider>
               </div>
             </div>
@@ -166,11 +163,10 @@
           <!-- 定时功能 -->
           <div class="set_time_box flex_shrink">
             <div style="display: flex;">
-              <div class="button" :style="check_button_style()" @click="set_time">功能定时自检开关</div>
+              <!-- <div class="button" :style="check_button_style()" @click="set_time">功能定时自检开关</div> -->
               <div class="button get_status_button" @click="get_status">获取通道状态</div>
             </div>
-            <!-- 每天 -->
-            <div class="set_time" style="height: 74px;margin:10px 0;">
+            <!-- <div class="set_time" style="height: 74px;margin:10px 0;">
               <div class="select_all_box" @click="sys_option.select_time=0">
                 <div class="dot_box">
                   <div v-show="sys_option.select_time==0" class="dot"></div>
@@ -181,7 +177,6 @@
                 :picker-options="{selectableRange: '00:01:00 - 23:40:59'}">
               </el-time-picker>
             </div>
-            <!-- 每周 -->
             <div class="set_time" style="height: 74px;margin:10px 0;">
               <div class="select_all_box" @click="sys_option.select_time=1">
                 <div class="dot_box">
@@ -193,7 +188,6 @@
                 v-for="week,index in sys_option.weeks" v-model="sys_option.select_week" :label="index+1">{{week}}
               </el-radio>
             </div>
-            <!-- 每月 -->
             <div class="set_time" style="height: 270px;overflow-y: auto;overflow-x: hidden;margin:10px 0;">
               <div class="select_all_box" @click="sys_option.select_time=2">
                 <div class="dot_box">
@@ -205,19 +199,20 @@
                 <el-radio class="day_box" border size="medium" v-for="month,index in 28"
                   v-model="sys_option.select_month" :label="month">{{month}}</el-radio>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="../../../运维人员部署请修改我.js"></script>
   <script src="./main.js"></script>
-  <script src="../module/jquery-3.6.0.js"></script>
-  <script src="../module/vue.js"></script>
-  <script src="../module/echarts.min.js"></script>
-  <script src="../module/element-ui.js"></script>
-  <script src="../module/axios.min.js"></script>
+  <script src="../../module/vue.js"></script>
+  <script src="../../module/echarts.min.js"></script>
+  <script src="../../module/element-ui.js"></script>
+  <script src="../../module/axios.min.js"></script>
+  <script src="../../module/common_function.js"></script>
   <script src="./vue_template.js"></script>
   <script src="./index.js"></script>
 </body>
