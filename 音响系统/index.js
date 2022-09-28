@@ -47,12 +47,14 @@ new Vue({
 				display_title: '', //不同选项提示框不同
 				display_unit: '',
 			},
+			device_name: '', //显示在页面上的设备名
 		};
 	},
 	mounted() {
 		if (!location.search) {
 			this.token = window.sessionStorage.token;
 			this.id = window.sessionStorage.id;
+			this.device_name = decodeURIComponent(window.sessionStorage.device_name);
 		} else {
 			this.get_token();
 		}
